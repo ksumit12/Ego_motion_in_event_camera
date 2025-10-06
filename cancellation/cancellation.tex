@@ -1,0 +1,143 @@
+\chapter{Event Cancellation Algorithm}
+\label{chap:cancellation}
+
+\section{Overview and Design Goals}
+The cancellation stage implements the \emph{predict–wait–match} rule from Chapter~\ref{chap:problem}: for each observed event $e_i=(x_i,t_i,p_i)$, we predict a future location $x_i'$ under rotation about $\hat c(t_i)$ with angular velocity $\hat\omega(t_i)$ over a short horizon $\Delta t$; at decision time $t_i' = t_i+\Delta t$, we search for a real event $e_j=(x_j,t_j,p_j)$ within a \emph{true temporal gate} $|t_j-t_i'| \le \epsilon_t$ and a spatial gate $\|x_j-x_i'\|_2 \le \epsilon_{xy}$, with polarity consistency. Matches are canceled (suppressed) and unmatched events remain as residuals. The algorithm is strictly \emph{causal}, per-event, and parameterized by $(\Delta t,\epsilon_t,\epsilon_{xy})$, connecting directly to the sensitivity analysis in Chapter~\ref{chap:metrics}. Compared to batch motion compensation/contrast maximization \cite{Gallego2018CMax,Stoffregen2019Segmentation,Bardow2016SOFIE}, our design trades some global robustness for low latency and interpretability.
+
+\section{Inputs, Outputs, and State}
+\paragraph{Inputs.}
+\begin{itemize}
+    \item Event stream $E=\{(x_i,t_i,p_i)\}$, time-sorted (polarity $p_i\in\{-1,+1\}$).
+    \item Time-aligned motion parameters $(\hat c(t),\hat\omega(t))$ from Chapter~\ref{chap:motion}.
+    \item Hyperparameters: prediction horizon $\Delta t$, temporal tolerance $\epsilon_t$, spatial tolerance $\epsilon_{xy}$, polarity mode $\pi$ (strict opposite, equal, or ignore).
+\end{itemize}
+
+\paragraph{Outputs.}
+\begin{itemize}
+    \item Canceled set $\mathcal{C}\subseteq E$ and residual set $\mathcal{R}=E\setminus \mathcal{C}$.
+    \item Optional: anti-event stream $\tilde E=\{(x_i',t_i',-p_i)\}$ for visualization/accounting; in software, we equivalently drop matched pairs.
+\end{itemize}
+
+\paragraph{State.}
+\begin{itemize}
+    \item A time-sorted buffer of \emph{recent real events} for window queries.
+    \item A time-sorted buffer (queue) of \emph{pending predictions} $\hat e_i=(x_i',t_i',\bar p_i)$ keyed by decision time $t_i'$.
+    \item A light spatial index (e.g., KD-tree or uniform grid) over candidates within the current temporal window.
+\end{itemize}
+
+\section{Per-Event Prediction}
+For each incoming real event $e_i=(x_i,t_i,p_i)$, we compute the predicted tuple
+\begin{equation}
+x_i' \;=\; \mathcal{R}\!\left(x_i;\,\hat c(t_i),\,\hat\omega(t_i)\,\Delta t\right),
+\qquad
+t_i' \;=\; t_i+\Delta t,
+\qquad
+\bar p_i \;=\; -p_i,
+\label{eq:canc-forward}
+\end{equation}
+and push $\hat e_i=(x_i',t_i',\bar p_i)$ into a min-heap keyed by $t_i'$.\footnote{We use pixel-space rotation \eqref{eq:canc-forward}. If significant distortion is present, apply the mapping in normalized coordinates (Chapter~\ref{chap:motion}).} Time-aligned $(\hat c,\hat\omega)$ are obtained by interpolation \eqref{eq:interp}.
+
+\section{True Temporal Gate and Candidate Retrieval}
+At wall-clock time $\tau$, pop all predictions with $t_i' \le \tau$. For each popped $\hat e_i$, form the candidate set
+\begin{equation}
+\mathcal{N}_t(t_i';\epsilon_t) \;=\; \{\,e_j=(x_j,t_j,p_j)\in E \;|\; |t_j - t_i'| \le \epsilon_t \,\},
+\label{eq:true-window}
+\end{equation}
+using two sliding indices over the time-sorted real-event buffer to avoid re-scanning the stream. This realizes the \emph{true temporal gate} introduced in Chapter~\ref{chap:problem} without fixed-width bins, thereby suppressing boundary artifacts that otherwise degrade matching.
+
+\section{Spatial \& Polarity Gating, and Pairing Policy}
+Within $\mathcal{N}_t(t_i';\epsilon_t)$, we enforce
+\begin{equation}
+\|x_j - x_i'\|_2 \le \epsilon_{xy}, 
+\qquad \pi(p_i,p_j)=1,
+\label{eq:spat-pol-gate}
+\end{equation}
+where $\pi$ encodes the polarity rule. By default we use \emph{strict opposite} ($p_j=-p_i$), which minimizes over-cancellation on monotonic edges; we also evaluate \emph{ignore} (no polarity test) and \emph{equal} (for ablations) in Chapter~\ref{chap:metrics}.
+
+\paragraph{Mutual nearest neighbors (MNN).}
+To prevent many-to-one matches in dense bursts, we adopt an MNN policy within the gate: let $\mathcal{P}$ be the set of popped predictions in $[t_i'-\epsilon_t,\,t_i'+\epsilon_t]$, and $\mathcal{R}_t$ the real events in that same window. Build a KD-tree on $\mathcal{P}$ positions $\{x_i'\}$ and query nearest neighbors for each $x_j$ in $\mathcal{R}_t$ (within $\epsilon_{xy}$), and symmetrically a KD-tree on $\mathcal{R}_t$ queried by $\{x_i'\}$. Accept a pair $(\hat e_i,e_j)$ if and only if they select each other and pass \eqref{eq:spat-pol-gate}. This is a standard trick to increase precision in nearest-neighbor association while keeping complexity near-linear in the number of candidates.
+
+\paragraph{Adaptive spatial tolerance (optional).}
+Empirically, spatial error grows with radius and timing uncertainty (Chapter~\ref{chap:problem}). A practical heuristic is
+\begin{equation}
+\epsilon_{xy}(r) \;=\; k \,\big(r\,|\hat\omega(t_i)|\,\sigma_t \;+\; \|\Delta c\|\big),
+\quad r=\|x_i-\hat c(t_i)\|_2, \quad k\in[1.5,2.5],
+\label{eq:adaptive-eps}
+\end{equation}
+with $\sigma_t$ the effective timestamp uncertainty. We report both fixed and adaptive tolerances in sensitivity experiments.
+
+\section{Cancellation, Anti-Events, and Residuals}
+For each accepted pair $(\hat e_i,e_j)$, we:
+\begin{enumerate}
+    \item Mark $e_i \in \mathcal{C}$ (the \emph{cause} event) and remove (or decrement) $e_j$ at $(x_j,t_j,p_j)$ in the maintained event representation.
+    \item Optionally emit the anti-event $\tilde e_i=(x_i',t_i',-p_i)$ for logging/visualization; software-wise, dropping both from the stream is equivalent to perfect cancellation under our signed rasterization.
+\end{enumerate}
+All unmatched events (real or predicted) remain in the residual set and form the high-pass visualization used in qualitative figures. This mirrors the subtraction principle behind motion-compensated alignment in warping-based methods \cite{Gallego2018CMax,Stoffregen2019Segmentation} but acts \emph{proactively} at the event time scale.
+
+\section{Complexity and Throughput}
+Let $n_w$ be the number of events in a typical temporal window of width $2\epsilon_t$. Building a KD-tree per window costs $\mathcal{O}(n_w\log n_w)$ and querying is $\mathcal{O}(n_w\log n_w)$, but in practice we reuse structures by batching popped predictions with similar $t'$ or by using uniform spatial grids for near-constant-time neighborhood queries. Since windows are short and sparsity is high, the dominant cost is memory traffic; the implementation therefore uses contiguous arrays, time-sorted buffers, and chunked processing to achieve high throughput.
+
+\section{Numerical Details and Edge Cases}
+\paragraph{Sub-pixel rasterization.}
+We visualize residuals with signed bilinear splatting (Chapter~\ref{chap:metrics}), which stabilizes appearances across sub-pixel positions and avoids aliasing common to nearest-neighbor binning.
+
+\paragraph{Time alignment and latency.}
+All decisions are taken at $t_i' = t_i+\Delta t$, using only events with $t\le t_i'+\epsilon_t$, hence respecting causality. In software, the microsecond-scale delay is dominated by data structure updates.
+
+\paragraph{Polarity asymmetry.}
+Real sensors can exhibit polarity-dependent thresholds; strict opposite-polarity matching is conservative. We therefore report both strict and relaxed polarity modes to expose potential asymmetry.
+
+\paragraph{Boundary conditions.}
+Predictions that fall outside the image plane (after \eqref{eq:canc-forward}) are discarded. For safety, we clip coordinates prior to spatial indexing to avoid invalid memory accesses.
+
+\section{Algorithm}
+\begin{algorithm}[H] % or [tbp] if you don't want hard placement
+\caption{Causal per-event cancellation with true temporal gate}
+\label{alg:cancellation}
+\begin{algorithmic}[1]
+\Require time-sorted events $E=\{(x_i,y_i,p_i,t_i)\}_{i=1}^N$, parameters $(\hat{\mathbf c}(t),\hat{\omega}(t))$, horizon $\Delta t$, tolerances $(\varepsilon_t,\varepsilon_{xy})$, polarity mode $\Pi$
+\State $\textsc{PredQ}\gets$ empty min-heap keyed by predicted time $t'$
+\State $\textsc{RealBuf}\gets$ empty deque; \quad $L\gets 1,\; R\gets 1$
+\For{each event $e_i=(x_i,y_i,p_i,t_i)\in E$}
+  \State $\hat{\mathbf c}_i \gets \textsc{Interp}(\hat{\mathbf c},t_i)$;\quad $\hat{\omega}_i \gets \textsc{Interp}(\hat{\omega},t_i)$
+  \State $(x'_i,y'_i)\gets \textsc{Rotate}((x_i,y_i);\hat{\mathbf c}_i,\hat{\omega}_i\cdot \Delta t)$;\quad $t'_i\gets t_i+\Delta t$;\quad $\bar p_i\gets \textsc{FlipPol}(p_i)$
+  \State \textsc{Push}$\big(\textsc{PredQ},\hat e_i=(x'_i,y'_i,\bar p_i,t'_i,i)\big)$
+  \State \textsc{Append}($\textsc{RealBuf}, e_i$)
+  \While{$\textsc{PredQ}\neq\varnothing$ \textbf{ and } $\textsc{Top}(\textsc{PredQ}).t' \le t_i$}
+     \State $\mathcal{P}\gets$ \textsc{PopAllWithin}$(\textsc{PredQ},\,t_i,\,\varepsilon_t)$ \Comment{all predictions with $|t'_k-t_i|\le \varepsilon_t$}
+     \State advance $(L,R)$ so that $\textsc{RealBuf}[L{:}R]$ satisfies $|t_j - t'_k|\le \varepsilon_t$ for some $k$ \label{ln:window}
+     \State build spatial index (e.g., KD-tree) on $\{(x'_k,y'_k)\in\mathcal{P}\}$
+     \State $\mathcal{A}\gets\varnothing$ \Comment{candidate assignments: $(j,k,d)$}
+     \For{each $e_j=(x_j,y_j,p_j,t_j)\in \textsc{RealBuf}[L{:}R]$}
+        \State find nearest $\hat e_k\in\mathcal{P}$ within $\varepsilon_{xy}$ to $(x_j,y_j)$
+        \If{$\hat e_k$ exists \textbf{and} $\Pi(\bar p_k,p_j)$ holds}
+            \State add $(j,k,\| (x_j,y_j)-(x'_k,y'_k)\|)$ to $\mathcal{A}$
+        \EndIf
+     \EndFor
+     \State sort $\mathcal{A}$ by distance ascending; greedily accept one-to-one matches
+     \State record accepted pairs into $\mathcal{C}$; mark matched $e_j$ and $\hat e_k$ as canceled
+     \State remove (or flag) matched $e_j$ from $\textsc{RealBuf}$; discard used $\hat e_k$ from $\mathcal{P}$
+  \EndWhile
+\EndFor
+\State \Return matches $\mathcal{C}$ and residuals: real $E\setminus\{e_j:(j,k)\in\mathcal{C}\}$, predicted $\{\hat e_k\}\setminus\{\hat e_k:(j,k)\in\mathcal{C}\}$
+\end{algorithmic}
+\end{algorithm}
+
+
+\section{Connection to Literature and Rationale}
+The spatial/temporal gating echoes the alignment logic of IWE-based methods \cite{Gallego2018CMax}, with the key difference that we \emph{predict and cancel causally} rather than optimize parameters over packets. Motion segmentation by motion compensation \cite{Stoffregen2019Segmentation} similarly validates motion hypotheses via alignment but uses iterative EM and global objectives; our algorithm replaces those with a local gate tuned by $(\Delta t,\epsilon_t,\epsilon_{xy})$. This allows immediate suppression of predictable ego-motion events, reducing bandwidth and computation for downstream tasks, a pragmatic alternative when low latency is paramount.
+
+\section{Parameter Selection Heuristics}
+The following guidelines are used to initialize and sweep parameters (formal sweeps appear in Chapter~\ref{chap:metrics}).
+\begin{itemize}
+    \item \textbf{Prediction horizon $\Delta t$:} Start at $0.5$\,ms; sweep $0.25$–$2$\,ms. Larger $\Delta t$ increases temporal separation but also phase error per \eqref{eq:err-omega}.
+    \item \textbf{Temporal tolerance $\epsilon_t$:} Choose $2$–$3$\,ms to absorb timestamp variability; relate to sensor timing $\sigma_t$ and spin rate $|\hat\omega|$ (Chapter~\ref{chap:problem}).
+    \item \textbf{Spatial tolerance $\epsilon_{xy}$:} Start at $1.5$–$2$\,px; consider adaptive $\epsilon_{xy}(r)$ via \eqref{eq:adaptive-eps} for high radii.
+    \item \textbf{Polarity mode $\pi$:} Use strict opposite for conservative cancellation; report \emph{ignore} as an ablation to probe polarity asymmetry.
+\end{itemize}
+
+\section{Limitations and Failure Modes}
+Cancellation suffers when (i) $\Delta c$ or $\Delta\omega$ are biased, yielding systematic residuals (Chapter~\ref{chap:motion}); (ii) the scene violates the rotation-only model (translation/parallax); (iii) flicker or structured noise passes the gate; or (iv) the gate is too permissive, causing over-cancellation. Diagnostics such as radial residual profiles and background residual density (Chapter~\ref{chap:metrics}) help detect and correct these cases.
+
+\medskip
+\noindent\textbf{Summary.} We presented a causal, per-event cancellation algorithm with a true temporal gate, mutual nearest-neighbor pairing, and optional adaptive spatial tolerance. The design is lightweight and analyzable, integrates directly with the rotation-only predictor, and provides interpretable knobs $(\Delta t,\epsilon_t,\epsilon_{xy})$ whose effects are quantified in the next chapter.

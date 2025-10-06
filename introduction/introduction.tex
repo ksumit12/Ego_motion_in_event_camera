@@ -1,0 +1,101 @@
+\chapter{Introduction}
+
+\section{Overview and Motivation}
+
+Event cameras (also called dynamic vision sensors) are bio-inspired visual sensors that report per-pixel brightness changes asynchronously with microsecond latency and very high dynamic range, rather than periodic intensity frames \cite{Gallego2020Survey}. Compared to conventional frame cameras, their properties—high temporal resolution, reduced motion blur, high intra-scene dynamic range, and low power—make them particularly attractive for high-speed robotics and perception in challenging illumination \cite{Gallego2020Survey,Lichtsteiner2008DVS,Brandli2014DAVIS}. The first widely known commercial device, the DVS, demonstrated $\sim$15\,\textmu s latency and $\sim$120\,dB dynamic range \cite{Lichtsteiner2008DVS}; later DAVIS sensors combined asynchronous events with global-shutter frames in the same pixel array, further broadening applications \cite{Brandli2014DAVIS}. 
+
+A fundamental consequence of the event sensing principle is that camera \emph{ego-motion} over a static scene moves edges across the image plane and triggers dense background events (``ego events''). These ego events can dominate the event stream and confound downstream algorithms (e.g., tracking, segmentation, or mapping) that care about independently moving objects \cite{Stoffregen2019Segmentation,Gallego2020Survey}. In practice, many pipelines therefore first estimate the camera motion and then compensate or warp events to reduce blur in the accumulated Image of Warped Events (IWE), improving the signal-to-noise structure of event data \cite{Gallego2018CMax,Bardow2016SOFIE}. 
+
+This thesis explores a complementary strategy: \emph{proactive} suppression of ego-motion events via \textbf{forward prediction and per-event cancellation}. Instead of accumulating events and compensating them in batches, we model rotational ego-motion, predict where an event will reappear after a short horizon $\Delta t$, and emit an inverse-polarity anti-event at that predicted location when the horizon elapses, thereby cancelling predictable, redundant observations \emph{as they arrive}. Such anticipation echoes predictive-coding principles in biological vision, where neural circuits suppress expected input to highlight novel signals \cite{Hosoya2005Dynamic,Rao1999Predictive}. 
+
+\section{Problem Statement and Research Questions}
+
+Consider a scene observed by an event camera undergoing planar circular motion about a fixed rotation centre. Even if the scene is static, the sensor produces a high rate of ego-motion events due to apparent edge motion. Let $\Delta t$ be a short prediction horizon. The core question is: \emph{can ego-motion–induced events be predicted and cancelled causally enough to reduce bandwidth and computational load without damaging unpredictable (object-motion) events?} Specifically, we ask:
+\begin{enumerate}
+    \item How accurately can we estimate rotation centre and angular velocity from the event stream in real time for short-horizon prediction? \cite{Gallego2017Angular,Gallego2018CMax}
+    \item What cancellation performance (cancellation ratio, residual density relative to background) is achievable as a function of algorithm parameters (e.g., $\Delta t$, spatial/temporal tolerances) and sensor effects (polarity asymmetry, contrast threshold variability)? \cite{Gallego2020Survey,Xu2020SmoothMC}
+    \item How does proactive cancellation compare qualitatively to standard motion compensation (e.g., contrast-maximization/IWE) on the same sequences? \cite{Gallego2018CMax,Bardow2016SOFIE,Stoffregen2019Segmentation}
+\end{enumerate}
+
+\section{Background: Event Cameras and Ego-Motion Compensation}
+
+\paragraph{Event generation and noise.}
+An event $(x,y,t,p)$ is raised when the change in log-intensity at pixel $(x,y)$ exceeds a positive or negative contrast threshold, with polarity $p \in \{+1,-1\}$ \cite{Gallego2020Survey}. Practical devices exhibit per-pixel threshold variations and background activity that act as a noise floor, and finite photoreceptor response can introduce small timing offsets; these factors influence any matching/cancellation tolerance \cite{Gallego2020Survey}. The DVS architecture and its DAVIS follow-ups provide concrete hardware context and limits \cite{Lichtsteiner2008DVS,Brandli2014DAVIS}.
+
+\paragraph{Motion estimation with events.}
+A large body of work estimates ego-motion or optical flow directly from events. Variational methods simultaneously recover flow and latent intensity \cite{Bardow2016SOFIE}. The \emph{contrast maximization} framework formalizes motion estimation as maximizing the sharpness of an IWE after warping events with motion parameters, and has been shown to unify solutions for motion, depth, and flow \cite{Gallego2018CMax}. For rotational motion in particular, accurate angular velocity estimation from events has been demonstrated \cite{Gallego2017Angular}. In parallel, learning-based methods can infer optical flow, depth, and egomotion from events by enforcing motion-compensation losses \cite{Zhu2019Unsupervised}. More recently, global or robust formulations improve motion compensation and reduce artefacts \cite{Xu2020SmoothMC}.
+
+\paragraph{Why cancellation instead of compensation?}
+Most pipelines accumulate events over a window and then compensate them (post hoc) to form sharp IWEs for subsequent tasks \cite{Gallego2018CMax,Stoffregen2019Segmentation}. In bandwidth- or latency-critical systems, however, upstream \emph{suppression} of predictable ego-events could save downstream compute and highlight residual, task-relevant signals (e.g., truly independent movers). The proposed forward-prediction approach adopts short, causal horizons and emits anti-events, drawing conceptual inspiration from inhibitory circuits and predictive coding in the retina and cortex \cite{Hosoya2005Dynamic,Rao1999Predictive} while remaining purely algorithmic and sensor-level.
+
+\section{Methodological Scope and Assumptions}
+\label{sec:scope-assumptions}
+
+\paragraph{Scope and rationale.}
+To make the problem tractable, measurable, and reproducible, we study ego-motion cancellation in a controlled \textbf{circular-motion} setting using a spinning-disc apparatus. Rotational setups are common in event-camera evaluation and provide analytic motion fields that simplify modeling, identification, and ground-truth checks \cite{Gallego2017Angular,Stoffregen2019Segmentation}. The goal is to test whether ego-motion–induced events can be \emph{proactively} suppressed via forward prediction and per-event cancellation, without relying on batch accumulation or dense image-of-warped-events (IWE) optimization \cite{Gallego2018CMax,Bardow2016SOFIE}.
+
+\paragraph{Motion model.}
+We assume an approximately static scene and predominant rotational ego-motion of the sensor relative to the disc. Let $(c_x,c_y)$ denote the rotation center on the image plane and $\omega$ the angular velocity (signed). For an event $e=(x,y,t,p)$ at time $t$, we propagate its (sub)pixel location along the circular trajectory to a future time $t+\Delta t$ using the estimated $(c_x,c_y,\omega)$, yielding a predicted location $(x',y')$:
+\[
+(x',y') = \mathcal{R}\!\left((x,y)\,;\,(c_x,c_y),\,\omega\,\Delta t\right),
+\]
+where $\mathcal{R}$ is the rotation of $(x,y)$ around $(c_x,c_y)$ by angle $\omega \Delta t$. The prediction horizon $\Delta t$ is short (sub-millisecond to a few milliseconds) to limit phase error and minimize model drift \cite{Gallego2017Angular,Gallego2018CMax}.
+
+\paragraph{Per-event cancellation mechanism.}
+At physical time $t+\Delta t$, we perform a spatio-temporal match around $(x',y',t+\Delta t)$ within tolerances $(\epsilon_{xy},\epsilon_{t})$ and with \emph{opposite polarity} to the original event. Upon a successful match, we emit an inverse-polarity \emph{anti-event} to cancel the predicted observation in software (or conceptually, at the sensor interface). This preserves the asynchronous, low-latency nature of event processing and avoids large buffers or global optimization windows \cite{Bardow2016SOFIE,Gallego2018CMax}.
+
+\paragraph{Metrics and evaluation.}
+We report (i) \textbf{cancellation ratio} (fraction of events cancelled), (ii) \textbf{residual event density} (events/area) on disc vs.\ background regions, (iii) \textbf{radial residual profiles} to see where cancellation fails along the disc radius, and (iv) \textbf{ablation curves} vs.\ parameter settings. These metrics echo common practice in motion compensation and event denoising/warping evaluations \cite{Bardow2016SOFIE,Gallego2018CMax,Xu2020}. Where relevant, we interpret residual changes as effective SNR improvements against a background-activity baseline \cite{Gallego2020Survey}.
+
+\paragraph{Sensitivity study (design).}
+To understand robustness, we systematically vary:
+\begin{itemize}
+    \item \textbf{Prediction horizon $\Delta t$}: e.g., $0.25,\,0.5,\,1,\,2,\,4$\,ms (phase-mismatch grows with $\Delta t$).
+    \item \textbf{Spatial tolerance $\epsilon_{xy}$}: e.g., $0.5\!-\!3$ pixels (trade-off between true matches and false positives).
+    \item \textbf{Temporal tolerance $\epsilon_t$}: e.g., $50\!-\!500\,\mu$s (timestamp jitter vs.\ strictness).
+    \item \textbf{Polarity handling}: strict opposite-polarity vs.\ relaxed polarity checks (to probe asymmetries).
+    \item \textbf{Motion-estimation bias}: add small biases to $\omega$ and/or $(c_x,c_y)$ to quantify sensitivity.
+\end{itemize}
+We report cancellation curves and residual maps for each sweep and analyze trends (Chapter~\ref{chap:metrics}).
+
+\paragraph{Assumptions and limitations.}
+\begin{enumerate}
+    \item \textbf{Scene stationarity}: the background is static; residual non-stationarity is treated as object/scene motion.
+    \item \textbf{Short-horizon linearizability}: $\Delta t$ is small enough that unmodeled effects (e.g., small translation, acceleration, rolling-shutter timing) are negligible to first order \cite{Gallego2017Angular}.
+    \item \textbf{Calibration fidelity}: intrinsic parameters and distortion are either negligible at the ROI or pre-compensated; the disc center is near the true rotational center in the image.
+    \item \textbf{Sensor non-idealities}: background activity, threshold mismatch, and refractory effects exist \cite{Brandli2014,Delbruck2020}; we treat them as noise and characterize them via a background baseline.
+    \item \textbf{Controlled lighting}: flicker is minimized; where present, it is acknowledged as a confound and included in residual analysis \cite{Gallego2020Survey}.
+\end{enumerate}
+These assumptions bound the scope of claims and clarify failure modes (e.g., longer $\Delta t$ will degrade cancellation due to phase error; miscentered $(c_x,c_y)$ yields radius-dependent residuals).
+\vspace{0.5em}
+
+\section{Contributions}
+\label{sec:contributions}
+
+This thesis does not claim external publications; the contributions are \emph{methodological, analytical, and empirical}:
+
+\begin{enumerate}
+    \item \textbf{A causal, per-event forward-prediction cancellation pipeline for rotational ego-motion.} A lightweight method that predicts future event locations using an estimated $(c_x,c_y,\omega)$, then suppresses predictable ego-motion events by emitting inverse-polarity anti-events at horizon $\Delta t$, while preserving per-event latency (no dense IWEs or batch optimization) \cite{Bardow2016SOFIE,Gallego2018CMax}.
+    \item \textbf{A principled sensitivity analysis of key parameters.} Systematic sweeps over $\Delta t$, spatial/temporal tolerances, polarity handling, and motion-estimation biases, with quantitative effects on cancellation ratio and residual structure; results are interpreted in terms of phase mismatch, timing uncertainty, and model error (Chapter~\ref{chap:metrics}).
+    \item \textbf{Evaluation metrics and residual analysis.} Clear definitions and measurements of cancellation ratio, residual event density, radial residual profiles, and comparisons to a background-activity baseline, enabling SNR-like interpretation and fair comparisons to motion compensation baselines \cite{Gallego2020Survey,Bardow2016SOFIE,Gallego2018CMax,Xu2020}.
+    \item \textbf{Controlled spinning-disc testbed and empirical study.} A reproducible evaluation on rotational sequences (and sequences with moderate departures from ideal circular motion), including qualitative overlays and quantitative ablations versus standard motion-compensation procedures \cite{Gallego2018CMax,Bardow2016SOFIE,Stoffregen2019Segmentation}.
+    \item \textbf{Open implementation details.} Implementation choices (data structures, buffering, complexity, and parameter defaults) documented to support reproduction and future extension to general ego-motion.
+\end{enumerate}
+Together, these contributions position proactive cancellation as a complementary strategy to existing alignment/estimation methods in event vision \cite{Bardow2016SOFIE,Rebecq2017,Gallego2018CMax} and motivate future work on uncertainty-aware prediction and hardware-efficient suppression.
+
+\section{Thesis Outline}
+\label{sec:outline}
+
+This thesis follows the structure established in event-vision literature and our research group’s practice:
+
+\begin{description}
+    \item[Chapter~\ref{chap:background} --- Background \& Related Work.] Event-camera principles (event generation model, polarity, contrast threshold), sensor non-idealities (background activity, threshold mismatch, flicker), processing paradigms (asynchronous vs.\ batch), and applications in flow, VO/SLAM, and motion compensation. We summarize contrast maximization/IWE methods and prior work most related to ego-motion handling \cite{Gallego2020Survey,Bardow2016SOFIE,Gallego2018CMax}.
+    \item[Chapter~\ref{chap:problem} --- Problem Formulation.] Notation, circular-motion geometry, forward-prediction model, cancellation objective, and evaluation metrics (cancellation ratio, residual densities, radial profiles, background baseline). We formalize matching in $(x,y,t)$ with polarity constraints and tolerances.
+    \item[Chapter~\ref{chap:motion} --- Motion Estimation \& Prediction.] Estimation of $(c_x,c_y,\omega)$ from events (and optional cues), prediction of future event locations, and practicalities (timestamping, distortion, ROIs, buffering). We discuss sources of bias/variance and their expected effects on prediction accuracy \cite{Gallego2017Angular}.
+    \item[Chapter~\ref{chap:cancellation} --- Event Cancellation Algorithm.] Full pipeline description: data structures (grid/k-d tree), matching policy, polarity handling, optional pre-blur of predicted events, complexity, and runtime considerations. We contrast this with batch motion-compensation against a dense objective \cite{Gallego2018CMax}.
+    \item[Chapter~\ref{chap:metrics} --- Sensitivity Analysis of Parameters.] Experimental design and results for parameter sweeps: $\Delta t$, $\epsilon_{xy}$, $\epsilon_t$, polarity, and $\omega$ bias. We provide cancellation curves, residual maps, and robustness analyses, and relate observed trends to modeling assumptions.
+    \item[Chapter~\ref{chap:setup} --- Experimental Setup.] Hardware (event sensor, disc rig, lighting), calibration notes, datasets and protocols, and software pipeline (preprocessing, estimation, prediction, cancellation, metrics) with implementation details for reproducibility.
+    \item[Chapter~\ref{chap:results} --- Results.] Quantitative and qualitative evaluations: overall cancellation ratios, residual densities, radial profiles, ablations vs.\ motion-compensation baselines, and representative overlays/time-slices; discussion of failure cases (e.g., longer horizons, miscentered rotation).
+    \item[Chapter~\ref{chap:discussion} --- Discussion.] Interpretation of sensitivity results; implications for event-based perception; limitations (model mismatch, noise, timing offsets) and threats to validity.
+    \item[Chapter~\ref{chap:conclusion} --- Conclusions \& Future Work.] Summary of findings and contributions; concrete directions toward general ego-motion, uncertainty-aware forward prediction, polarity/asymmetry modeling, and hardware-efficient implementations.
+\end{description}

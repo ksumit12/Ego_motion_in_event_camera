@@ -1,0 +1,168 @@
+\documentclass[twoside,onecolumn,12pt,a4paper,openany]{book}
+
+% ================= ANU Thesis Style =================
+\usepackage{anuthesis}
+\usepackage[a4paper,inner=3cm,outer=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\graphicspath{{figures/}{plots/}}
+
+% ================= Packages =================
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float} % only needed if you want [H]
+
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amscd}
+\usepackage{physics}
+\usepackage{rotating,longtable}
+\usepackage[toc,page]{appendix}
+\usepackage[parfill]{parskip}
+\usepackage{textcomp}
+\usepackage{changepage}
+\usepackage{setspace}
+\usepackage[colorlinks=true,
+    linkcolor=black,
+    urlcolor=black,
+    citecolor=black,
+    breaklinks=true]{hyperref}
+\usepackage{natbib}
+\bibpunct{(}{)}{;}{a}{}{,}
+\usepackage[flushleft]{threeparttable}
+\usepackage{threeparttablex}
+\usepackage{bbding}
+\usepackage{cleveref}
+\crefformat{footnote}{#2\footnotemark[#1]#3}
+\usepackage{sidecap}
+\renewcommand{\bottomfraction}{0.7}
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  captionpos=b,
+  tabsize=2,
+  showstringspaces=false
+}
+\usepackage{multicol,bm,booktabs,ifpdf,float,pdflscape,epigraph}
+
+% ================= Macros =================
+\def\chapterautorefname{Chapter}
+\def\sectionautorefname{Section}
+\def\subsectionautorefname{Section}
+\def\subsubsectionautorefname{Section}
+\def\figureautorefname{Figure}
+\def\tableautorefname{Table}
+\def\equationautorefname{equation}
+
+\newcommand{\eg}{{\em e.g.,}}
+\newcommand{\ie}{{\em i.e.,}}
+\newcommand{\etc}{{\em etc.}}
+\newcommand{\etal}{{\em et al.}}
+\newcommand{\cf}{{\em cf.}}
+
+\newcommand{\red}[1]{{\textcolor{red}{#1}}}
+\newcommand{\blue}[1]{{\textcolor{blue}{#1}}}
+\newcommand{\cyan}[1]{{\textcolor{cyan}{#1}}}
+\newcommand{\cut}[1]{{\red{\sout{#1}}}}
+\newcommand{\add}[1]{{\cyan{#1}}}
+\newcommand{\aref}[1]{\hyperref[#1]{Appendix~\ref{#1}}}
+
+% ================= Thesis Metadata =================
+\newcommand{\thesistitle}{Ego Motion Compensation in Event Camera Using Forward Prediction}
+\newcommand{\fullname}{Sumit Mahesh Khobragade}
+\newcommand{\shortname}{Sumit Khobragade}
+\newcommand{\thesissubjects}{mechatronics, robotics, event-based vision}
+\newcommand{\thesisdate}{September 2025}
+\newcommand{\fullthesisdate}{\today}
+\newcommand{\resubmissiondate}{\today}
+\newcommand{\thesisyear}{2025}
+
+\onehalfspacing
+
+\begin{document}
+
+% ================= Title Page =================
+\pagenumbering{roman}
+
+\begin{titlepage}
+	\begin{center}
+		\vspace*{0cm}
+		{\fontsize{20}{10}\selectfont \thesistitle}\\
+		\vspace{2.0cm}
+		{\bf \huge \fullname}\\
+		\vspace{2cm}
+		{\large A thesis submitted for the degree of}\\
+		\vspace{0.5cm}
+		{\it \large Master of Engineering}\\
+		\vspace{0.5cm}
+		{\large The Australian National University}\\
+		\vspace{0.5cm}
+		{\large College of Engineering, Computing and Cybernetics} \par
+		\vspace{2.0cm}
+		\includegraphics[width=0.4\textwidth]{anu-logo-colour.pdf}\\
+		\vspace{2.0cm}
+		{\large \thesisdate}\\
+		\vspace{1.75cm}
+		{\large \textcopyright\ \fullname, \thesisyear}\\
+		\vspace{0.5cm}
+		{\large All Rights Reserved}
+	\end{center}
+\end{titlepage}
+
+% ================= Front Matter =================
+\include{dedication}
+\cleardoublepage
+\normalsize
+
+\pagestyle{plain}
+\pagenumbering{roman}
+
+\include{disclaimer}
+\include{acknowledgements}
+\include{abstract}
+
+\setcounter{tocdepth}{1}
+\tableofcontents
+\phantomsection\addcontentsline{toc}{section}{List of Figures}
+\listoffigures
+\phantomsection\addcontentsline{toc}{section}{List of Tables}
+\listoftables
+\cleardoublepage
+
+% ================= Main Content =================
+\pagenumbering{arabic}
+\pagestyle{fancy}
+\fancyhead[LO]{\nouppercase{\rightmark}}
+\fancyhead[RE]{\nouppercase{\leftmark}}
+\fancyhead[LE]{\thepage}
+\fancyhead[RO]{\thepage}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\include{introduction/introduction}              % Chapter 1
+\include{background/background}                  % Chapter 2
+\include{problem_formulation/problem_formulation}% Chapter 3
+\include{motion_estimation/motion_estimation}    % Chapter 4
+\include{cancellation/cancellation}              % Chapter 5
+\include{metrics_analysis/metrics_analysis}      % Chapter 6
+\include{experimental_setup/experimental_setup}  % Chapter 7
+\include{results/results}                        % Chapter 8
+\include{discussion/discussion}                  % Chapter 9
+\include{conclusions/conclusions}                % Chapter 10
+
+
+% ================= Back Matter =================
+\cleardoublepage
+\phantomsection\addcontentsline{toc}{chapter}{Bibliography}
+\bibliographystyle{astroads}
+\bibliography{bibfile}
+
+\cleardoublepage
+\appendix
+
+\end{document}
