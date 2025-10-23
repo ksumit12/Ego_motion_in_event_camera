@@ -1,0 +1,1173 @@
+Vol 436|7 July 2005|doi:10.1038/nature03689
+
+ARTICLES
+Dynamic predictive coding by the retina
+Toshihiko Hosoya1†, Stephen A. Baccus1† & Markus Meister1
+Retinal ganglion cells convey the visual image from the eye to the brain. They generally encode local differences in space
+and changes in time rather than the raw image intensity. This can be seen as a strategy of predictive coding, adapted
+through evolution to the average image statistics of the natural environment. Yet animals encounter many environments
+with visual statistics different from the average scene. Here we show that when this happens, the retina adjusts its
+processing dynamically. The spatio-temporal receptive fields of retinal ganglion cells change after a few seconds in a
+new environment. The changes are adaptive, in that the new receptive field improves predictive coding under the new
+image statistics. We show that a network model with plastic synapses can account for the large variety of observed
+adaptations.
+Because the physical world is composed of discrete objects with
+surfaces of fairly uniform reflectance, image points that are close in
+space or in time tend to have very similar intensities1,2. This
+redundancy permits efficient encoding of the visual image3. The
+receptive field of many ganglion cell types shows spatial antagonism
+between centre and surround, and a biphasic temporal antagonism4–6. For any given image point, neural circuits in the retina predict
+the local intensity from values at nearby points in space and
+preceding points in time, and subtract this predicted value from
+the actual intensity3. Thus, ganglion cells signal not the raw visual
+image, but the departures from the predictable structure, under the
+assumption of spatial and temporal uniformity. This difference signal
+obtained by predictive coding has a much smaller dynamic range
+than the raw image, and is therefore more suited for transmission
+through neural fibres with a limited firing rate7–9.
+Although these receptive fields produce an efficient encoding of
+the average visual scene, animals spend considerable time in environments that differ strongly from the average image statistics. For
+example, sand or gravel surfaces contain finer spatial variation, such
+that images are correlated only on short scales; forest or tall grass
+introduce vertical structure, in which two image points are highly
+correlated if separated vertically but not horizontally. Self-motion of
+the observer generates optic flow on the retina, in which the intensity
+at one point of the image is highly correlated with that at a different
+point later in time. Under all these conditions, the rules for predictive
+coding are markedly different from the average. An efficient encoder
+of visual scenes would adapt its strategy accordingly10,11. If this
+happens in the retina, one should find that ganglion-cell receptive
+fields change dynamically depending on the correlation structure of
+the visual environment, in a way that enhances predictive coding and
+suppresses the dominant spatio-temporal structure in the stimulus.
+To test this proposal, we recorded spike trains from ganglion cells
+in the retinae of salamanders and rabbits. We manipulated the
+statistics of the visual scene and tested whether adaptation to a
+different environment altered the encoding of retinal signals. Furthermore, we asked whether these changes conformed to the notion
+of dynamic predictive coding.
+Adaptation to spatial image correlations
+Because centre–surround antagonism has been explained as an
+evolutionary adaptation to positive image correlations in space, we
+first tested whether negative correlations would alter these receptive
+
+fields. Environment A was designed as a flickering uniform field
+(Fig. 1a, b) with perfect positive correlation between all image points,
+whereas environment B was a flickering checkerboard with perfect
+negative correlation between two sets of neighbouring tiles. After
+adaptation to environment A or B, an uncorrelated stimulus P was
+used to probe the ganglion cells’ spatio-temporal receptive field.
+From the responses to P, we computed the sensitivity of each
+ganglion cell to stimuli of type A or type B (see Methods). For
+example, the salamander ganglion cell illustrated in Fig. 1c, d
+experienced a large change in its receptive field. After adaptation to
+environment B, the receptive field profile flattened, so the neuron was
+almost equally sensitive to the two checkerboard regions (Fig. 1d). As
+a result, the cell became less sensitive to stimuli drawn from the
+checkerboard environment B by a factor of about 0.57, while
+becoming more sensitive to stimuli from the uniform environment
+A by a factor of about 1.4. The reverse changes occurred during
+adaptation to environment A. Figure 1e plots these sensitivity
+changes caused by adaptation for a large sample of ganglion cells.
+For most cells, the sensitivity to the adapting stimulus decreased,
+whereas that to the novel stimulus increased. In some cases the
+sensitivity to both stimuli changed in the same direction, while still
+enhancing the novel stimulus. Overall, most data points lie considerably above the diagonal, which means that the cell increased its
+selectivity for the novel over the adapting stimulus.
+The degree to which the novel stimulus is enhanced is summarized
+by the adaptation index a (equation (2)); note that a ¼ 1 if a neuron
+does not change its sensitivity or changes it equally to stimuli from
+the two environments, but a . 1 if a neuron preferentially suppresses stimuli from the environment to which it is adapted. Across
+the population of ganglion cells, about half had an adaptation index
+significantly greater than 1 (Fig. 1f). These cells exhibited dynamic
+predictive coding. A differential suppression of the adapting stimulus
+by factors of a ¼ 2 or greater was not uncommon. Such adaptations
+were observed with checkerboard tile sizes of both 200 mm and
+400 mm (Fig. 1e), and earlier work suggests that they occur at least
+over a range of 140–800 mm (ref. 12).
+The gain change was not instantaneous after the switch to a new
+environment, but occurred gradually (Fig. 1g; see also ref. 12). The
+adaptation index adjusted with a time constant of several seconds,
+and there may be even slower components beyond the 10-s range that
+we measured. Because the immediate light response of a ganglion cell
+is at least tenfold faster than this (Fig. 1d), one can regard this slow
+
+1
+Department of Molecular and Cellular Biology, Harvard University, Cambridge, Massachusetts 02138, USA. †Present addresses: RIKEN Brain Science Institute, 2-1 Hirosawa,
+Wako-shi, Saitama 351-0198, Japan (T.H.); Department of Neurobiology, Stanford University, Stanford, California 94305, USA (S.A.B.).
+
+© 2005 Nature Publishing Group
+
+71
+
+ARTICLES
+
+NATURE|Vol 436|7 July 2005
+
+adaptation as a gradual modulation of the rules by which the
+ganglion cell combines information across space. In addition, it is
+possible that fast changes in sensitivity13 occur immediately after the
+switch and before our first probe measurement (see Supplementary
+Information).
+Adaptation to oriented stimuli
+The two environments in Fig. 1 differ substantially in their spatial
+frequency content. Retinal interneurons with small or large receptive
+fields will be driven differently by these two stimuli, leading to the
+potential that local neurons adapt their sensitivity at various sites in
+the circuit12. Thus, we tested whether more subtle spatial correlations
+are also effective in driving adaptation. In Fig. 2a the two environments consist of flickering bar gratings, oriented horizontally or
+vertically. These two stimuli were perfectly matched for mean
+intensity, contrast, and spatial and temporal power spectra; in fact,
+all image statistics were identical except for the difference in orientation. As in Fig. 1b, we exposed the retina to one or the other
+environment for several seconds, and then probed each ganglion
+cell’s sensitivity to both horizontal and vertical gratings. Adaptation
+to the oriented gratings produced changes in the receptive fields of
+many ganglion cells. Figure 2c illustrates a sample cell whose
+
+receptive field acquired a horizontally elongated shape after exposure
+to the vertical bars. Across many cells, this adaptation systematically
+had the effect expected from dynamic predictive coding, namely to
+enhance sensitivity for the novel orientation relative to the adapting
+orientation (Fig. 2d, e).
+Again, one might suspect that individual cells within the retina are
+driven differentially by the two stimuli and adapt their sensitivity
+accordingly. For example, an interneuron might be located at an edge
+between two bars of the grating such that it is strongly stimulated and
+fatigued by one orientation but not by the other. We tested this by
+randomly shifting the grating in each stimulus frame (see Supplementary Information and ref. 12). Under these conditions the
+spatial correlations in the stimulus are maintained, but no neuron
+consistently lies on a boundary. Still, many ganglion cells adapted
+their sensitivity in the direction of predictive coding (Fig. 2e).
+We performed the same experiments in rabbit retina. Again, about
+half of the ganglion cells engaged in dynamic predictive coding
+(Fig. 2f), with differential gain changes similar to those in the
+salamander. Thus, dynamic pattern adaptation is a shared aspect of
+retinal function between amphibians and mammals, animals that
+differ greatly in ecology and physiology but share the challenge of
+adjusting to a variable visual environment.
+
+Figure 1 | Adaptation to spatial image correlations. a, Stimulus display
+with square tiles of two intensities X and Y. b, Stimulus time course (see
+Methods). An adapting environment (A or B) was presented for 13.5 s,
+followed by a probe stimulus (P) for 1.5 s. c, Spatial receptive field of a
+sample ganglion cell, measured by reverse correlation to a random flicker
+stimulus38. Data in Figs 1, 2, 3 and 4 are from salamander retina, except Fig.
+2f, which is from rabbit retina. d, Temporal response filter of the ganglion
+cell to the two stimulus regions X and Y, after adaptation to environment A
+(left) or B (right). Here and in all other figures, error bars show the s.e.m. of
+values obtained from independent subsets of the data. e, Effects of
+adaptation to a switch from A to B on the sensitivity S A for the novel
+
+stimulus A (ordinate) and sensitivity S B for the adapting stimulus B
+(abscissa). Each data point represents one ganglion cell from experiments
+with tile size 400 mm (filled symbols) or 200 mm (open symbols). The dotted
+line is the identity. The axes are logarithmic. f, The adaptation index a
+(equation (2)) is the change in differential sensitivity resulting from
+adaptation, and corresponds to the distance of data points above the line in
+e. Histogram of the adaptation index for 35 cells. Of these, 43% had a . 1 at
+P , 0.05. g, The adaptation index for the ganglion cell shown in d, plotted
+against time in the uncorrelated probe environment, gradually relaxed to 1.
+An exponential fit to loga has a time constant t of 2.7 s. Over seven cells, the
+time constant was 3.2 ^ 0.8 s (mean ^ s.e.m.).
+
+72
+
+© 2005 Nature Publishing Group
+
+ARTICLES
+
+NATURE|Vol 436|7 July 2005
+
+Adaptation to temporal and spatio-temporal structure
+To test the retina’s strategy for predictive coding across time, we
+constructed two environments matched in intensity and contrast but
+with very different temporal correlations (Fig. 3a, see Supplementary
+Information). The intensity at any given time could be predicted by
+the intensity 60 ms earlier, but the predictive rule had opposite sign in
+the two environments. In one case (positive correlation) a bright
+frame was followed 60 ms later by a bright frame, and in the other
+case (negative correlation) by a dark frame. Adaptation to one
+environment or the other produced substantial changes in the
+temporal response function of many ganglion cells. For example,
+under positive correlations, the cell in Fig. 3b had a strongly biphasic
+
+Figure 2 | Adaptation to oriented stimuli. a, The environment was a
+flickering counterphase grating oriented horizontally (A) or vertically (B).
+The sequence of stimuli was as in Fig. 1b. b, Spatial receptive field of a sample
+ganglion cell. c, Sensitivity to the four regions coloured in b during the probe
+interval P, after adaptation to environment A (left) or B (right). For each
+region the peak amplitude of the response filter is plotted. d, Effects of
+adaptation on the sensitivity to stimuli A and B, displayed as in Fig. 1e.
+e, Histogram of the adaptation index a for 39 cells (grey); 41% of cells had
+a . 1 at P , 0.05. In some experiments (line, 40 cells) the borders of the
+bars were shifted randomly (see Supplementary Information). The means of
+the two histograms are not significantly different (P ¼ 0.59). f, Histogram of
+the adaptation index a for 34 ganglion cells from rabbit retina; 38% of cells
+had a . 1 at P , 0.05.
+
+response function, which suppressed its response to stimuli with
+positive correlation. After adaptation to the other environment, the
+response function became less biphasic. Many cells underwent
+similar changes, with the effect being again a suppression of the
+predictable stimulus features compared with novel features (Fig. 3c, d).
+Finally, we tested the retina’s ability for predictions across space
+and time. The stimulus was a flickering checkerboard (Fig. 1a) in
+which one set of tiles was modulated with a time-shifted version of
+the flicker in another set of tiles (Fig. 3e). Thus certain points on the
+retina could serve to predict the intensity at other points, but the
+order of the time shift, and thus the direction for prediction, was
+inverted in the two environments. This is a somewhat abstract
+stimulus, and the difference between the two environments is subtle
+and almost imperceptible to the human observer. Nevertheless, many
+retinal ganglion cells changed their response properties significantly
+from one environment to the other (Fig. 3f, g), leading to a different
+temporal summation of the intensity from the two stimulus regions.
+When this occurred, it again had the effect of suppressing predictable
+features over novel features (Fig. 3h), but the magnitude of the effect
+was somewhat weaker than for the other stimulus correlations we
+had tested.
+A pattern detector hypothesis
+How can the retina accomplish this diverse set of adaptations? A
+popular hypothesis for phenomena of pattern adaptation postulates
+that there are several parallel pathways within the circuit that
+combine to make the output signal14,15, in this case at the retinal
+ganglion cell (Fig. 4a). Within each pathway, the interneurons are
+pattern detectors, selective for a particular stimulus feature; for
+example, bars of a specific orientation. If that feature occurs frequently, those interneurons will be driven strongly, leading to their
+fatigue and diminished contribution to the output signal. As a result,
+the output becomes less sensitive to common stimulus features and
+more sensitive to rare features, for example bars of the orthogonal
+orientation.
+In the retina, the most plausible candidates for parallel interneurons pooled by ganglion cells are the bipolar cells. To explain how
+ganglion cells adapt to the orientation of a grating (Fig. 2), the
+bipolar cells would need to be significantly orientation-selective and
+there should be a range of bipolar cells with different selectivities
+feeding each ganglion cell. Using intracellular recordings, we
+measured the receptive fields of ten salamander bipolar cells directly
+(Fig. 4b) and found that they were round or only slightly elongated
+(Fig. 4c). Furthermore, the receptive-field centres were small compared with the bars of the gratings, and most of them fell entirely
+within a single bar. Considering all possible positions and orientations of the receptive field, this panel of bipolar cells was selective
+for one grating over the other by only a factor 1.06 ^ 0.07 (mean ^
+s.d.). Moreover, bipolar cells adapt their gain only slightly (about
+10%; refs 13, 16), even with a strong change in input amplitude.
+Altogether, this suggests that adaptation in oriented bipolar cells
+would contribute less than a 1% orientation selectivity to the
+ganglion cells, much smaller than the observed gain changes by
+factors of 1.5–2.5 (Fig. 2d, e).
+Significant orientation selectivity has been reported in some other
+retinal interneurons, notably amacrine cells17. However, these neurons are primarily inhibitory. In that case, the fatigue of an amacrine
+cell would lead to less suppression of the adapting stimulus in the
+ganglion cells, contrary to what we observed. Still, the role of patternselective interneurons in these adaptation phenomena deserves
+further attention.
+A network plasticity hypothesis
+An alternative explanation invokes plasticity of synapses rather
+than fatigue of interneurons. Consider a ganglion cell with a
+centre–surround receptive field (Fig. 5a, left), in which the
+surround inhibition is conveyed by amacrine cells18. Suppose that
+
+© 2005 Nature Publishing Group
+
+73
+
+ARTICLES
+
+NATURE|Vol 436|7 July 2005
+
+the inhibitory synapse from an amacrine cell to a ganglion cell is
+plastic in the following manner: when signals in the presynaptic and
+postsynaptic neurons are correlated, the synapse becomes stronger; if
+the two neurons are anticorrelated, the synapse becomes weaker.
+Note that this is an anti-hebbian rule for plasticity, to be distinguished from the hebbian form, in which correlated activity leads to
+increased excitation. If one applies a vertical grating stimulus (Fig. 5a,
+middle), the ganglion cell will be strongly correlated with the
+amacrine cells above and below, and anticorrelated with those to
+the left and right. Thus, the synapses will change so as to strengthen
+inhibition from above and below, and weaken inhibition from the
+sides. This gives the ganglion cell a receptive field with distinct
+horizontal orientation, and makes the neuron more sensitive to
+horizontal gratings and less sensitive to vertical ones.
+We formalized this idea as a simple feedforward network from a
+layer of bipolar cells to ganglion cells (Fig. 5b). In this model, a
+ganglion cell receives excitatory synapses of fixed strength from
+bipolar cells, and these determine the default shape of the receptive
+field in absence of stimulation. In addition, there are inhibitory
+connections—mediated by amacrine cells—that are plastic as determined by the above correlation-based rule (equations (3) and (4); see
+Methods). Each ganglion cell integrates its bipolar cell inputs linearly,
+weighted by synaptic strength. Exposure of the network to different
+stimulus environments induces change in the amacrine synapses,
+which in turn alters the receptive field of the ganglion cell. In the
+approximation of linear processing, one can solve the dynamics of
+this network analytically (see Methods).
+To illustrate the results, we consider a model ganglion cell connected to a 4 £ 4 patch of bipolar cells (Fig. 5c); only the centre 2 £ 2
+bipolar cells provide direct excitatory connections, but all bipolar
+cells make modifiable inhibitory connections through amacrine cells.
+When the network is exposed to the kinds of stimulus used in the
+experiments of Figs 1 and 2, the ganglion-cell receptive field changes
+in a way that suppresses the correlated components of the stimulus.
+For example, when driven by a spatially uniform stimulus, the
+receptive field strengthens the antagonistic surround; when driven
+by a horizontal grating, the receptive field develops a vertical
+orientation that suppresses sensitivity to horizontal bars; when
+driven by an uncorrelated stimulus, the receptive field becomes
+
+attenuated uniformly, which is akin to contrast adaptation observed
+previously12,13,19. More generally, one can show that such an adaptive
+network performs a multidimensional scaling in the space of stimuli:
+the sensitivity for any given axis in stimulus space is scaled down
+according to the strength of stimulation along that axis (see Supplementary Information). Figure 5d illustrates how this stimulus
+selectivity changes over time in the course of adaptation. The model
+makes the intriguing prediction that adaptation to an increase in
+stimulus strength occurs more rapidly than to a decrease, a feature
+that is indeed consistently observed in animals from flies to
+humans12,20,21.
+Several features distinguish this adaptive network hypothesis
+(Fig. 5a) from that of adaptive pattern detectors (Fig. 4a). First,
+adaptation happens at each synapse, not in each neuron. Because
+there are far more synapses than neurons, this allows a rich set of
+adaptations. By contrast, the pattern detector model requires a
+specific interneuron selective for each of the various types of
+correlation to which the retina can adapt (Figs 1–3). Second,
+amacrine cells come in a great variety of types, with differing
+receptive field sizes, integration times, and latencies22,23. This
+means that many different kinds of stimulus correlation across
+space and time can be sensed and exploited for predictive coding.
+Last, this hypothesis predicts that inhibition is essential for the
+adaptation process, because it implements the subtraction of predictive signals. We tested this by repeating experiments on orientation-adaptation while blocking the inhibitory neurotransmitters
+GABA (g-aminobutyric acid) and glycine23. These conditions profoundly influence retinal signalling: the firing rate of ganglion cells
+increases and their stimulus selectivity changes as the antagonistic
+surround weakens18,24. Still, one can ask whether these stimulus
+selectivities are altered by adaptation, and the adaptation index a
+(equation (2)) is independent of any absolute changes in sensitivity.
+We found that, without inhibition, the ganglion cells indeed lost the
+ability for dynamic adjustment of stimulus selectivity (Supplementary Fig. S3).
+
+Figure 3 | Adaptation to temporal and spatio-temporal correlations. a, The
+environment was a flickering uniform field whose intensity values 60 ms
+apart (see markers) had a strong positive (A) or negative (B) correlation.
+b, Filter waveform of a sample ganglion cell, after adaptation to
+environment A (left) or B (right). c, Effects of adaptation on the sensitivity
+to stimuli A and B, displayed as in Fig. 1e. d, Histogram of the adaptation
+index a for 34 cells; 44% had a . 1 at P , 0.05. e, Environments with
+
+different spatio-temporal correlations. Stimulus display as in Fig. 1a, but
+with Y the same as X delayed by 60 ms (A) or vice versa (B). f, Response
+kernel of a sample ganglion cell to X and Y, after adaptation to A (left) or B
+(right). g, Effects of adaptation on the sensitivity to stimuli A and B,
+displayed as in Fig. 1e. h, Histogram of the adaptation index a for 34 cells;
+41% had a . 1 at P , 0.05.
+
+74
+
+Discussion
+Although the notion of dynamic predictive coding captures the
+essence of these effects, we also noted several departures from the
+
+© 2005 Nature Publishing Group
+
+ARTICLES
+
+NATURE|Vol 436|7 July 2005
+
+theoretically ideal encoder. First, only about half of the observed
+ganglion cells adapted to each stimulus, and a breakdown by cell type
+in the salamander retina revealed some systematic differences: in
+particular, ‘fast OFF’ cells25 adapted to all the conditions tested,
+whereas ‘slow OFF’ cells adapted only to spatial correlations in the
+stimulus (Figs 1 and 2). Second, the absolute magnitude of adaptation was lower than for the ideal efficient encoder. In theory, a
+perfectly predictable stimulus component could be completely suppressed, whereas the largest differential gain changes we observed
+were a factor of 3. Last, some stimulus correlations induced greater
+adaptation than others (compare Figs 3d with Fig. 3h). All these
+limitations may provide clues to the circuit mechanisms that
+underlie the effects. For example, under the adaptive network
+hypothesis (Fig. 5) the range of conditions to which a given ganglion
+cell type can adapt is limited by which classes of amacrine cells it
+contacts in the inner plexiform layer. The degree of adaptation is
+limited by how sensitive an amacrine cell synapse is to the correlation
+signal, for example the parameter b in equation (4). Further
+exploration of the range of adaptive behaviours will certainly be
+instructive.
+With regard to the mechanisms for these adaptive effects, we
+considered two alternative explanations that place the changes either
+at individual interneurons (Fig. 4) or at individual synapses (Fig. 5).
+The former scheme invokes a pattern-selective interneuron for each
+type of stimulus pattern to be sensed, and fatigue of those interneurons in the course of adaptation. This interpretation is widespread in the literature, to the point at which the observation of
+pattern adaptation is accepted as evidence for the existence of pattern
+detector neurons14,15. For example, in human vision, adaptation to an
+oriented grating raises the contrast threshold for that same stimulus
+by a factor of 2–4 (refs 26, 27). This is commonly thought to occur in
+the visual cortex14,27–29, because it is there that one first encounters
+
+Figure 4 | Pattern detector model for adaptation. a, Parallel patternselective pathways converge at the ganglion cell and adjust their gain
+independently. Each pathway contains orientation-selective interneurons
+(left) whose response becomes fatigued under prolonged exposure to the
+preferred orientation (middle and right). b, Receptive field profiles of two
+salamander bipolar cells (top, ON type; bottom, OFF type). Each profile was
+fitted with a gaussian shape, and the line shows the contour of the gaussian at
+1 s.d. from the centre. c, Receptive field shape of 10 salamander bipolar cells
+(open symbols, ON type; closed symbols, OFF type), given by the long and
+short diameters of the 1 s.d. ellipse from the gaussian fit.
+
+overtly orientation-selective cells. However, given that many retinal
+ganglion cells adapt to oriented gratings with a gain change of 1.5–2.5
+(Fig. 2d, e), it is possible that half of the psychophysical after-effect
+already arises in the retina. Furthermore, given the extensive knowledge of retinal circuits and the lack of orientation selectivity in retinal
+bipolar cells (Fig. 4b), this is unlikely to occur through fatigue of
+pattern-selective interneurons. Thus, one may need to reconsider
+both the site and the mechanism of various perceptual adaptation
+effects in human vision.
+The alternative hypothesis of a modifiable network (Fig. 5) is
+intriguing, because a single assumption for plasticity at amacrine cell
+synapses can explain a host of seemingly different adaptations
+
+Figure 5 | Network plasticity model for adaptation. a, Inhibitory amacrine
+cells connect to a ganglion cell through modifiable synapses (top), providing
+the receptive field’s antagonistic surround (bottom). Under patterned
+stimulation (middle and right) each synapse changes strength depending on
+the correlation between presynaptic and postsynaptic activity. This shapes
+the receptive field in a way that reduces sensitivity to the predominant
+stimulus pattern. b, Schematic circuit of the inner retina. Bipolar cells (B),
+carrying input signals x j, connect to ganglion cells (G) with output signals y i,
+through fixed excitatory synapses b ij and through modifiable inhibitory
+synapses a ij of amacrine cells. c, Adaptive change in the receptive field of a
+model ganglion cell connected to a 4 £ 4 array of bipolar cells. Top, sequence
+of stimulus environments driving the adaptation: steady grey screen,
+independently flickering pixels, flickering uniform field (Fig. 1b), flickering
+checkerboard (Fig. 1b), flickering vertical bars (Fig. 2a), flickering horizontal
+bars (Fig. 2a), steady grey screen. the Square outline marks the 4 £ 4 pixels in
+the ganglion-cell receptive field; each pixel drives one bipolar cell. Bottom,
+receptive field profile of the ganglion cell after adaptation to each
+environment. Colours reflect the net synaptic connectivity to each pixel,
+a ij þ b ij; red is positive, blue is negative. The fixed connections b ij are
+limited to the central four bipolar cells. Pattern adaptation induces
+contributions from the surrounding pixels in a manner that suppresses the
+adapting stimulus. d, Time course of adaptation. Each environment is
+applied for a period of five adaptation time constants t. Curves show the
+sensitivity of the ganglion cell (see equation (12) in the Supplementary
+Information) to four different types of stimulus: uniform (unif.),
+checkerboard (chec.), vertical (vert.) and horizontal (hori.).
+
+© 2005 Nature Publishing Group
+
+75
+
+ARTICLES
+
+NATURE|Vol 436|7 July 2005
+
+(Fig. 5c, d). The qualitative function of this network has a simple
+interpretation: one can view each amacrine cell as ‘trying to predict’
+the response of the ganglion cell from stimulus information in its
+own spatio-temporal receptive field. Those neurons that are successful get ‘rewarded’ with a stronger inhibitory synapse. As a result, the
+successful predictions are subtracted from the ganglion cell input,
+and by slowly adjusting its synapses the network literally performs a
+dynamical version of predictive coding. A precedent for such an
+adaptation mechanism is found in the electrosensory system of
+weakly electric fish, in which the prediction for sensory input is
+performed using efferent motor signals30. Again, the predictions are
+adjusted dynamically, in a recurrent network that has been shown to
+use activity-dependent synapses with anti-hebbian plasticity. Plausibility notwithstanding, the central ingredient of this hypothesis is the
+modifiable amacrine cell synapse and its dependence on presynaptic/
+postsynaptic correlation. This kind of use-dependent plasticity has
+been reported for inhibitory synapses in the cerebellum31 and elsewhere32, but it remains to be explored in the retina. Finally, the two
+mechanisms considered here—changes in neuronal sensitivity versus
+changes in connectivity—are not exclusive, and may each contribute
+to adaptation.
+Faced with the remarkable plasticity of retinal processing—light
+adaptation33, contrast adaptation34 and pattern adaptation—the
+question arises how the brain copes with the continually changing
+rules of encoding in the sensory periphery. For the fly eye, it has been
+suggested that the state of adaptation is communicated downstream
+through certain slow statistics of visual spike trains21. However, there
+is no necessity to inform the brain of adaptive changes in coding. The
+goal of the visual system is not to construct internally a veridical
+reproduction of the intensity pattern on the retina. Instead, the
+system must reduce the onslaught of raw visual information and
+extract the few bits of information that are relevant to behaviour.
+This entails the discarding of signals that are less useful. The many
+known visual illusions of brightness and contrast are evidence of such
+information loss, as are the illusory after-effects of pattern adaptation. Thus, pattern adaptation is not merely a scheme for efficient
+recoding but rather serves to strip from the visual stream predictable
+and therefore less newsworthy signals.
+METHODS
+Recording. The dark-adapted retina of a larval tiger salamander or New Zealand
+white rabbit was isolated under an infrared microscope into oxygenated Ringer’s
+medium (salamander, 22 8C) or Ames’ solution (rabbit, 37 8C). A piece of retina,
+2–4 mm (salamander) or about 5 mm (rabbit) on a side, was placed with the
+ganglion cell side downwards onto an array of 61 electrodes to record action
+potentials from ganglion cells, as described previously12,35. For intracellular
+recordings from salamander bipolar cells13, sharp microelectrodes were filled
+with 2 M potassium acetate and 1% Alexa 488, having a final impedance of 150–
+250 MQ. After recording, cells were filled ionophoretically (21 to 22 nA pulses,
+about 10–15 min), and imaged with a 40 £ water-immersion objective.
+Stimulation. Visual stimuli were generated on a computer monitor and
+projected through an objective lens onto a 3.25-mm diameter aperture of the
+retina. The light was white, with a mean intensity of M < 4 mWm22 at the
+retina, in the regime of photopic vision. All experiments employed random
+flicker stimuli, whose single-point statistics were identical for every location on
+the retina. Over time, each point experienced intensity values distributed as a
+gaussian with mean M and standard deviation C ¼ 0.35 M. The intensity was
+updated with another random value at periodic intervals of 15 or 30 ms. The
+various stimulus environments differed in their two-point statistics, namely the
+correlation between the intensity values at different points in space or time.
+The goal was to probe retinal response properties after adaptation to two
+different stimulus environments A and B. The probe environment P was always
+neutral, in that it contained a superposition of stimuli of types A and B. We
+interleaved segments of the two adapting stimuli and the probe stimulus in the
+order
+A1 P1 A2 P2 … A10 P10 B1 P11 B2 P12 … B10 P20 A11 P21 A12 P22 … A20 P30 …
+where Ai, Bi and Pi represent stimulus segments with different pseudo-random
+flicker sequences drawn from environments A, B and P. In a typical experiment,
+500 different segments of P were collected for each adaptation state. The probe
+76
+
+segments were kept short (1.5 s) relative to the intervening adapting segments
+(13.5 s). For the experiment of Fig. 1g, the probe lasted 10 s and the adaptation
+50 s. Over several hours of experimenting, the ganglion cell firing rates remained
+fairly stable, with a typical variation of 20%. Through the rapid interleaving of
+different stimuli, the analysis was robust to any slow drifts in response properties.
+The Supplementary Information gives details on the construction of the
+stimuli.
+Analysis. The visual responses of retinal ganglion cells can be approximated well
+by a linear–nonlinear (LN) model36. This is a simple mathematical functional
+that turns a visual stimulus into the neuron’s firing rate. The stimulus is passed
+through a spatio-temporal linear filter, and the resulting variable is transformed
+by a nonlinear function that can account for firing threshold and saturation. For
+example (Supplementary Fig. S2), if the stimulus contains two spatial regions
+with intensity time courses x(t) and y(t), the cell’s firing rate r(t) is
+ð
+ð
+0
+0
+0
+0
+0
+0
+ð1Þ
+rðtÞ ¼ NðgðtÞÞ ¼ Nð xðt ÞLX ðt 2 t Þdt þ yðt ÞLY ðt 2 t Þdt Þ
+where L X(t) and L Y(t) are the time-dependent impulse responses of the filters
+applied to stimulus variables x and y respectively, and N(g) is the nonlinearity.
+The brief probe segments P were used to derive the best-fit LN model for each
+of the adapting conditions A and B. From the measured response to gaussian
+random flicker, we estimated both the filter and the nonlinearity by standard
+reverse-correlation algorithms36. The waveforms of these filters for representative neurons are plotted in Figs 1d, 3b and 3f.
+To assess the degree of predictive coding, we evaluated the sensitivities of the
+neuron’s spatio-temporal filter to stimuli drawn from environments A and B,
+denoted S A and S B, respectively (see Supplementary Information). The filter
+computed under adapting condition A yielded sensitivities S A(A) and S B(A),
+and the filter under adapting condition B yielded S A(B) and S B(B). In the course
+of adaptation to B, the sensitivity S A changes by a factor S A(B)/S A(A), and S B
+changes by a factor S B(B)/S B(A). These factors are plotted in Figs 1e, 2d, 3c and
+3g. The ratio of these two factors is the adaptation index
+a¼
+
+SA ðBÞ=SA ðAÞ
+SB ðBÞ=SB ðAÞ
+
+ð2Þ
+
+which is plotted in Figs 1f, 1g, 2e, 2f, 3d and 3h. It measures the extent to which
+adaptation selectively suppresses the adapting stimulus. The hypothesis of
+dynamic predictive coding predicts that a . 1. For each cell, the experimental
+uncertainty in a was determined using independent subsets of data, and the
+P value for a . 1 was computed by means of a one-tailed t-test.
+Pharmacology. After the addition of 10 mM strychnine and 100 mM picrotoxin
+to the bathing solution, ganglion cell firing rates doubled on average. The light
+responses did not saturate, as judged by the form of the nonlinearity in the LN
+fits. After return to control solution, we did not achieve full reversal of the drug
+effects within the available time; washout of these drugs from a whole-mount
+preparation is exceedingly slow37.
+Bipolar cell receptive fields. The spatio-temporal receptive field of each bipolar
+cell was measured by reverse-correlating the membrane potential to a flickering
+checkerboard stimulus35, and then approximated as the product of a spatial
+profile and a temporal filter38 The spatial profile was fitted by a two-dimensional
+gaussian bell, characterized by the long and short axis of the ellipse at 1 s.d. (Fig.
+4b). To estimate how selective such a cell would be for oriented gratings, the
+gaussian was convolved with two grating stimuli: one whose bars were aligned
+with the long axis of the ellipse, yielding the maximal sensitivity, and the other
+aligned with the short axis, yielding the lowest sensitivity. The ratio of the two
+sensitivities was taken as the cell’s orientation selectivity, quoted in the text.
+Anti-hebbian retina model. Consider a linear feedforward network as illustrated in Fig. 5b. The input layer represents bipolar cells, the output layer
+ganglion cells. Each ganglion cell receives two kinds of synaptic input from
+bipolar cells: excitatory synapses with fixed strength b ij, and inhibitory
+synapses—through intermediate amacrine cells—with a variable strength a ij.
+The fixed excitatory synapses set the ‘default’ receptive field of a ganglion cell; the
+inhibitory synapses can weaken or strengthen depending on the stimulus history,
+and modify the receptive field accordingly.
+We suppose that the network operates linearly. For simplicity, we also ignore
+the dynamics of the light response, and treat retinal processing as instantaneous.
+If x j is the activity of bipolar cell j, and y i the activity of ganglion cell i, then
+X
+ðb þ aij Þxj
+ð3Þ
+yi ¼
+j ij
+The network undergoes adaptation through slow modulation of the synapses a ij,
+following the rule
+
+© 2005 Nature Publishing Group
+
+daij =dt ¼ ð2aij 2 bkyi xj lÞ=t t; b . 0
+
+ð4Þ
+
+ARTICLES
+
+NATURE|Vol 436|7 July 2005
+
+Here 2a ij/t is a decay term, to ensure that the network does not remember
+stimulus history forever. The term 2bky ix jl/t is dependent on recent activity,
+specifically the correlation between bipolar cell j and ganglion cell i. Adaptation
+is driven by the statistics of the inputs x j to the network. Thus, a change in the
+stimulus ensemble leads to a change in the ganglion cell’s synapses and thus its
+receptive field. For the solution of these dynamic equations, and their application in Fig. 5c, d, see Supplementary Information.
+Received 5 September 2004; accepted 27 April 2005.
+Dong, D. W. & Atick, J. J. Statistics of natural time-varying images. Network 6,
+345–-358 (1995).
+2. Field, D. J. Relations between the statistics of natural images and the response
+properties of cortical cells. J. Opt. Soc. Am. A 4, 2379–-2394 (1987).
+3. Srinivasan, M. V., Laughlin, S. B. & Dubs, A. Predictive coding: a fresh view of
+inhibition in the retina. Proc. R. Soc. Lond. B 216, 427–-459 (1982).
+4. Kuffler, S. W. Discharge patterns and functional organization of mammalian
+retina. J. Neurophysiol. 16, 37–-68 (1953).
+5. Barlow, H. B. Summation and inhibition in the frog’s retina. J. Physiol. (Lond.)
+119, 69–-88 (1953).
+6. Meister, M. & Berry, M. J. II The neural code of the retina. Neuron 22, 435–-450
+(1999).
+7. Barlow, H. B. in Sensory Communication (ed. Rosenblith, W. A.) 217–-234 (MIT
+Press, Cambridge, Massachusetts, 1961).
+8. van Hateren, J. H. Real and optimal neural images in early vision. Nature 360,
+68–-70 (1992).
+9. Atick, J. J. & Redlich, A. N. What does the retina know about natural scenes?
+Neural Comput. 4, 196–-210 (1992).
+10. Barlow, H. & Földiák, P. in The Computing Neuron (eds Durbin, R., Miall, C. &
+Mitchison, G.) 54–-72 (Addison-Wesley, Wokingham, 1989).
+11. Barlow, H. B. in Vision: Coding and Efficiency (ed. Blakemore, C.) 363–-375
+(Cambridge Univ. Press, Cambridge, 1990).
+12. Smirnakis, S. M., Berry, M. J., Warland, D. K., Bialek, W. & Meister, M.
+Adaptation of retinal processing to image contrast and spatial scale. Nature
+386, 69–-73 (1997).
+13. Baccus, S. A. & Meister, M. Fast and slow contrast adaptation in retinal
+circuitry. Neuron 36, 909–-919 (2002).
+14. Graham, N. V. S. Visual Pattern Analyzers (Oxford Univ. Press, New York,
+1989).
+15. Mollon, J. D. in The Perceptual World (eds Von Fiendt, K. & Monstgaard, I. K.)
+71–-97 (Academic, London, 1977).
+16. Rieke, F. Temporal contrast adaptation in salamander bipolar cells. J. Neurosci.
+21, 9445–-9454 (2001).
+17. Bloomfield, S. A. Orientation-sensitive amacrine and ganglion cells in the rabbit
+retina. J. Neurophysiol. 71, 1672–-1691 (1994).
+18. Cook, P. B. & McReynolds, J. S. Lateral inhibition in the inner retina is important
+for spatial tuning of ganglion cells. Nature Neurosci. 1, 714–-719 (1998).
+19. Chander, D. & Chichilnisky, E. J. Adaptation to temporal contrast in primate
+and salamander retina. J. Neurosci. 21, 9904–-9916 (2001).
+20. Snippe, H. P., Poot, L. & van Hateren, J. H. Asymmetric dynamics of adaptation
+after onset and offset of flicker. J. Vis. 4, 1–-12 (2004).
+21. Fairhall, A. L., Lewen, G. D., Bialek, W. & van Steveninck, R. R. D. Efficiency and
+ambiguity in an adaptive neural code. Nature 412, 787–-792 (2001).
+22. Masland, R. H. The fundamental plan of the retina. Nature Neurosci. 4,
+877–-886 (2001).
+1.
+
+23. Yang, C. Y., Lukasiewicz, P., Maguire, G., Werblin, F. S. & Yazulla, S. Amacrine
+cells in the tiger salamander retina: morphology, physiology, and
+neurotransmitter identification. J. Comp. Neurol. 312, 19–-32 (1991).
+24. Cook, P. B., Lukasiewicz, P. D. & McReynolds, J. S. Action potentials are
+required for the lateral transmission of glycinergic transient inhibition in the
+amphibian retina. J. Neurosci. 18, 2301–-2308 (1998).
+25. Warland, D. K., Reinagel, P. & Meister, M. Decoding visual information from a
+population of retinal ganglion cells. J. Neurophysiol. 78, 2336–-2350 (1997).
+26. De Valois, K. K. Spatial frequency adaptation can enhance contrast sensitivity.
+Vision Res. 17, 1057–-1065 (1977).
+27. Blakemore, C. & Campbell, F. W. On the existence of neurones in the human
+visual system selectively sensitive to the orientation and size of retinal images.
+J. Physiol. (Lond.) 203, 237–-260 (1969).
+28. Movshon, J. A. & Lennie, P. Pattern-selective adaptation in visual cortical
+neurones. Nature 278, 850–-852 (1979).
+29. Snowden, R. J. & Hammett, S. T. Subtractive and divisive adaptation in the
+human visual system. Nature 355, 248–-250 (1992).
+30. Bell, C. C. Memory-based expectations in electrosensory systems. Curr. Opin.
+Neurobiol. 11, 481–-487 (2001).
+31. Aizenman, C. D., Huang, E. J., Manis, P. B. & Linden, D. J. Use-dependent
+changes in synaptic strength at the Purkinje cell to deep nuclear synapse. Prog.
+Brain Res. 124, 257–-273 (2000).
+32. Gaiarsa, J. L., Caillard, O. & Ben-Ari, Y. Long-term plasticity at GABAergic and
+glycinergic synapses: mechanisms and functional significance. Trends Neurosci.
+25, 564–-570 (2002).
+33. Shapley, R. & Enroth-Cugell, C. in Progress in Retinal Research (eds Osborne, N.
+& Chader, G.) Vol. 3 263–-346 (Pergamon, London, 1984).
+34. Baccus, S. A. & Meister, M. Retina versus cortex; contrast adaptation in parallel
+visual pathways. Neuron 42, 5–-7 (2004).
+35. Meister, M., Pine, J. & Baylor, D. A. Multi-neuronal signals from the retina:
+acquisition and analysis. J. Neurosci. Methods 51, 95–-106 (1994).
+36. Chichilnisky, E. J. A simple white noise analysis of neuronal light responses.
+Network 12, 199–-213 (2001).
+37. Cook, P. B., Lukasiewicz, P. D. & McReynolds, J. S. GABAC receptors control
+adaptive changes in a glycinergic inhibitory pathway in salamander retina.
+J. Neurosci. 20, 806–-812 (2000).
+38. Schnitzer, M. J. & Meister, M. Multineuronal firing patterns in the signal from
+eye to brain. Neuron 37, 499–-511 (2003).
+
+Supplementary Information is linked to the online version of the paper at
+www.nature.com/nature.
+Acknowledgements We thank members of the Meister laboratory,
+H. Sompolinsky and D. Fisher for advice. This work was supported by grants
+from the National Eye Institute (M.M. and S.A.B.) and the Human Frontier
+Science Program (T.H.).
+Author Contributions T.H. and M.M. planned the study, T.H. and S.A.B.
+performed the experiments, and T.H. and M.M. completed the analysis and
+wrote the manuscript.
+Author Information Reprints and permissions information is available at
+npg.nature.com/reprintsandpermissions. The authors declare no competing
+financial interests. Correspondence and requests for materials should be
+addressed to M.M. (meister@fas.harvard.edu).
+
+© 2005 Nature Publishing Group
+
+77
+
+Supplementary Methods
+Stimulation
+The following reports in detail the stimuli used in the various experiments. We
+define the stimulus variable s( t ) as the intensity I (t ) normalized for mean and
+contrast:
+s( t ) = ( I ( t ) ! M ) C .
+
+(5)
+
+Also, we define the random variable n15 (t ) as a staircase waveform updated every 15
+ms by independent draws from a normal distribution; similarly n30 ( t ) is updated every
+30 ms.
+Spatial correlation (Fig 1a): The field was divided into two sets of alternating square
+tiles like a checkerboard (Fig S1a). One set was modulated with stimulus variable x ( t ) ,
+the other with y (t ) . Environment A (positive correlation): y (t ) = x ( t ) = n30 (t ) .
+Environment B (negative correlation): y (t ) = ! x (t ) = n30 ( t ) . P (probe): y (t ) and x ( t ) are
+independent versions of n30 ( t ) . The tile size was chosen as 400 µm or 200 µm, similar to
+the diameter of a typical receptive field center for salamander ganglion cells.
+Spatial orientation (Figs 2a): The field was divided into square tiles belonging to 4
+symmetrical sets (Fig S1b) modulated with stimulus variables x ( t ) , y (t ) ,u (t ), v (t ) . A
+(horizontal bars): x ( t ) = y ( t ) = !u (t ) = ! v (t ) = n30 ( t ) . B (vertical bars):
+x ( t ) = !y (t ) = u (t ) = ! v (t ) = n30 ( t ) . P (probe): x ( t ) , y (t ) ,u (t ), v (t ) all modulated
+
+independently as n30 ( t ) . The tile size was chosen as 200 µm. For the "shifting border"
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+1
+
+condition (Fig 2e), the tiling was shifted randomly on a fine square grid (40 or 67 µm) at
+every stimulus update (30 ms).
+Temporal correlation (Fig 3a): A uniform field was modulated with stimulus
+variable x ( t ) . A (positive correlations across 60 ms):
+2
+
+x ( t ) = 0.97 ! x ( t " 60 ms ) + 1 " 0.97 ! n15 (t ) . B (negative correlations across 60 ms):
+2
+
+x ( t ) = !0.97 " x (t ! 60 ms) + 1! 0.97 " n15 (t ) . P (uncorrelated probe): x ( t ) = n15 (t ) .
+Space-time delay (Fig 3e): The field was again divided like a checkerboard with 200
+µm tiles (Fig S1a), and the two sets of tiles modulated with stimulus variables x ( t ) and
+y (t ) . A (X advanced): y (t ) = x ( t ! 60 ms ) = n30 ( t ! 60 ms) . B (Y advanced):
+x ( t ) = y ( t ! 60 ms ) = n30 ( t ! 60 ms) . P (probe): x ( t ) , y (t ) drawn independently as n30 ( t ) .
+
+Analysis
+To characterize each neuron’s light response, the brief probe segments P were used
+to derive the best-fit LN model 37 for the firing rate. For example (Figs 1, S2), if the
+stimulus contains two spatial regions modulated with x ( t ) and y (t ) , then the LN fit to
+the firing rate is
+(1)
+
+(
+
+)
+
+r ( t ) = N ( g ( t )) = N # x ( t ! ) LX (t " t ! ) dt ! + # y ( t ! ) LY ( t " t ! ) dt ! .
+
+The linear filter was obtained from the first-order kernel of the spike train with respect
+to the stimulus variables.
+
+L X (! ) =
+
+(6)
+
+1
+
+T
+
+# x (t " ! ) r ( t ) dt
+
+T 0
+T
+
+1
+LY (! ) = # y (t " ! ) r ( t ) dt
+T 0
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+2
+
+where T is the duration of the spike train used for analysis. Then the nonlinearity N ( g)
+was found by computing
+
+g (t ) = # x (t ! ) LX (t " t ! ) dt ! + # y ( t ! ) LY ( t " t ! ) dt !
+
+(7)
+
+and plotting the measured firing rate r ( t ) against g (t ) .
+In computing the filter, only the first 0.8 s of each P segment were used, to limit the
+degree of adaptation to the probe stimulus itself. Moreover, the very beginning of each
+P segment, amounting to the duration of the filter (typically 0.18 s), was ignored to
+avoid contamination of the response from the preceding adapting stimulus. Note that
+this also precluded the detection of any fast changes in the neuron’s sensitivity that may
+occur instantaneously on switching from environments A or B to P. Such very rapid
+changes are observed, for example, when the switch involves a simple change in
+stimulus contrast 13.
+Two models were computed for the adapting conditions A and B. For any given cell,
+the shape of the nonlinearity was found to be essentially the same under both A and B,
+and thus we used the same function N ( g) in fitting the model to both conditions. The
+resulting LN model produced a good fit to the recorded spike trains, with an RMS
+deviation between model and neuron 37 of typically 0.15 ± 0.01 spikes per 15 ms timebin (mean ± SEM, 15 cells, experiment of Fig 1).
+To assess the degree of predictive coding, we evaluated how sensitive the neuron is
+to stimuli drawn from environments A and B. Specifically, we measured the root-meansquare amplitude of the output g (t ) from the linear filter (Fig S2), if it were stimulated
+with ensemble A or B. For example, consider the spatial correlation experiment (Fig 1,
+Eqn (1)). In environment A, y (t ) = x ( t ) = n30 (t ) , and therefore
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+3
+
+g (t ) = # x (t ! ) LX (t " t ! ) dt ! + # y ( t ! ) LY ( t " t ! ) dt !
+
+(8)
+
+= # n30 (t ! ) $% LX (t " t !) + LY ( t " t !) &' dt !
+
+Because the values of n30 ( t ! ) are drawn independently from a normal distribution, the
+variance of g (t ) , averaged over all stimuli in A, is to within some constant factor
+(9)
+
+g
+
+2
+
+2
+A
+
+! ' #$ LX ( t " ) + LY ( t " )%& dt " .
+
+In environment B, y (t ) = ! x (t ) = n30 ( t ) , and therefore
+(10)
+
+g (t ) = ' n30 (t ! ) #$ LX (t " t !) " LY ( t " t !) %& dt !
+
+and
+(11)
+
+g
+
+2
+
+2
+B
+
+! ( $% LX ( t " ) # LY ( t " )&' dt " .
+
+The sensitivities SA and SB to stimuli of type A or B are then defined as
+(12)
+
+SA =
+
+g
+
+2
+A
+
+,
+
+SB =
+
+g
+
+2
+B
+
+.
+
+To test the effects of adaptation, we measured the filters after the retina was adapted
+to A – yielding SA ( A ) and SB ( A ) – and then again after it was adapted to B – yielding
+SA ( B ) and SB ( B ) . In the course of adaptation to B, the sensitivity SA changes by a factor
+SA ( B ) SA ( A ) , and SB changes by a factor SB ( B ) SB ( A ) . The ratio of these two factors is
+
+the adaptation index
+(2)
+
+!=
+
+SA ( B ) SA ( A )
+SB ( B ) SB ( A )
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+.
+
+4
+
+For the other adaptation experiments, the analysis proceeded in precisely the same
+fashion. In each case, the probe stimulus spans a broad space that encompasses both
+stimuli of type A and B. Thus the response filters derived from P allow a measurement
+of the neuron's sensitivity to stimuli A and B, and ultimately the adaptation index.
+
+Anti-Hebbian retina model
+In the approximation discussed in the text, the retina’s instantaneous light response
+to bipolar cell signals is given by Eqn (3), which becomes in matrix notation
+y = (B + A ) ! x = R ! x
+
+(13)
+where
+(14)
+
+B = !" bij #$ , A = !" aij #$ , R = B + A = Response matrix .
+
+The bipolar cell synapses bij are constant, but the amacrine cell synapses aij evolve as
+given by Eqn (4), or in matrix notation,
+(15)
+
+d
+1
+T
+A = "A " # $ y $ x
+dt
+!
+
+(
+
+) = !1 (" A " # $ (A + B) x $ x ) = " !1 (A + # ( A + B ) $ C) ,
+T
+
+where
+(16)
+
+C = x ! xT = stimulus covariance matrix .
+
+Thus the response matrix R of the network changes according to
+(17)
+
+d
+1
+R = ! (( R ! B ) + # R $C) .
+dt
+"
+
+After adaptation is complete, dR dt = 0 , and therefore
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+5
+
+(18)
+
+R (t = ! ) = B" (1 + # C)
+
+$1
+
+To interpret this response matrix, it is best to work in the eigenbasis of the covariance
+matrix. C is symmetric real and therefore has n orthonormal eigenvectors, where n is
+the number of bipolar cells. Let u j denote the jth eigenvector of C with eigenvalue c j . In
+the basis of the u j , C is diagonal
+
+(19)
+
+! c1 0 0 $
+C =# 0 O 0&
+#
+&
+" 0 0 cn %
+
+and therefore
+
+(20)
+
+$ 1
+'
+0
+0
+& 1+ # c
+)
+1
+&
+)
+R ( !) = B " & 0
+O
+0 )
+&
+1 )
+& 0
+)
+0
+%
+1 + # cn (
+
+So in the final state after adaptation, the system behaves as though a multi-dimensional
+scaling had been applied to the bipolar cell input: The component of the input vector
+
+(
+
+)
+
+along the eigenvector u j of the covariance matrix gets suppressed by a factor 1 1 + ! c j .
+In summary, the system learns to suppress highly correlated components of the
+stimulus. It does so by subtracting from the ganglion cell input those signals that are
+effective at predicting it.
+The approach to the final adapted state follows a time course with multiple
+exponentials. Define the deviation from the final state as
+(21)
+
+R ! ( t ) = R ( t ) " R (# ) .
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+6
+
+Then Eqn (17) is solved by
+
+(22)
+
+n
+& 1 + $ cj )
+T
+R! ( t ) = R! (0 ) " , exp ( #
+t + "u j "u j .
+'
+%
+*
+j =1
+
+So the sensitivity of the system along the direction u j in stimulus space approaches the
+
+(
+
+)
+
+final state exponentially with time constant ! 1 + " c j . Note the approach is faster the
+higher the stimulus variance c j along that direction.
+In the example of Figs 5d-e, the stimulus drives a 4x4 array of bipolar cells, which
+are connected to a single ganglion cell as described above. The fixed synapses connect
+only to the central 2x2 bipolar cells, with equal strength. This default receptive field R
+is apparent when the stimulus is off ( 0 < t < 5! ). With the appearance of patterned
+stimulation, the modifiable synapses gradually adjust according to the above rules to
+suppress the correlated components. For example, stimulation with a flickering grating
+results in a receptive field with preferred orientation orthogonal to that of the grating
+( 20! < t < 30! ). For this illustration, the gain factor ! was set to 5.
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+7
+
+Supplementary Figure Legends
+Fig S1
+Spatial layout of multi-variable flicker stimuli.
+
+Fig S2
+A Linear-Nonlinear cascade to model a neuron's firing rate in response to two stimulus
+inputs. The inputs x ( t ) and y (t ) are each passed through a linear filter, with impulse
+response LX (! ) and LY (! ) respectively. The results are summed and transformed by an
+instantaneous nonlinear function N ( g) to yield the firing rate r ( t ) .
+
+Fig S3
+Inhibitory synapses are essential for pattern adaptation. Adaptation index measured
+with horizontal and vertical gratings (as in Fig 2e), in normal Ringer's solution (left) and
+after addition of 10 µM Strychnine and 100 µM Picrotoxin (right) to block inhibitory
+transmission via glycine and GABA, respectively. In the drug condition, the average
+adaptation index is not significantly different from 1 (p=0.19).
+
+Hosoya, Baccus, & Meister: Supplementary Material
+
+8
+
+Fig S1
+a x y x y x
+y
+x
+y
+x
+
+x
+y
+x
+y
+
+y
+x
+y
+x
+
+x
+y
+x
+y
+
+y
+x
+y
+x
+
+b x y x y x
+u v
+x y
+u v
+x y
+
+u v
+x y
+u v
+x y
+
+u
+x
+u
+x
+
+Fig S2
+
+x (t )
+
+L X (τ )
+g (t )
+
+y (t )
+
+L Y (τ )
+
+N (g)
+
+r (t )
+
+Fig S3
+Control
+
+PTX + STR
+4
+
+Cells
+
+4
+
+0
+
+0
+0.5
+
+1
+
+2
+
+Adaptation Index, α
+
+0.5
+
+1
+
+2
+
+Adaptation Index, α
+
+
