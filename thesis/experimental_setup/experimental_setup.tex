@@ -1,10 +1,155 @@
-\chapter{Experimental Setup}\label{chap:setup}
+\chapter{Experimental Setup}
+\label{chap:setup}
 
+This chapter documents the hardware apparatus, data-collection protocol, and software pipeline used to evaluate the causal, per-event cancellation method described in Chapters~\ref{chap:problem}--\ref{chap:cancellation}. Our goal is to provide enough detail for faithful reproduction: sensor and rig configuration, calibration steps, sequence design, and the end-to-end processing stack (estimation $\rightarrow$ prediction $\rightarrow$ gating $\rightarrow$ metrics).
+
+% ============================================================
 \section{Hardware and Apparatus}
-Sensor model, disc rig, lighting conditions, calibration notes.
+\label{sec:hardware}
 
+\subsection{Event Camera and Optics}
+We used a single event-based sensor mounted on a rigid frame facing a rotating disc (Fig.~\ref{fig:rig}). The relevant characteristics:
+
+\begin{itemize}
+  \item \textbf{Sensor:} [\textit{MODEL / RESOLUTION / PIXEL PITCH}] (replace with your device). Timestamp precision [$\mu$s], polarity in $\{\pm1\}$, dynamic range [dB].
+  \item \textbf{Lens:} [\textit{FOCAL LENGTH, APERTURE}], C/CS mount. Focus was set at the disc plane; aperture chosen to avoid saturation while maintaining high contrast on the rim/texture.
+  \item \textbf{Mounting:} Camera clamped to an aluminum extrusion to minimize vibration. Baseline between optical axis and disc center kept near orthogonal to reduce perspective distortion over the region of interest.
+  \item \textbf{Working distance:} Approximately [\textit{D cm}] from sensor to disc plane, yielding an imaged disc radius of [\textit{R px}] at the chosen focal length.
+\end{itemize}
+
+\subsection{Spinning Disc Rig}
+The target is a flat disc with an \emph{uneven, high-contrast pattern} adhered to the visible face to generate rich edges under rotation (Fig.~\ref{fig:disc}). Hardware elements:
+
+\begin{itemize}
+  \item \textbf{Disc:} [\textit{MATERIAL}] plate of diameter [\textit{D\textsubscript{disc} mm}] and thickness [\textit{t mm}]. The pattern comprised irregular patches/stripes (matte black/white vinyl) to create alternating ON/OFF events around the rim and internal regions.
+  \item \textbf{Actuation:} DC motor (or BLDC) with driver; rotation rate adjustable via voltage/command. Nominal speeds tested: [\textit{e.g., 1--6 rev/s}] with steady-state ripple below [\textit{$x$\%}].
+  \item \textbf{Spindle and bearings:} Low runout bearings to limit lateral wobble; a printed hub ensured concentricity between the disc and shaft.
+  \item \textbf{Markers (optional):} A small round sticker near the rim to support circle fitting and angular position readout during calibration.
+\end{itemize}
+
+\subsection{Lighting Conditions}
+Event generation depends on brightness gradients and texture. We used diffuse LED panels positioned off-axis to minimize specular highlights on the disc. Ambient flicker was avoided by using DC-powered lights. Illumination was kept constant throughout each sequence; no HDR sweeps were performed. Before acquisition, we verified that background-activity noise (on a static scene) remained low relative to disc-induced events.
+
+\subsection{Calibration and Referencing}
+We performed lightweight calibration sufficient for short-horizon rotation modeling:
+
+\begin{itemize}
+  \item \textbf{Intrinsics/distortion:} Intrinsics were either pre-calibrated or assumed approximately linear over the disc region. If distortion was noticeable, we undistorted $(x,y)$ prior to prediction (see Chapter~\ref{chap:motion}).
+  \item \textbf{Disc center in image:} A quick \emph{circle fit} (Pratt/Taubin) on a short burst of disc events estimated $(c_x,c_y)$; the estimate was compared with any external tracker CSV center (when available). The operational center $\hat c$ used for prediction was the smoothed (EMA) time series.
+  \item \textbf{Angular velocity reference:} Angular position $\theta(t)$ was derived from the event cluster around the rim (or from tracker CSV) and differentiated to obtain $\omega(t)$, then smoothed (EMA) to reduce jitter. These trajectories form the time-aligned $(\hat c(t),\hat\omega(t))$ used in forward prediction.
+\end{itemize}
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.8\linewidth]{figures/rig_placeholder.pdf}
+  \caption{Schematic of the apparatus: the event camera views a patterned disc rotating about a fixed axis. Lighting is diffuse and constant. The image-plane rotation center and angular velocity are estimated from event clusters and/or tracker logs.}
+  \label{fig:rig}
+\end{figure}
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.7\linewidth]{figures/disc_placeholder.pdf}
+  \caption{Disc face with uneven, high-contrast texture to produce dense ON/OFF events. A small circular marker (optional) supports center/angle estimation.}
+  \label{fig:disc}
+\end{figure}
+
+% ============================================================
 \section{Datasets and Protocol}
-Sequences, durations, repeats, train/test split (if any).
+\label{sec:datasets}
 
+\subsection{Sequences}
+We recorded multiple \emph{spinning-disc} sequences by varying the rotation rate and exposure to stress different motion regimes. Each sequence contains the raw, time-ordered event stream:
+\[
+E = \big\{ (x_i, y_i, p_i, t_i) \big\}_{i=1}^{N},
+\]
+with timestamps in microseconds (converted to seconds in software). For most analyses we also used a tracker CSV with center and angular-velocity estimates; when absent, these were inferred from events via circle fit and angle differencing (Chapter~\ref{chap:motion}).
+
+\paragraph{Typical settings.}
+We targeted durations of 10--30\,s per capture, at rotation rates spanning [\textit{1--6 rev/s}] to study the dependence of cancellation on $\omega$ and radial phase speed $r|\omega|$. Lighting and camera pose remained fixed across repeats within a set.
+
+\subsection{Protocols and Repeats}
+To assess repeatability, each setting was recorded at least [\textit{$n$}] times. For sensitivity experiments we held all parameters fixed and varied one control at a time (e.g., $\Delta t$, $\epsilon_{xy}$, $\epsilon_t$, polarity mode, $\omega$-bias). Each sweep used identical temporal extents (three non-overlapping windows per sequence) to enable cross-window comparison.
+
+\subsection{Data Splits}
+No learning was employed; thus no train/validation/test split was required. Instead, we designate \emph{analysis windows} (e.g., W1, W2, W3) within each sequence and report per-window curves (cancellation vs.\ parameter) as well as their mean and standard deviation. When we used tracker CSV for $(\hat c,\hat\omega)$, we withheld a short pre-roll window to tune smoothing constants and any constant bias correction.
+
+\subsection{Summary Table}
+Table~\ref{tab:sequences} summarizes the datasets used in the study. Replace placeholders with your actual counts.
+
+\begin{table}[H]
+  \centering
+  \caption{Sequences used in experiments. ``Rate'' is the nominal spin frequency. $N$ is total events in the sequence.}
+  \label{tab:sequences}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Seq.} & \textbf{Duration (s)} & \textbf{Rate (rev/s)} & \textbf{Tracker CSV} & \textbf{$N$ (events)} \\
+    \midrule
+    Disc-A1 & 10 & 2.0 & yes & [\textit{$\sim$ M}] \\
+    Disc-A2 & 10 & 3.5 & yes & [\textit{$\sim$ M}] \\
+    Disc-B1 & 20 & 5.0 & no  & [\textit{$\sim$ M}] \\
+    Disc-B2 & 30 & 6.0 & yes & [\textit{$\sim$ M}] \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+% ============================================================
 \section{Software Pipeline}
-Preprocessing, estimation, prediction, cancellation, metrics; environment and runtime notes.
+\label{sec:software}
+
+\subsection{Overview}
+Figure~\ref{fig:pipeline} outlines the causal, per-event pipeline:
+
+\begin{enumerate}
+  \item \textbf{I/O \& preprocessing:} Load events CSV/NPY; map polarities to $\{0,1\}$ or $\{\pm 1\}$; convert timestamps to seconds; time-sort (if needed).
+  \item \textbf{Motion estimation:} Obtain $(\hat c(t),\hat\omega(t))$ from tracker CSV or compute from events (circle fit $\rightarrow$ angles $\rightarrow$ finite differences), then smooth and store as time series.
+  \item \textbf{Event prediction:} For each event $e_i=(x_i,t_i,p_i)$, compute $x_i' = \mathcal{R}\!\big(x_i; \hat c(t_i), \hat\omega(t_i)\Delta t\big)$ and decision time $t_i' = t_i+\Delta t$.
+  \item \textbf{Temporal gating:} At wall-clock $\tau$, pop predictions with $|t_i' - \tau| \le \epsilon_t$ and gather real events $e_j$ with $|t_j - t_i'| \le \epsilon_t$.
+  \item \textbf{Spatial \& polarity gating:} Accept candidates with $\|x_j - x_i'\|_2 \le \epsilon_{xy}$ and polarity predicate satisfied (default: opposite).
+  \item \textbf{One-to-one pairing:} Mutual-nearest-neighbor (MNN) check within the gated sets; greedily accept pairs in ascending distance to prevent many-to-one matches.
+  \item \textbf{Cancellation / anti-event:} Remove matched pairs from the stream (or emit an anti-event at $(x_i',t_i',-p_i)$ in a signed raster accumulator).
+  \item \textbf{Metrics \& visualization:} Compute cancellation ratio, residual densities (disc vs.\ background), and generate high-pass videos via bilinear splatting.
+\end{enumerate}
+
+\begin{figure}[t]
+  \centering
+  % \includegraphics[width=0.95\linewidth]{figures/pipeline_placeholder.pdf}
+  \caption{Software pipeline: estimation $\rightarrow$ prediction $\rightarrow$ temporal gate $\rightarrow$ spatial/polarity gate $\rightarrow$ one-to-one pairing $\rightarrow$ cancellation $\rightarrow$ metrics. All decisions are causal with bounded buffers.}
+  \label{fig:pipeline}
+\end{figure}
+
+\subsection{Implementation Details}
+We implemented the pipeline in Python:
+\begin{itemize}
+  \item \textbf{Environment:} Python~3.[\textit{x}], NumPy, SciPy (cKDTree), pandas, imageio, Matplotlib. Optional: numba for hot loops.
+  \item \textbf{Precision:} Coordinates and polarity as \texttt{float32}; timestamps as \texttt{float64}. Trigonometric rotation uses radians.
+  \item \textbf{Interpolation:} Linear \texttt{interp1} for $\hat c(t)$, $\hat\omega(t)$ at \emph{event times} $t_i$ with edge-hold.
+  \item \textbf{Temporal buffers:} A min-heap keyed by $t'$ for predictions; a deque for recent real events; two indices maintain the $[t'-\epsilon_t,\,t'+\epsilon_t]$ window.
+  \item \textbf{Spatial index:} KD-tree (SciPy) or uniform grid on gated candidates. Matching performed with MNN to enforce one-to-one.
+  \item \textbf{Rasterization:} Signed bilinear splatting of residual (uncancelled) events for stable visualization; optional nearest-neighbor for ablation.
+  \item \textbf{Parameters (defaults):} $\Delta t \in [0.25, 2]$\,ms, $\epsilon_t \in [0.25, 1.0]$\,ms, $\epsilon_{xy}\in [1.5, 3.0]$\,px; polarity mode = \texttt{opposite}.
+\end{itemize}
+
+\subsection{Runtime and Throughput}
+On a workstation with [\textit{CPU/GPU model}] and [\textit{RAM}], processing proceeds in chunks of $10^6$ events. The predictor is embarrassingly parallel over events; the dominant cost is spatial indexing within the temporal gate. Typical throughputs:
+
+\begin{itemize}
+  \item \textbf{Prediction:} $\geq$ [\textit{$X$}] million events/s (vectorized rotation).
+  \item \textbf{Matching:} [\textit{$Y$}] thousand predictions/s per temporal slice (KD-tree query + MNN pairing).
+  \item \textbf{Visualization:} Real-time for PNG frames; MP4 encoding bounded by I/O.
+\end{itemize}
+
+\subsection{Reproducibility and Configuration}
+All experiments are driven by a single configuration file specifying $(\Delta t,\epsilon_t,\epsilon_{xy})$, polarity mode, interpolation method, and output paths. Randomness is not used beyond the optional RANSAC in circle fitting (seed fixed). Each run stores a manifest containing code commit ID, parameter values, and checksums for input files.
+
+\subsection{Safety Checks and Diagnostics}
+We embed invariants to guard against silent errors:
+\begin{itemize}
+  \item Each real/predicted index can appear in at most one match.
+  \item Predictions leaving the image are dropped before indexing.
+  \item With exact parameters and $\Delta t\to 0$, cancellation $\to 100\%$ on synthetic rings.
+  \item The measured CR vs.\ $\Delta t$ decays smoothly (no bin-edge artifacts), confirming the \emph{true temporal gate}.
+  \item Residual radial profiles flag center bias: a uniform offset indicates $\|\Delta c\|$; widening with radius indicates $\Delta\omega$ drift.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Summary.} The apparatus isolates rotational ego-motion with a reproducible, high-contrast target, while the software stack enforces strictly causal, per-event processing. This combination allows controlled sensitivity studies over $\Delta t$, spatial/temporal tolerances, polarity handling, and model biases, which we report in Chapter~\ref{chap:metrics}.
