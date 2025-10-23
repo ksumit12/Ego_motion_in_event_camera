@@ -1,0 +1,2 @@
+dt_ms,window_idx,window_start,window_end,spatial_tolerance,temporal_tolerance,cancellation_rate,total_roi_real,total_roi_cancelled,total_matched_pairs,mean_disp_px,frac_matches_ge_3px,frac_matches_ge_5px
+0.0,1.0,5.0,9.999999046325684,1.0,0.5,0.13755909857660764,36287676.0,49917.0,49917.0,0.0,0.0,0.0
