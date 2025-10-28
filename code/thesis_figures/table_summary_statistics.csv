@@ -1,0 +1,9 @@
+Metric,Value
+Best Cancellation Rate,100.0%
+Mean Cancellation Rate,25.8%
+Std Dev,26.3%
+Min Cancellation Rate,2.0%
+Median Cancellation Rate,13.6%
+Best $\Delta t$,0.0 ms
+Optimal Spatial Tol,1.0 px
+Optimal Temporal Tol,0.5 ms

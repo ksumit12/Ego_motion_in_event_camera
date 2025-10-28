@@ -7,12 +7,12 @@ e_i := (x_i, y_i, t_i, p_i) \in \Omega \times \mathbb{R}_{\ge 0} \times \{-1, +1
 \]
 with polarity $p_i$ indicating the sign of the log-intensity change. The event stream over an interval $[0,T]$ is the multiset $E := \{e_i\}_{i=1}^{N(T)}$.
 
-We adopt the standard log-intensity threshold model of event generation: a pixel triggers an event when the change in log-intensity exceeds a (per-pixel) contrast threshold $c$; see \cite{Lichtsteiner2008,Brandli2014,Posch2014,Gallego2020Survey}. Following common practice, the stream can be represented as a distribution of impulses at timestamps and locations; e.g., an event field $E(p,t)$ integrates Dirac deltas whose amplitudes encode polarity and quantized contrast \cite{Scheerlinck2021Thesis,Wang2025Thesis}:
+We adopt the standard log-intensity threshold model of event generation: a pixel triggers an event when the change in log-intensity exceeds a (per-pixel) contrast threshold $c$; see \cite{Lichtsteiner2008DVS,Brandli2014DAVIS,Posch2014Retinomorphic,Gallego2020Survey}. Following common practice, the stream can be represented as a distribution of impulses at timestamps and locations; e.g., an event field $E(p,t)$ integrates Dirac deltas whose amplitudes encode polarity and quantized contrast \cite{Scheerlinck2021Thesis,Wang2025Thesis}:
 \begin{equation}
 E(p,t) = \sum_{i} \sigma_i\,c\,\delta\!\left(t - t_i\right)\,\mathbf{1}\{p=(x_i,y_i)\}, \qquad \sigma_i \in \{-1,+1\}.
 \label{eq:event-field}
 \end{equation}
-Per-pixel non-idealities (background activity, polarity asymmetry, threshold mismatch, refractory effects) are acknowledged and handled operationally through robust matching tolerances and polarity checks introduced below \cite{Brandli2014,Delbruck2020,Gallego2020Survey}. Timestamp jitter on modern devices is typically small relative to other uncertainties at sub-millisecond horizons \cite{Wang2025Thesis}.
+Per-pixel non-idealities (background activity, polarity asymmetry, threshold mismatch, refractory effects) are acknowledged and handled operationally through robust matching tolerances and polarity checks introduced below \cite{Brandli2014DAVIS,Delbruck2020Handbook,Gallego2020Survey}. Timestamp jitter on modern devices is typically small relative to other uncertainties at sub-millisecond horizons \cite{Wang2025Thesis}.
 
 \paragraph{Goal.}
 Given an event stream $E$ from a static scene under \emph{rotational ego-motion}, we seek to identify and \emph{cancel} events predictable from a circular-motion model, \emph{asynchronously and per-event}. The aim is to reduce ego-motion clutter early, preserving low latency while leaving residual events that more likely correspond to independent scene/object motion.
@@ -36,12 +36,12 @@ For an event $e_i=(x_i,y_i,t_i,p_i)$ at time $t_i$, write $x_i=(x_i,y_i)$ and de
 \paragraph{Rationale and scope.}
 Circular motion is analytically compact (parameters $(c,\omega)$), commonly used for evaluation (spinning discs/wheels), produces dense stress-test patterns, and admits accurate rotation-only estimation \cite{Gallego2017Angular,Stoffregen2019Segmentation,Gallego2018CMax}. Over short horizons, translation is small compared to rotation-induced flow for our apparatus and is neglected to first order (we revisit this in \S\ref{sec:assumptions}).
 
-\section{Per-Event Forward Prediction with a True Temporal Gate}
+\section{Per-Event Forward Prediction with a Temporal Gate}\label{sec:temporal_gate}
     We adopt a causal \emph{predict–wait–match} strategy with an explicit temporal tolerance:
 
 \begin{enumerate}
-  \item \textbf{Predict.} Upon observing $e_i$ at $t_i$, compute $x_i'=\mathcal{R}(x_i; c, \omega\,\Delta t)$ and form a \emph{predicted future} anti-event $\hat e_i = (x_i',\, t_i+\Delta t,\, \bar p_i)$, where we set $\bar p_i=-p_i$ for inverse polarity (see polarity discussion below).
-  \item \textbf{Wait.} Defer decision until the wall-clock reaches the decision time $t^* = t_i + \Delta t$.
+  \item \textbf{Predict.} Upon observing $e_i$ at $t_i$, compute $x_i'=\mathcal{R}(x_i; c, \omega\,\Delta t)$ and the decision time $t^* = t_i + \Delta t$ for the predicted future location $x_i'$ with predicted opposite polarity $\bar p_i=-p_i$ (see polarity discussion below).
+  \item \textbf{Wait.} Defer decision until the wall-clock reaches the decision time $t^*$.
   \item \textbf{Temporal gate.} At $t^*$, consider only \emph{real} events whose timestamps lie inside a symmetric window:
   \begin{equation}
   \mathcal{N}_t(t^*;\epsilon_t) \;=\; \{\, e_j=(x_j,y_j,t_j,p_j)\in E \,:\, |t_j - t^*| \le \epsilon_t \,\}.
@@ -57,19 +57,19 @@ Circular motion is analytically compact (parameters $(c,\omega)$), commonly used
   where $\epsilon_{xy}>0$ is a spatial tolerance and $\pi$ encodes the polarity rule (default: strict opposite polarity, $\pi(p_i,p_j)=\mathbf{1}\{p_j=-p_i\}$).
 \end{enumerate}
 
-If such a match exists, declare $e_i$ \emph{ego-motion predictable} and add $e_i$ to the cancel set; emit (or equivalently, record) the anti-event $\tilde e_i=(x_i', t^*, -p_i)$ to cancel its matched counterpart. If no match is found inside the spatio-temporal gate, $e_i$ remains in the residual set.
+If such a match exists, declare $e_i$ \emph{ego-motion predictable} and add $e_i$ to the cancel set; remove both $e_i$ and the matched event $e_j$ from the stream (software-level cancellation). If no match is found inside the spatio-temporal gate, $e_i$ remains in the residual set.
 
 \paragraph{Remarks on implementation.}
-Equation~\eqref{eq:temporal-window} enforces a \emph{true temporal gate} with tolerance $\epsilon_t$ (no fixed time bins). In practice, we maintain two time-sorted buffers and advance sliding indices so that, for each $t^*$, we retrieve exactly those real events with $|t - t^*| \le \epsilon_t$ before applying the spatial/polarity test~\eqref{eq:gating}. This avoids boundary artifacts inherent to fixed-bin discretization and matches the theory exactly.
+Equation~\eqref{eq:temporal-window} enforces a temporal gate with tolerance $\epsilon_t$ (no fixed time bins). In practice, we maintain two time-sorted buffers and advance sliding indices so that, for each $t^*$, we retrieve exactly those real events with $|t - t^*| \le \epsilon_t$ before applying the spatial/polarity test~\eqref{eq:gating}. This avoids boundary artifacts inherent to fixed-bin discretization and matches the theory exactly. The cancellation is implemented by removing matched pairs from the event stream, preserving causality and low latency without hardware-level interference.
 
 \paragraph{Discussion of polarity.}
-Over short intervals, a moving edge driving monotonic log-intensity change tends to produce consistent polarity. We therefore default to \emph{opposite-pol\-arity cancellation} (predicted anti-event vs.\ real event). When polarity asymmetries are suspected (sensor mismatch), we also evaluate a relaxed polarity policy in sensitivity analyses.
+Over short intervals, a moving edge driving monotonic log-intensity change tends to produce consistent polarity. We therefore default to \emph{opposite-polarity cancellation} (matching predicted opposite polarity $\bar p_i$ with the real event polarity). When polarity asymmetries are suspected (sensor mismatch), we also evaluate a relaxed polarity policy in sensitivity analyses.
 
 \subsection{Matching Policy and One-to-One Constraints}
 Let $\mathcal{N}_t(t^*;\epsilon_t)$ denote the candidate window at decision time. We impose a \emph{one-to-one} pairing between predicted and real events within that window to prevent over-cancellation. A simple and effective policy is \emph{mutual nearest neighbors} within the spatial tolerance: for each real event, find its nearest predicted candidate and vice versa; accept a pair only if both choose each other and~\eqref{eq:gating} holds (polarity included). Greedy distance-ordered matching with a ``used set'' for predicted events is an alternative with similar behavior.
 
 \subsection{Sets, Counters, and Residuals}
-Over $[0,T]$, let $E$ denote all observed events, $\mathcal{C}\subseteq E$ the subset declared cancellable under \eqref{eq:temporal-window}--\eqref{eq:gating}, and $\mathcal{R} := E \setminus \mathcal{C}$ the \emph{residual} events. Define the \emph{cancellation ratio}
+Over $[0,T]$, let $E$ denote all observed events, $\mathcal{C}\subseteq E$ the subset declared cancellable under \eqref{eq:temporal-window}--\eqref{eq:gating} and removed via software-level cancellation, and $\mathcal{R} := E \setminus \mathcal{C}$ the \emph{residual} events. Define the \emph{cancellation ratio}
 \begin{equation}
 \mathrm{CR} \;:=\; \frac{|\mathcal{C}|}{|E|},
 \qquad
@@ -79,7 +79,7 @@ Over $[0,T]$, let $E$ denote all observed events, $\mathcal{C}\subseteq E$ the s
 for a region-of-interest $\mathcal{A}\subseteq \Omega\times[0,T]$ (e.g., disc vs.\ background masks). We also report \emph{residual event density} $\rho_\mathcal{A} := \frac{|\mathcal{R}\cap (\Omega_\mathcal{A}\times[0,T])|}{|\Omega_\mathcal{A}|}$ and radial residual profiles on the disc (\S\ref{sec:metrics-bridge}).
 
 \subsection{Causality, Buffers, and Complexity}
-The per-event pipeline maintains short spatio-temporal buffers: (i) a small queue of pending anti-events indexed by decision times $t^*$; (ii) a time-sorted buffer of real events for the sliding temporal window \eqref{eq:temporal-window}; and (iii) a light spatial index (e.g., grid or k-d tree) for neighborhood queries within radius $\epsilon_{xy}$. All decisions at $t^*$ use only past and present data, preserving causality and low latency (no global batch optimization), similar in spirit to asynchronous processing emphasized in \cite{Wang2025Thesis,Scheerlinck2021Thesis}.
+The per-event pipeline maintains short spatio-temporal buffers: (i) a small queue of pending predictions indexed by decision times $t^*$; (ii) a time-sorted buffer of real events for the sliding temporal window \eqref{eq:temporal-window}; and (iii) a light spatial index (e.g., grid or k-d tree) for neighborhood queries within radius $\epsilon_{xy}$. All decisions at $t^*$ use only past and present data, preserving causality and low latency (no global batch optimization), similar in spirit to asynchronous processing emphasized in \cite{Wang2025Thesis,Scheerlinck2021Thesis}.
 
 \section{Geometric and Temporal Sensitivity to Model Errors}
 Prediction accuracy depends on parameter bias and timing. Let the true parameters be $(c^\star,\omega^\star)$ and the estimates be $(\hat c,\hat\omega)$. Consider an event at radius $r=\|x-c^\star\|_2$ from the true center.
@@ -103,7 +103,7 @@ Let $\Delta c := \hat c - c^\star$. For small $\Delta t$, the first-order contri
 and couples with (\ref{eq:angvel-error}) for general $r$.
 
 \paragraph{Timing uncertainty, horizon, and the temporal gate.}
-Let $\sigma_t$ denote effective timing uncertainty (sensor latency variability, timestamp quantization). Over horizon $\Delta t$, phase uncertainty is $\sigma_\theta \approx |\omega^\star|\,\sigma_t$, contributing spatial uncertainty $\sigma_x \approx r\,\sigma_\theta \approx r\,|\omega^\star|\,\sigma_t$. The true temporal gate \eqref{eq:temporal-window} explicitly allows $|t_j-t^*|\le \epsilon_t$ so that modest timing error does not cause missed matches. However, increasing $\Delta t$ amplifies phase error via~\eqref{eq:angvel-error}; thus $\Delta t$ trades discriminability (separation in time) against phase robustness.
+Let $\sigma_t$ denote effective timing uncertainty (sensor latency variability, timestamp quantization; see hardware timing notes in \cite{Lichtsteiner2008,Delbruck2014ISCAS}). Over horizon $\Delta t$, phase uncertainty is $\sigma_\theta \approx |\omega^\star|\,\sigma_t$, contributing spatial uncertainty $\sigma_x \approx r\,\sigma_\theta \approx r\,|\omega^\star|\,\sigma_t$. The temporal gate \eqref{eq:temporal-window} explicitly allows $|t_j-t^*|\le \epsilon_t$ so that modest timing error does not cause missed matches. However, increasing $\Delta t$ amplifies phase error via~\eqref{eq:angvel-error}; thus $\Delta t$ trades discriminability (separation in time) against phase robustness.
 
 \paragraph{Implications for the spatial gate.}
 A sufficient condition for a match is
@@ -132,8 +132,8 @@ Then $\mathcal{C}=\{e_i\in E:\delta(e_i;\cdot)=1\}$ and $\mathcal{R}=E\setminus 
 \end{align}
 where $\mathrm{OC}$ is an over-cancellation proxy (e.g., fraction of cancellations outside the disc ROI or violating polarity), and $\lambda\ge 0$ trades cancellation against safety. We do not solve \eqref{eq:obj} globally; instead, Chapter~\ref{chap:metrics} studies the \emph{sensitivity} of outcomes to $\Delta t,\epsilon_{xy},\epsilon_t$ given $(\hat c,\hat\omega)$.
 
-\section{Anti-Event Emission and Representation}
-On a successful match, an anti-event $\tilde e_i := (x_i', t_i+\Delta t, -p_i)$ is emitted and applied to the maintained event representation (e.g., polarity-separated accumulation or voxel grid) to suppress its matched real event. In software evaluation this is equivalently realized by removing matched pairs from the stream (or decrementing signed accumulators at the matched locations/times). The cancellation operates at the decision time $t^*$ with microsecond-scale delay, consistent with asynchronous processing goals \cite{Gallego2018CMax,Bardow2016SOFIE}.
+\section{Cancellation Implementation and Representation}
+On a successful match, we remove both the originating event $e_i$ and the matched event $e_j$ from the event stream, effectively suppressing the predicted observation in the maintained event representation (e.g., polarity-separated accumulation or voxel grid). This software-level cancellation operates at the decision time $t^*$ with microsecond-scale delay, consistent with asynchronous processing goals \cite{Gallego2018CMax,Bardow2016SOFIE}. In evaluation, matched pairs are simply omitted from downstream processing, avoiding the need for explicit ``anti-event'' data structures.
 
 \section{Assumptions, Limitations, and Threats to Validity}
 \label{sec:assumptions}
@@ -143,7 +143,7 @@ On a successful match, an anti-event $\tilde e_i := (x_i', t_i+\Delta t, -p_i)$ 
 
 \textbf{(A3) Calibration and warping.} Intrinsics and distortion are pre-compensated or negligible on the ROI; otherwise, normalize coordinates before applying~\eqref{eq:forward-prop}.
 
-\textbf{(A4) Sensor non-idealities.} Background activity, threshold mismatch, polarity asymmetry, and refractory effects are present \cite{Brandli2014,Delbruck2020,Gallego2020Survey}. We mitigate via strict polarity checks, tuned tolerances $(\epsilon_{xy},\epsilon_t)$, and background baselines in the metrics. Timestamp jitter is comparatively minor at our horizons \cite{Wang2025Thesis}.
+\textbf{(A4) Sensor non-idealities.} Background activity, threshold mismatch, polarity asymmetry, and refractory effects are present \cite{Brandli2014DAVIS,Delbruck2020Handbook,Gallego2020Survey}. We mitigate via strict polarity checks, tuned tolerances $(\epsilon_{xy},\epsilon_t)$, and background baselines in the metrics. Timestamp jitter is comparatively minor at our horizons \cite{Wang2025Thesis}.
 
 \textbf{(A5) Causality and bounded memory.} Decisions use only past/present data in short buffers; we avoid global contrast-maximization windows and maintain per-event latency \cite{Bardow2016SOFIE,Gallego2018CMax}.
 

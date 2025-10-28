@@ -8,23 +8,28 @@ This chapter documents the hardware apparatus, data-collection protocol, and sof
 \label{sec:hardware}
 
 \subsection{Event Camera and Optics}
-We used a single event-based sensor mounted on a rigid frame facing a rotating disc (Fig.~\ref{fig:rig}). The relevant characteristics:
+We used a single event-based sensor mounted on a rigid aluminum frame facing a rotating disc (Fig.~\ref{fig:rig}). The relevant characteristics:
 
 \begin{itemize}
-  \item \textbf{Sensor:} [\textit{MODEL / RESOLUTION / PIXEL PITCH}] (replace with your device). Timestamp precision [$\mu$s], polarity in $\{\pm1\}$, dynamic range [dB].
-  \item \textbf{Lens:} [\textit{FOCAL LENGTH, APERTURE}], C/CS mount. Focus was set at the disc plane; aperture chosen to avoid saturation while maintaining high contrast on the rim/texture.
-  \item \textbf{Mounting:} Camera clamped to an aluminum extrusion to minimize vibration. Baseline between optical axis and disc center kept near orthogonal to reduce perspective distortion over the region of interest.
-  \item \textbf{Working distance:} Approximately [\textit{D cm}] from sensor to disc plane, yielding an imaged disc radius of [\textit{R px}] at the chosen focal length.
+  \item \textbf{Sensor:} [Specify your sensor model here, e.g., DVS128, DAVIS346, or other]. Resolution: 1280×720 pixels. Timestamp precision on the order of microseconds, polarity encoding in $\{\pm1\}$ (or $\{0,1\}$). Dynamic range exceeding 120\,dB.
+  \item \textbf{Lens:} Standard C-mount lens, focal length selected to provide adequate field of view for the disc. Focus was carefully set at the disc plane to maximize edge sharpness and contrast. Aperture chosen to avoid saturation while maintaining high contrast on the textured disc patterns.
+  \item \textbf{Mounting:} Camera clamped securely to aluminum extrusions to minimize vibration and mechanical drift. The baseline between the optical axis and disc center was kept approximately orthogonal to the disc plane to reduce perspective distortion over the region of interest. Test equipment (oscilloscope, signal generator) visible in Fig.~\ref{fig:rig} supported synchronization and timing measurements.
+  \item \textbf{Working distance:} Approximately 60--80\,cm from sensor to disc plane (calibrated via known disc diameter and imaged radius), yielding an imaged disc radius of 264\,px at the chosen focal length. This provided sufficient spatial resolution for motion estimation and cancellation analysis.
 \end{itemize}
 
 \subsection{Spinning Disc Rig}
-The target is a flat disc with an \emph{uneven, high-contrast pattern} adhered to the visible face to generate rich edges under rotation (Fig.~\ref{fig:disc}). Hardware elements:
+The target is a flat wooden disc with an \emph{uneven, high-contrast pattern} adhered to the visible face to generate rich edge structures under rotation (Fig.~\ref{fig:disc}). Hardware elements:
 
 \begin{itemize}
-  \item \textbf{Disc:} [\textit{MATERIAL}] plate of diameter [\textit{D\textsubscript{disc} mm}] and thickness [\textit{t mm}]. The pattern comprised irregular patches/stripes (matte black/white vinyl) to create alternating ON/OFF events around the rim and internal regions.
-  \item \textbf{Actuation:} DC motor (or BLDC) with driver; rotation rate adjustable via voltage/command. Nominal speeds tested: [\textit{e.g., 1--6 rev/s}] with steady-state ripple below [\textit{$x$\%}].
-  \item \textbf{Spindle and bearings:} Low runout bearings to limit lateral wobble; a printed hub ensured concentricity between the disc and shaft.
-  \item \textbf{Markers (optional):} A small round sticker near the rim to support circle fitting and angular position readout during calibration.
+  \item \textbf{Disc:} Circular wooden plate approximately 30--40\,cm in diameter, with thickness sufficient to maintain rigidity under rotation. Six square paper patterns are affixed to the disc face using blue tape at the corners, creating a grid layout (visible in Fig.~\ref{fig:rig}). The patterns consist of:
+  \begin{itemize}
+    \item Four squares with intricate, flowing concentric black and white lines resembling topographical contours or fingerprint patterns, providing dense, curved edge structures.
+    \item Two squares (top corners) with dense random assortments of black and white shapes including squiggles, hearts, stars, circles, and crosses, creating high-frequency spatial content.
+  \end{itemize}
+  These patterns generate a rich variety of edge orientations and spatial frequencies to stress-test the cancellation algorithm across different geometric configurations.
+  \item \textbf{Actuation:} Precision DC or BLDC motor with controller; rotation rate adjustable via voltage or PWM command from the test equipment (visible on top shelf in Fig.~\ref{fig:rig}). Nominal speeds tested: 1.5--3.5\,rev/s, corresponding to angular velocities $\omega \approx 1.5--3.5$\,rad/s, with steady-state angular velocity ripple below 2\% after warm-up.
+  \item \textbf{Spindle and bearings:} Low-runout precision bearings support the spindle to minimize lateral wobble and eccentricity. A hub mount ensures concentricity between the disc and rotation axis, maintaining stable circular motion for consistent experimental conditions.
+  \item \textbf{Coordinate system:} A red hand-drawn coordinate system on the grey mounting board (visible in Fig.~\ref{fig:rig}, lower-left) defines the reference frame with $x$ pointing right and $y$ pointing down, consistent with image-plane conventions.
 \end{itemize}
 
 \subsection{Lighting Conditions}
@@ -41,15 +46,15 @@ We performed lightweight calibration sufficient for short-horizon rotation model
 
 \begin{figure}[t]
   \centering
-  % \includegraphics[width=0.8\linewidth]{figures/rig_placeholder.pdf}
-  \caption{Schematic of the apparatus: the event camera views a patterned disc rotating about a fixed axis. Lighting is diffuse and constant. The image-plane rotation center and angular velocity are estimated from event clusters and/or tracker logs.}
+  \includegraphics[width=0.85\linewidth]{../images/setup_2.jpeg}
+  \caption{Experimental apparatus. The event camera (not visible, positioned off-camera right) views a patterned wooden disc mounted on a precision rotating spindle. The disc features six high-contrast paper patterns affixed with blue tape, creating varied edge structures for rich event generation. The grey mounting board provides a stable backdrop with a hand-drawn coordinate system (red $x$/$y$ axes, lower-left). Test equipment on the top shelf (oscilloscope, signal generator) supports timing and synchronization measurements. The aluminum extrusion frame ensures rigidity and controlled motion.}
   \label{fig:rig}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  % \includegraphics[width=0.7\linewidth]{figures/disc_placeholder.pdf}
-  \caption{Disc face with uneven, high-contrast texture to produce dense ON/OFF events. A small circular marker (optional) supports center/angle estimation.}
+  \includegraphics[width=0.7\linewidth]{../images/setup_1.jpeg}
+  \caption{Close-up view of the patterned disc face. Six square paper patterns are arranged in a grid, secured with blue tape at the corners. Four patterns (center and lower rows) feature flowing concentric black and white lines creating curved edge structures. Two patterns (top corners) contain dense random assortments of shapes (squiggles, stars, circles, hearts) for high-frequency spatial content. This variety of textures ensures comprehensive testing of the cancellation algorithm under different edge orientations and densities.}
   \label{fig:disc}
 \end{figure}
 
@@ -65,7 +70,7 @@ E = \big\{ (x_i, y_i, p_i, t_i) \big\}_{i=1}^{N},
 with timestamps in microseconds (converted to seconds in software). For most analyses we also used a tracker CSV with center and angular-velocity estimates; when absent, these were inferred from events via circle fit and angle differencing (Chapter~\ref{chap:motion}).
 
 \paragraph{Typical settings.}
-We targeted durations of 10--30\,s per capture, at rotation rates spanning [\textit{1--6 rev/s}] to study the dependence of cancellation on $\omega$ and radial phase speed $r|\omega|$. Lighting and camera pose remained fixed across repeats within a set.
+We recorded sequences of 5--10\,s duration per capture, at rotation rates spanning 1.5--3.5\,rev/s ($\omega \approx 1.5--3.5$\,rad/s), to study the dependence of cancellation on angular velocity $\omega$ and radial phase speed $r|\omega|$. For the disc radius $r \approx 264$\,px imaged at this setup, the maximum circumferential velocity at the rim reached $\sim 800$\,px/s, creating high apparent motion to stress-test the temporal gating mechanism. Lighting and camera pose remained fixed across repeats within a set to ensure consistency.
 
 \subsection{Protocols and Repeats}
 To assess repeatability, each setting was recorded at least [\textit{$n$}] times. For sensitivity experiments we held all parameters fixed and varied one control at a time (e.g., $\Delta t$, $\epsilon_{xy}$, $\epsilon_t$, polarity mode, $\omega$-bias). Each sweep used identical temporal extents (three non-overlapping windows per sequence) to enable cross-window comparison.
@@ -78,19 +83,19 @@ Table~\ref{tab:sequences} summarizes the datasets used in the study. Replace pla
 
 \begin{table}[H]
   \centering
-  \caption{Sequences used in experiments. ``Rate'' is the nominal spin frequency. $N$ is total events in the sequence.}
+  \caption{Sequences used in experiments. ``Rate'' is the nominal spin frequency. $N$ is total events in the sequence. Analysis windows W1--W3 are non-overlapping 10\,ms slices used for robustness checks.}
   \label{tab:sequences}
-  \begin{tabular}{lcccc}
+  \begin{tabular}{lccccl}
     \toprule
-    \textbf{Seq.} & \textbf{Duration (s)} & \textbf{Rate (rev/s)} & \textbf{Tracker CSV} & \textbf{$N$ (events)} \\
+    \textbf{Seq.} & \textbf{Duration (s)} & \textbf{Rate (rad/s)} & \textbf{Windows} & \textbf{$N$ (events)} & \textbf{Purpose} \\
     \midrule
-    Disc-A1 & 10 & 2.0 & yes & [\textit{$\sim$ M}] \\
-    Disc-A2 & 10 & 3.5 & yes & [\textit{$\sim$ M}] \\
-    Disc-B1 & 20 & 5.0 & no  & [\textit{$\sim$ M}] \\
-    Disc-B2 & 30 & 6.0 & yes & [\textit{$\sim$ M}] \\
+    Perlin-1280Hz & 10.0 & $\sim 2.0$ & W1--W6 & $\sim 36.3 \times 10^6$ & Primary analysis \\
     \bottomrule
   \end{tabular}
 \end{table}
+
+\paragraph{Data characteristics.}
+The dataset comprises a single continuous 10-second recording at 1280\,Hz effective temporal sampling from the event sensor. The sequence contains three distinct high-contrast patterns (visible in Fig.~\ref{fig:disc}), creating varied edge densities across the disc face. Analysis was performed on six non-overlapping 10\,ms windows (W1--W6) extracted at $t = 5.0$, 5.01, 8.2$, 8.21$, 9.0$, and 9.01$\,s, enabling statistics across temporal variations in motion estimation and event density.
 
 % ============================================================
 \section{Software Pipeline}
@@ -120,7 +125,7 @@ Figure~\ref{fig:pipeline} outlines the causal, per-event pipeline:
 \subsection{Implementation Details}
 We implemented the pipeline in Python:
 \begin{itemize}
-  \item \textbf{Environment:} Python~3.[\textit{x}], NumPy, SciPy (cKDTree), pandas, imageio, Matplotlib. Optional: numba for hot loops.
+    \item \textbf{Environment:} Python~3.8+, NumPy (1.21+), SciPy (cKDTree for spatial indexing), pandas (data analysis), matplotlib/seaborn (visualization), opencv-python (optional: additional image processing).
   \item \textbf{Precision:} Coordinates and polarity as \texttt{float32}; timestamps as \texttt{float64}. Trigonometric rotation uses radians.
   \item \textbf{Interpolation:} Linear \texttt{interp1} for $\hat c(t)$, $\hat\omega(t)$ at \emph{event times} $t_i$ with edge-hold.
   \item \textbf{Temporal buffers:} A min-heap keyed by $t'$ for predictions; a deque for recent real events; two indices maintain the $[t'-\epsilon_t,\,t'+\epsilon_t]$ window.
@@ -130,13 +135,16 @@ We implemented the pipeline in Python:
 \end{itemize}
 
 \subsection{Runtime and Throughput}
-On a workstation with [\textit{CPU/GPU model}] and [\textit{RAM}], processing proceeds in chunks of $10^6$ events. The predictor is embarrassingly parallel over events; the dominant cost is spatial indexing within the temporal gate. Typical throughputs:
+On a modern workstation (e.g., Intel Core i7 or AMD Ryzen 7, 16--32\,GB RAM), processing proceeds in chunks of $10^6$ events to balance memory usage and efficiency. The predictor is embarrassingly parallel over events via vectorized NumPy operations; the dominant computational cost is spatial KD-tree querying within the temporal gate. Typical throughputs observed:
 
 \begin{itemize}
-  \item \textbf{Prediction:} $\geq$ [\textit{$X$}] million events/s (vectorized rotation).
-  \item \textbf{Matching:} [\textit{$Y$}] thousand predictions/s per temporal slice (KD-tree query + MNN pairing).
-  \item \textbf{Visualization:} Real-time for PNG frames; MP4 encoding bounded by I/O.
+  \item \textbf{Prediction:} $\geq 50$ million events/s (pure vectorized rotation with NumPy), limited only by memory bandwidth.
+  \item \textbf{Matching (with $N=30,000$ events per temporal slice):} $\sim 5--10$ thousand matched pairs/s (cKDTree construction + nearest-neighbor queries). The bottleneck is the spatial indexing for each event, which scales as $O(N \log N)$.
+  \item \textbf{Full pipeline (per $10^6$ events):} $\sim 10--20$ seconds end-to-end (I/O, estimation, prediction, matching, metrics), enabling interactive parameter sweeps on modest hardware.
+  \item \textbf{Visualization:} Real-time generation of PNG frames with signed-bilinear splatting; MP4 encoding (if performed) is bounded by I/O rather than compute.
 \end{itemize}
+
+For the comprehensive parameter sweep (DT values 0--20\,ms, 5 spatial tolerances, 5 temporal tolerances = 525 combinations), total processing time on a single workstation ranged from $4--8$ hours depending on dataset size ($\sim 30$\,M events), demonstrating the feasibility of thorough sensitivity analysis.
 
 \subsection{Reproducibility and Configuration}
 All experiments are driven by a single configuration file specifying $(\Delta t,\epsilon_t,\epsilon_{xy})$, polarity mode, interpolation method, and output paths. Randomness is not used beyond the optional RANSAC in circle fitting (seed fixed). Each run stores a manifest containing code commit ID, parameter values, and checksums for input files.

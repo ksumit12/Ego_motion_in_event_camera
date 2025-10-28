@@ -3,7 +3,7 @@
 
 This chapter evaluates how key parameters in the prediction–cancellation pipeline influence performance and robustness. 
 The objective is to quantify how sensitive the cancellation rate and residual density are to the choice of temporal horizon, spatial and temporal tolerances, polarity handling, and motion-model accuracy.
-Unless stated otherwise, all experiments are conducted using events from the spinning-disc dataset described in Chapter~\ref{chap:experiment}, with the estimated center \((c_x, c_y)\) and angular velocity~\(\omega\) obtained from tracker data.
+Unless stated otherwise, all experiments are conducted using events from the spinning-disc dataset described in Chapter~\ref{chap:setup}, with the estimated center \((c_x, c_y)\) and angular velocity~\(\omega\) obtained from tracker data.
 
 Each analysis follows the same general procedure: predicted events are generated using the per-event forward model
 \[
@@ -80,7 +80,7 @@ The optimal tolerance can be approximated analytically as:
 \epsilon_t^{*} \approx \frac{\epsilon_{xy}}{r\,|\omega|},
 \]
 ensuring that the predicted phase deviation translates to less than one spatial pixel of drift.
-This formulation links the temporal and spatial gates, and aligns with motion-compensation theory in Gallego et~al.~\cite{Gallego2018CMax, Xu2020}.
+This formulation links the temporal and spatial gates, and aligns with motion-compensation theory in Gallego et~al.~\cite{Gallego2018CMax, Xu2020TCI}.
 
 The shift from fixed time binning to explicit gating was key to achieving the smooth trends seen in Figure~\ref{fig:dt_sweep}.
 Binning previously introduced discontinuous transitions when events crossed bin edges, whereas the continuous gate now provides symmetric tolerance around each predicted timestamp.

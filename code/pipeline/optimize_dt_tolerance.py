@@ -50,7 +50,7 @@ DISC_RADIUS = 264
 POLARITY_MODE = "opposite"  # "opposite" | "equal" | "ignore"
 
 # Output settings
-OUTPUT_DIR = "./dt_tolerance_optimization_results"
+OUTPUT_DIR = "../dt_tolerance_optimization_results"
 PLOT_DPI = 150
 
 # =============== Core Functions ===============

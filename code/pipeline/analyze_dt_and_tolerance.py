@@ -69,7 +69,7 @@ WINDOWS = [
 ]
 
 # Output settings
-OUTPUT_DIR = "./dt_tolerance_analysis_results"
+OUTPUT_DIR = "../dt_tolerance_analysis_results"
 PLOT_DPI = 150
 INTERACTIVE_3D = False  # Matplotlib saves figures; set True to show windows
 # If you need to cap processing duration per combination, set this to a float (seconds); None means no cap
