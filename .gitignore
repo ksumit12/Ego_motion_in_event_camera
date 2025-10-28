@@ -1,0 +1,13 @@
+# Ignore reference helper scripts
+thesis/references/build_network.py
+thesis/references/download_from_manifest.py
+
+# Ignore the two markdown prompt/summary files
+thesis/references/Research_Network_Prompt.md
+thesis/references/Reference_Categorization_Summary.md
+
+# Ignore data/cache folders
+thesis/references/memory/
+thesis/references/network/
+
+
