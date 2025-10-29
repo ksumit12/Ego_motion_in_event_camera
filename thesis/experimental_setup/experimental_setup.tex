@@ -107,8 +107,8 @@ Figure~\ref{fig:pipeline} outlines the causal, per-event pipeline:
 \begin{enumerate}
   \item \textbf{I/O \& preprocessing:} Load events CSV/NPY; map polarities to $\{0,1\}$ or $\{\pm 1\}$; convert timestamps to seconds; time-sort (if needed).
   \item \textbf{Motion estimation:} Obtain $(\hat c(t),\hat\omega(t))$ from tracker CSV or compute from events (circle fit $\rightarrow$ angles $\rightarrow$ finite differences), then smooth and store as time series.
-  \item \textbf{Event prediction:} For each event $e_i=(x_i,t_i,p_i)$, compute $x_i' = \mathcal{R}\!\big(x_i; \hat c(t_i), \hat\omega(t_i)\Delta t\big)$ and decision time $t_i' = t_i+\Delta t$.
-  \item \textbf{Temporal gating:} At wall-clock $\tau$, pop predictions with $|t_i' - \tau| \le \epsilon_t$ and gather real events $e_j$ with $|t_j - t_i'| \le \epsilon_t$.
+  \item \textbf{Event prediction:} For each event $e_i=(x_i,t_i,p_i)$, compute $x_i' = \mathcal{R}\!\big(x_i; \hat c(t_i), \hat\omega(t_i)\Delta t\big)$ and predicted time $t_i' = t_i+\Delta t$.
+  \item \textbf{Temporal gating:} At the current processing time $\tau$, pop predictions with $|t_i' - \tau| \le \epsilon_t$ and gather real events $e_j$ with $|t_j - t_i'| \le \epsilon_t$.
   \item \textbf{Spatial \& polarity gating:} Accept candidates with $\|x_j - x_i'\|_2 \le \epsilon_{xy}$ and polarity predicate satisfied (default: opposite).
   \item \textbf{One-to-one pairing:} Mutual-nearest-neighbor (MNN) check within the gated sets; greedily accept pairs in ascending distance to prevent many-to-one matches.
   \item \textbf{Cancellation / anti-event:} Remove matched pairs from the stream (or emit an anti-event at $(x_i',t_i',-p_i)$ in a signed raster accumulator).

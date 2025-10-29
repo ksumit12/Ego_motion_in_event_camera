@@ -29,7 +29,7 @@ This decay follows an approximately exponential trend:
 \text{CR}(\Delta t) \approx \exp\!\left(-k_{\omega}\Delta t\right),
 \]
 where \(k_{\omega}\) depends on the angular velocity~\(\omega\) and uncertainty in the estimated center.
-At large \(\Delta t\), residuals approach a baseline level (≈30–35\%), corresponding to non-overlapping edge regions and noise events.
+At large \(\Delta t\), residuals approach a baseline level (\(\approx\)30–35\%), corresponding to non-overlapping edge regions and noise events.
 
 The smoothness of this curve (as seen in Fig.~\ref{fig:dt_sweep_combined}) demonstrates temporal consistency across windows, confirming that the current motion model captures the dominant rotational component.
 Earlier versions using coarse time binning showed step-like discontinuities in this curve due to quantization artifacts; replacing bins with a continuous temporal gate (\S\ref{sec:temporal_gate}) yielded the present monotonic decay.
@@ -62,7 +62,7 @@ where \(\Delta\omega\) denotes angular-velocity error.
 This relation, derived from the geometric expansion of motion error, highlights that the required tolerance grows linearly with prediction horizon and model uncertainty.
 
 In practical implementations,~\(\epsilon_{xy}\in[2,3]\) pixels yielded the best compromise between cancellation completeness and background leakage.
-Larger radii (≥5 px) inflated the apparent performance but led to spurious cancellation across edges or static regions, reducing interpretability.
+Larger radii (\(\geq\)5 px) inflated the apparent performance but led to spurious cancellation across edges or static regions, reducing interpretability.
 
 % ------------------------------------------------------------
 \section{Temporal Tolerance (\( \epsilon_{t} \), ms)}
@@ -95,7 +95,7 @@ In the predictive cancellation model, polarity can be leveraged in two ways:
 (2) to ignore polarity and rely solely on spatial–temporal overlap.
 
 Figure~\ref{fig:polarity} compares these modes.
-When polarity is enforced, cancellation ratios drop slightly (≈5–10\%) but residual maps become visually cleaner, showing sharper edge boundaries.
+When polarity is enforced, cancellation ratios drop slightly (\(\approx\)5–10\%) but residual maps become visually cleaner, showing sharper edge boundaries.
 When polarity is ignored, cancellation increases numerically but residuals contain symmetric artifacts (i.e., both ON and OFF edges remain faintly visible).
 
 This asymmetry arises from edge directionality:
@@ -135,7 +135,7 @@ The ratio
 \rho = \frac{N_{\text{disc}} - N_{\text{bg}}}{N_{\text{bg}}}
 \]
 serves as an event-domain signal-to-noise indicator.
-After cancellation, this ratio typically decreased from ≈5.0 to ≈1.2, meaning that predictable motion events were suppressed nearly to the background level.
+After cancellation, this ratio typically decreased from \(\approx\)5.0 to \(\approx\)1.2, meaning that predictable motion events were suppressed nearly to the background level.
 
 Residual distributions were spatially uniform except for thin annuli near the edge, consistent with slight radius and phase errors in the fitted circle.
 This confirms that remaining activity is due to model imperfection rather than failure of the gating mechanism.
@@ -152,7 +152,7 @@ The following trends summarize the observed sensitivities:
 \begin{itemize}
     \item \textbf{Prediction horizon \(\Delta t\):} Cancellation decreases exponentially with horizon; effective range up to 6–8~ms for the given rotational speed.
     \item \textbf{Spatial tolerance \(\epsilon_{xy}\):} Optimal around 2–3~px; larger values inflate false matches.
-    \item \textbf{Temporal tolerance \(\epsilon_t\):} Optimal ≈0.5~ms; balances timestamp jitter and event density.
+    \item \textbf{Temporal tolerance \(\epsilon_t\):} Optimal \(\approx\)0.5~ms; balances timestamp jitter and event density.
     \item \textbf{Polarity:} Enforcing opposite polarity yields cleaner inhibition maps, though slightly lower numeric CR.
     \item \textbf{Angular velocity bias:} Linear degradation up to ±0.05~rad/ms, beyond which phase errors dominate.
     \item \textbf{Residual density:} Post-cancellation event density approaches background level, confirming effective suppression of predictable motion.

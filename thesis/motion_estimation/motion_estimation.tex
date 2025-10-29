@@ -4,20 +4,6 @@
 \section{Purpose and Role in the Pipeline}
 Accurate ego-motion estimation is the prerequisite for our per-event forward prediction and cancellation scheme (Chapter~\ref{chap:cancellation}). Since event cameras asynchronously report brightness changes along moving edges, the vast majority of events in a static scene under camera motion are caused by \emph{ego-motion} \cite{Gallego2020Survey}. Estimating the rotational motion parameters allows us to predict the short-horizon trajectories of events and issue anti-events when a causal spatio-temporal gate is satisfied (Chapter~\ref{chap:problem}). In this chapter we: (i) formalize the rotational model used for prediction; (ii) review estimation strategies from the literature; (iii) present our practical estimation pipeline tailored to a circular-motion rig; and (iv) analyze error sources and their impact on downstream cancellation.
 
-\section{Background: Motion Estimation with Events}
-Event-based motion estimation spans local differential methods, global alignment via motion compensation, and tightly-coupled state estimation with auxiliary sensing.
-
-\paragraph{Local differential / plane-based flow.}
-Local approaches estimate optical flow by fitting spatio-temporal event neighborhoods to motion models, exploiting the fact that edges generate approximately planar structures in $(x,y,t)$ volumes \cite{Benosman2014Epipolar}. These methods capture instantaneous flow but are sensitive to noise, aperture ambiguity, and require careful neighborhood selection.
-
-\paragraph{Global contrast maximization \& IWE alignment.}
-Global methods ``warp'' events to a common reference time with a candidate motion field and seek parameters that maximize an alignment objective (sharpness/contrast) of the \emph{Image of Warped Events} (IWE) \cite{Gallego2018CMax}. This paradigm underlies a broad family of algorithms for optical flow, depth, and ego-motion; its rotational specialization yields direct angular-velocity estimation from events \cite{Gallego2017Angular}. Event-based motion segmentation likewise leverages motion compensation in iterative schemes (e.g., EM) to jointly estimate multiple motion layers and their assignments \cite{Stoffregen2019Segmentation}.
-
-\paragraph{Sliding-window variational estimation and learning.}
-Bardow \emph{et al.} estimated optical flow and intensity jointly using a variational formulation over short temporal windows \cite{Bardow2016SOFIE}. Learning-based methods predict dense flow or depth/ego-motion from event tensors \cite{Zhu2018FlowNet,Zhu2019Unsupervised,Rebecq2019E2VID}, but typically target image reconstruction or downstream perception rather than explicit short-horizon forward prediction for cancellation.
-
-\paragraph{VIO/SLAM and continuous-time estimation.}
-Event-only and fused event–frame–IMU odometry methods estimate full 6-DoF trajectories in real time (e.g., continuous-time splines, tightly-coupled filters) \cite{Rebecq2017EVO,Gallego2018CMax,Niu2024TRO,Guo2024TRO}. While general and powerful, they introduce batch windows and optimization latencies that are at odds with our design goal of strictly \emph{causal, per-event} operation for proactive suppression.
 
 \section{Rotational Motion Model for Short Horizons}
 We model the dominant motion as planar rotation of the image around a center $c=(c_x,c_y)^\top$ with angular velocity $\omega$ (signed). Let $x=(x,y)^\top$ be a pixel coordinate (in pixels). The rotation operator about $c$ by angle $\theta$ is
@@ -45,8 +31,8 @@ If significant lens distortion or strong perspective effects are present, coordi
 \subsection{Problem Statement}
 Given a stream of events $E=\{(x_i,t_i,p_i)\}$ from a static scene under ego-rotation, estimate $(c,\omega)$ as functions of time. Since we deploy predictions at the per-event timescale, we require estimates (or smoothed trajectories) that can be \emph{interpolated at arbitrary timestamps}.
 
-\subsection{Estimation Strategies}
-We discuss two complementary strategies suitable for our circular-motion setting.
+\subsection{Estimation Strategy}
+We use \emph{circle fitting with angle differencing} as our motion-estimation method for the circular-motion setting.
 
 \subsubsection{Direct angular velocity via contrast maximization}
 A rotational specialization of contrast maximization warps events by a hypothesized angular velocity $\omega$ (and center $c$) to a common reference time and seeks the $\omega$ that maximizes IWE sharpness \cite{Gallego2017Angular,Gallego2018CMax}. Let $x_i$ be rotated backward from $t_i$ to $t_0$ by angle $\omega\,(t_i-t_0)$ about $c$, producing $x_i(t_0)$; then the IWE is $I(x;t_0) = \sum_i \kappa(x - x_i(t_0))\,\sigma_i$, with $\kappa(\cdot)$ a smoothing kernel and $\sigma_i\in\{\pm 1\}$ the polarity. Common objectives are variance or contrast of $I$. Optimization can be performed over short packets (e.g., a few milliseconds), yielding a quasi-instantaneous $\hat\omega$ \cite{Gallego2018CMax}. This approach is robust to noise at adequate event densities and ties directly to rotational flow.
@@ -71,7 +57,7 @@ Our predictor requires $(\hat c(t),\hat\omega(t))$ at the \emph{exact} event tim
 \hat\omega(t) \!=\! \mathrm{interp1}\!\left(t;\{t_m\},\{\hat\omega(t_m)\}\right).
 \label{eq:interp}
 \end{equation}
-In practice, linear interpolation with edge hold is sufficient given our sub-millisecond horizons and smoothly varying $\omega(t)$ on the rig. When available, an external tracker (e.g., blob tracker or encoder) can provide $\{(t_m,\hat c,\hat\omega)\}$ directly, which we then interpolate at event timestamps. Using IMU gyroscope as a \emph{feed-forward} prior on $\omega$ is also common in event tracking \cite{Rebecq2017EVO,Wang2025Thesis}.
+In practice, linear interpolation with edge hold is sufficient given our sub-millisecond horizons and smoothly varying $\omega(t)$ on the rig. When available, an external tracker (e.g., blob tracker or encoder) can provide $\{(t_m,\hat c,\hat\omega)\}$ directly, which we then interpolate at event timestamps. An asynchronous event-blob tracker can also supply high-rate motion cues \cite{Wang2024AEBTracker}. Using IMU gyroscope as a \emph{feed-forward} prior on $\omega$ is also common in event tracking \cite{Rebecq2017EVO,Wang2025Thesis}.
 
 \section{Event Prediction under Rotation}
 Given an event $e_i=(x_i,t_i,p_i)$, the forward prediction for a horizon $\Delta t$ applies \eqref{eq:forward-predict} with the \emph{time-aligned} parameters:
@@ -104,7 +90,7 @@ If $\Delta c = \hat c - c^\star$, then even with perfect $\omega$ the rotation i
 which couples with \eqref{eq:err-omega} when both errors are present. In practice, center bias manifests as a radius-dependent residual structure in cancellation outputs.
 
 \paragraph{Timing uncertainty and temporal gating.}
-Let $\sigma_t$ capture effective temporal uncertainty (timestamp quantization, readout delays). Over horizon $\Delta t$, the phase uncertainty is $\sigma_\theta \approx |\omega^\star|\,\sigma_t$, producing spatial uncertainty $\sigma_x \approx r\,\sigma_\theta$. Hence, increasing $\Delta t$ separates prediction and observation in time (useful for gating) but increases phase error for a fixed $\Delta\omega$; decreasing $\Delta t$ reduces phase error but also shrinks the temporal gate and may cause overlap with predictor latency. These effects motivate the temporal gate $|t_j-(t_i+\Delta t)|\le \epsilon_t$ in Chapter~\ref{chap:problem} and the parameter sweeps in Chapter~\ref{chap:metrics}.
+Let $\tau_t$ capture effective temporal uncertainty (timestamp quantization, readout delays). Over horizon $\Delta t$, the phase (angular) uncertainty is $\sigma_\theta \approx |\omega^\star|\,\tau_t$, producing spatial uncertainty $\sigma_x \approx r\,\sigma_\theta$. Hence, increasing $\Delta t$ separates prediction and observation in time (useful for gating) but increases phase error for a fixed $\Delta\omega$; decreasing $\Delta t$ reduces phase error but also shrinks the temporal gate and may cause overlap with predictor latency. These effects motivate the temporal gate $|t_j-(t_i+\Delta t)|\le \epsilon_t$ in Chapter~\ref{chap:problem} and the parameter sweeps in Chapter~\ref{chap:metrics}.
 
 \paragraph{Implications for cancellation.}
 A sufficient condition for a successful match is

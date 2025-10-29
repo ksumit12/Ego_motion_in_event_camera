@@ -38,7 +38,7 @@ t_i' \;=\; t_i+\Delta t,
 and push $\hat e_i=(x_i',t_i',\bar p_i)$ into a min-heap keyed by $t_i'$.\footnote{We use pixel-space rotation \eqref{eq:canc-forward}. If significant distortion is present, apply the mapping in normalized coordinates (Chapter~\ref{chap:motion}).} Time-aligned $(\hat c,\hat\omega)$ are obtained by interpolation \eqref{eq:interp}.
 
 \section{Temporal Gate and Candidate Retrieval}
-At wall-clock time $\tau$, pop all predictions with $t_i' \le \tau$. For each popped $\hat e_i$, form the candidate set
+At the current event time $\tau$, pop all predictions with $t_i' \le \tau$. For each popped $\hat e_i$, form the candidate set
 \begin{equation}
 \mathcal{N}_t(t_i';\epsilon_t) \;=\; \{\,e_j=(x_j,t_j,p_j)\in E \;|\; |t_j - t_i'| \le \epsilon_t \,\},
 \label{eq:true-window}
@@ -68,11 +68,11 @@ To prevent many-to-one matches in dense bursts, we adopt an MNN policy within th
 \paragraph{Adaptive spatial tolerance (optional).}
 Empirically, spatial error grows with radius and timing uncertainty (Chapter~\ref{chap:problem}). A practical heuristic is
 \begin{equation}
-\epsilon_{xy}(r) \;=\; k \,\big(r\,|\hat\omega(t_i)|\,\sigma_t \;+\; \|\Delta c\|\big),
+\epsilon_{xy}(r) \;=\; k \,\big(r\,|\hat\omega(t_i)|\,\tau_t \;+\; \|\Delta c\|\big),
 \quad r=\|x_i-\hat c(t_i)\|_2, \quad k\in[1.5,2.5],
 \label{eq:adaptive-eps}
 \end{equation}
-with $\sigma_t$ the effective timestamp uncertainty. We report both fixed and adaptive tolerances in sensitivity experiments.
+with $\tau_t$ the effective timestamp uncertainty. We report both fixed and adaptive tolerances in sensitivity experiments.
 
 \section{Cancellation and Residuals}
 For each accepted pair $(\hat e_i,e_j)$, we:
@@ -90,7 +90,7 @@ Let $n_w$ be the number of events in a typical temporal window of width $2\epsil
 We visualize residuals with signed bilinear splatting (Chapter~\ref{chap:metrics}), which stabilizes appearances across sub-pixel positions and avoids aliasing common to nearest-neighbor binning.
 
 \paragraph{Time alignment and latency.}
-All decisions are taken at $t_i' = t_i+\Delta t$, using only events with $t\le t_i'+\epsilon_t$, hence respecting causality. In software, the microsecond-scale delay is dominated by data structure updates. The cancellation operates purely in software by removing matched pairs from the stream, with no hardware-level event emission required.
+All decisions are taken using only past and present data at the time of processing (no future timestamps are consulted). In practice, predictions with $|t'_k-\tau|\le \epsilon_t$ are popped and matched to real events already observed up to $\tau$. The microsecond-scale delay is dominated by data structure updates. Cancellation operates purely in software by removing matched pairs from the stream, with no hardware-level event emission required.
 
 \paragraph{Polarity asymmetry.}
 Real sensors can exhibit polarity-dependent thresholds; strict opposite-polarity matching is conservative. We therefore report both strict and relaxed polarity modes to expose potential asymmetry.
@@ -139,7 +139,7 @@ The spatial/temporal gating echoes the alignment logic of IWE-based methods \cit
 The following guidelines are used to initialize and sweep parameters (formal sweeps appear in Chapter~\ref{chap:metrics}).
 \begin{itemize}
     \item \textbf{Prediction horizon $\Delta t$:} Start at $0.5$\,ms; sweep $0.25$–$2$\,ms. Larger $\Delta t$ increases temporal separation but also phase error per \eqref{eq:err-omega}.
-    \item \textbf{Temporal tolerance $\epsilon_t$:} Choose $2$–$3$\,ms to absorb timestamp variability; relate to sensor timing $\sigma_t$ and spin rate $|\hat\omega|$ (Chapter~\ref{chap:problem}).
+    \item \textbf{Temporal tolerance $\epsilon_t$:} Choose $2$–$3$\,ms to absorb timestamp variability; relate to sensor timing $\tau_t$ and spin rate $|\hat\omega|$ (Chapter~\ref{chap:problem}).
     \item \textbf{Spatial tolerance $\epsilon_{xy}$:} Start at $1.5$–$2$\,px; consider adaptive $\epsilon_{xy}(r)$ via \eqref{eq:adaptive-eps} for high radii.
     \item \textbf{Polarity mode $\pi$:} Use strict opposite for conservative cancellation; report \emph{ignore} as an ablation to probe polarity asymmetry.
 \end{itemize}
