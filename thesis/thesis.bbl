@@ -1,0 +1,164 @@
+\begin{thebibliography}{23}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{}\fi
+\expandafter\ifx\csname urllinklabel\endcsname\relax
+  \def\urllinklabel{(Link)}\fi
+\expandafter\ifx\csname adsurllinklabel\endcsname\relax
+  \def\adsurllinklabel{(ADS~entry)}\fi
+
+\bibitem[{Bardow {et~al.}(2016)Bardow, Davison, \&
+  Leutenegger}]{Bardow2016SOFIE}
+Bardow, P., Davison, A.~J., \& Leutenegger, S. 2016, in Proceedings of the IEEE
+  Conference on Computer Vision and Pattern Recognition (CVPR), 884--892
+{}
+ \href{https://doi.org/10.1109/CVPR.2016.102}{\urllinklabel}
+
+\bibitem[{Benosman {et~al.}(2014)Benosman, Ieng, Clercq, Bartolozzi, \&
+  R{\'u}a}]{Benosman2014Epipolar}
+Benosman, R.~B., Ieng, S.-H., Clercq, C., Bartolozzi, C., \& R{\'u}a, M. R.~D.
+  2014, IEEE Transactions on Neural Networks and Learning Systems, 25, 258
+{}
+ \href{https://doi.org/10.1109/TNNLS.2013.2269641}{\urllinklabel}
+
+\bibitem[{Brandli {et~al.}(2014)Brandli, Berner, Yang, Liu, \&
+  Delbruck}]{Brandli2014DAVIS}
+Brandli, C., Berner, R., Yang, M., Liu, S.-C., \& Delbruck, T. 2014, IEEE
+  Journal of Solid-State Circuits, 49, 2333
+{}
+ \href{https://doi.org/10.1109/JSSC.2014.2342715}{\urllinklabel}
+
+\bibitem[{Delbruck {et~al.}(2014)Delbruck, Villanueva, \&
+  Longinotti}]{Delbruck2014ISCAS}
+Delbruck, T., Villanueva, V., \& Longinotti, L. 2014, in 2014 IEEE
+  International Symposium on Circuits and Systems (ISCAS), 2636--2639
+{}
+ \href{https://doi.org/10.1109/ISCAS.2014.6865714}{\urllinklabel}
+
+\bibitem[{Delbr{\"u}ck {et~al.}(2020)}]{Delbruck2020Handbook}
+Delbr{\"u}ck, T., {et~al.} 2020, in Handbook of Neuroengineering (Springer),
+  sensor characteristics and processing considerations
+{}
+{}
+
+\bibitem[{Finateu {et~al.}(2020)Finateu, Niwa, {et~al.}}]{Finateu2020ISSCC}
+Finateu, T., Niwa, A., {et~al.} 2020, in IEEE International Solid-State
+  Circuits Conference (ISSCC), 112--114
+{}
+ \href{https://doi.org/10.1109/ISSCC19947.2020.9063099}{\urllinklabel}
+
+\bibitem[{Gallego {et~al.}(2020)Gallego, Delbr{\"u}ck, Orchard, Bartolozzi,
+  Taba, Censi, Leutenegger, \& Scaramuzza}]{Gallego2020Survey}
+Gallego, G., Delbr{\"u}ck, T., Orchard, G., Bartolozzi, C., Taba, B., Censi,
+  A., Leutenegger, S., \& Scaramuzza, D. 2020, International Journal of
+  Computer Vision, 128, 241
+{}
+ \href{https://doi.org/10.1007/s11263-019-01265-9}{\urllinklabel}
+
+\bibitem[{Gallego {et~al.}(2018)Gallego, Rebecq, \&
+  Scaramuzza}]{Gallego2018CMax}
+Gallego, G., Rebecq, H., \& Scaramuzza, D. 2018, in Proceedings of the IEEE
+  Conference on Computer Vision and Pattern Recognition (CVPR), 3867--3876
+{}
+ \href{https://openaccess.thecvf.com/content_cvpr_2018/html/Gallego_A_Unifying_Contrast_CVPR_2018_paper.html}{\urllinklabel}
+
+\bibitem[{Gallego \& Scaramuzza(2017)}]{Gallego2017Angular}
+Gallego, G., \& Scaramuzza, D. 2017, IEEE Robotics and Automation Letters, 2,
+  632
+{}
+ \href{https://doi.org/10.1109/LRA.2016.2647639}{\urllinklabel}
+
+\bibitem[{Hosoya {et~al.}(2005)Hosoya, Baccus, \& Meister}]{Hosoya2005RetinaPC}
+Hosoya, T., Baccus, S.~A., \& Meister, M. 2005, Nature, 436, 71
+{}
+ \href{https://doi.org/10.1038/nature03689}{\urllinklabel}
+
+\bibitem[{Lichtsteiner {et~al.}(2008)Lichtsteiner, Posch, \&
+  Delbruck}]{Lichtsteiner2008DVS}
+Lichtsteiner, P., Posch, C., \& Delbruck, T. 2008, IEEE Journal of Solid-State
+  Circuits, 43, 566
+{}
+ \href{https://doi.org/10.1109/JSSC.2007.914337}{\urllinklabel}
+
+\bibitem[{Maqueda {et~al.}(2018)Maqueda, Loquercio, Gallego, Garc{\'i}a, \&
+  Scaramuzza}]{Maqueda2018Steering}
+Maqueda, A.~I., Loquercio, A., Gallego, G., Garc{\'i}a, N., \& Scaramuzza, D.
+  2018, in Proceedings of the IEEE/CVF Conference on Computer Vision and
+  Pattern Recognition (CVPR), 5419--5427
+{}
+ \href{https://doi.org/10.1109/CVPR.2018.00568}{\urllinklabel}
+
+\bibitem[{Posch {et~al.}(2014)Posch, Serrano-Gotarredona, Linares-Barranco, \&
+  Delbruck}]{Posch2014Retinomorphic}
+Posch, C., Serrano-Gotarredona, T., Linares-Barranco, B., \& Delbruck, T. 2014,
+  Proceedings of the IEEE, 102, 1470
+{}
+ \href{https://doi.org/10.1109/JPROC.2014.2346155}{\urllinklabel}
+
+\bibitem[{Rao \& Ballard(1999)}]{Rao1999V1PC}
+Rao, R. P.~N., \& Ballard, D.~H. 1999, Nature Neuroscience, 2, 79
+{}
+ \href{https://doi.org/10.1038/4580}{\urllinklabel}
+
+\bibitem[{Rebecq {et~al.}(2017)Rebecq, Horstsch{\"a}fer, Gallego, \&
+  Scaramuzza}]{Rebecq2017EVO}
+Rebecq, H., Horstsch{\"a}fer, T., Gallego, G., \& Scaramuzza, D. 2017, in
+  Proceedings of the British Machine Vision Conference (BMVC)
+{}
+ \href{https://arxiv.org/abs/1610.03155}{\urllinklabel}
+
+\bibitem[{Rebecq {et~al.}(2019)Rebecq, Ranftl, Koltun, \&
+  Scaramuzza}]{Rebecq2019E2VID}
+Rebecq, H., Ranftl, R., Koltun, V., \& Scaramuzza, D. 2019, in Proceedings of
+  the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR),
+  3857--3866
+{}
+ \href{https://openaccess.thecvf.com/content_CVPR_2019/html/Rebecq_Events-to-Video_Bringing_Modern_Computer_Vision_to_Event_Cameras_CVPR_2019_paper.html}{\urllinklabel}
+
+\bibitem[{Scheerlinck(2021)}]{Scheerlinck2021Thesis}
+Scheerlinck, C. 2021, PhD thesis, The Australian National University
+{}
+{}
+
+\bibitem[{Stoffregen {et~al.}(2019)Stoffregen, Gallego, Drummond, Kleeman, \&
+  Scaramuzza}]{Stoffregen2019Segmentation}
+Stoffregen, T., Gallego, G., Drummond, T., Kleeman, L., \& Scaramuzza, D. 2019,
+  in Proceedings of the IEEE/CVF International Conference on Computer Vision
+  (ICCV), 7244--7253
+{}
+ \href{https://doi.org/10.1109/ICCV.2019.00735}{\urllinklabel}
+
+\bibitem[{Wang(2025)}]{Wang2025Thesis}
+Wang, Z. 2025, PhD thesis, The Australian National University
+{}
+{}
+
+\bibitem[{Wang {et~al.}(2024)Wang, Molloy, van Goor, \&
+  Mahony}]{Wang2024AEBTracker}
+Wang, Z., Molloy, T., van Goor, P., \& Mahony, R. 2024, IEEE Transactions on
+  Robotics, accepted Aug 7, 2024
+{}
+ \href{https://arxiv.org/html/2307.10593}{\urllinklabel}
+
+\bibitem[{Xu {et~al.}(2020)Xu, Jiang, Yu, Yang, \& Wang}]{Xu2020TCI}
+Xu, Y., Jiang, M., Yu, L., Yang, W., \& Wang, W. 2020, IEEE Transactions on
+  Computational Imaging, 6, 604
+{}
+ \href{https://doi.org/10.1109/TCI.2020.2964255}{\urllinklabel}
+
+\bibitem[{Zhu {et~al.}(2018)Zhu, Yuan, Chaney, \& Daniilidis}]{Zhu2018FlowNet}
+Zhu, A.~Z., Yuan, L., Chaney, K., \& Daniilidis, K. 2018, in Proceedings of the
+  IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops
+  (CVPRW)
+{}
+ \href{https://openaccess.thecvf.com/content_cvpr_2018_workshops/w4/html/Zhu_EV-FlowNet_Self-Supervised_Optical_CVPR_2018_paper.html}{\urllinklabel}
+
+\bibitem[{Zhu {et~al.}(2019)Zhu, Yuan, Chaney, \&
+  Daniilidis}]{Zhu2019Unsupervised}
+Zhu, A.~Z., Yuan, L., Chaney, K., \& Daniilidis, K. 2019, in Proceedings of the
+  IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR),
+  989--997
+{}
+ \href{https://openaccess.thecvf.com/content_CVPR_2019/html/Zhu_Unsupervised_Event-Based_Learning_of_Optical_Flow_Depth_and_Egomotion_CVPR_2019_paper.html}{\urllinklabel}
+
+\end{thebibliography}

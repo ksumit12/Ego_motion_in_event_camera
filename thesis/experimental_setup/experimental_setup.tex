@@ -11,9 +11,9 @@ This chapter documents the hardware apparatus, data-collection protocol, and sof
 We used a single event-based sensor mounted on a rigid aluminum frame facing a rotating disc (Fig.~\ref{fig:rig}). The relevant characteristics:
 
 \begin{itemize}
-  \item \textbf{Sensor:} [Specify your sensor model here, e.g., DVS128, DAVIS346, or other]. Resolution: 1280×720 pixels. Timestamp precision on the order of microseconds, polarity encoding in $\{\pm1\}$ (or $\{0,1\}$). Dynamic range exceeding 120\,dB.
+  \item \textbf{Sensor:} Prophesee Gen4 event camera (1280$\times$720). Timestamp precision on the order of microseconds; polarity encoding in $\{\pm1\}$ (or $\{0,1\}$). Dynamic range $\sim$120\,dB \cite{Finateu2020ISSCC}.
   \item \textbf{Lens:} Standard C-mount lens, focal length selected to provide adequate field of view for the disc. Focus was carefully set at the disc plane to maximize edge sharpness and contrast. Aperture chosen to avoid saturation while maintaining high contrast on the textured disc patterns.
-  \item \textbf{Mounting:} Camera clamped securely to aluminum extrusions to minimize vibration and mechanical drift. The baseline between the optical axis and disc center was kept approximately orthogonal to the disc plane to reduce perspective distortion over the region of interest. Test equipment (oscilloscope, signal generator) visible in Fig.~\ref{fig:rig} supported synchronization and timing measurements.
+  \item \textbf{Mounting:} Camera mounted on a tripod aimed at the rotating disc. The optical axis was approximately orthogonal to the disc plane over the region of interest.
   \item \textbf{Working distance:} Approximately 60--80\,cm from sensor to disc plane (calibrated via known disc diameter and imaged radius), yielding an imaged disc radius of 264\,px at the chosen focal length. This provided sufficient spatial resolution for motion estimation and cancellation analysis.
 \end{itemize}
 
@@ -33,27 +33,27 @@ The target is a flat wooden disc with an \emph{uneven, high-contrast pattern} ad
 \end{itemize}
 
 \subsection{Lighting Conditions}
-Event generation depends on brightness gradients and texture. We used diffuse LED panels positioned off-axis to minimize specular highlights on the disc. Ambient flicker was avoided by using DC-powered lights. Illumination was kept constant throughout each sequence; no HDR sweeps were performed. Before acquisition, we verified that background-activity noise (on a static scene) remained low relative to disc-induced events.
+Event generation depends on brightness gradients and texture. We used ambient room lighting only (curtains closed to minimize external variation); no external lighting was employed. Illumination varied slightly with the room lights but was stable during each sequence.
 
 \subsection{Calibration and Referencing}
 We performed lightweight calibration sufficient for short-horizon rotation modeling:
 
 \begin{itemize}
-  \item \textbf{Intrinsics/distortion:} Intrinsics were either pre-calibrated or assumed approximately linear over the disc region. If distortion was noticeable, we undistorted $(x,y)$ prior to prediction (see Chapter~\ref{chap:motion}).
-  \item \textbf{Disc center in image:} A quick \emph{circle fit} (Pratt/Taubin) on a short burst of disc events estimated $(c_x,c_y)$; the estimate was compared with any external tracker CSV center (when available). The operational center $\hat c$ used for prediction was the smoothed (EMA) time series.
-  \item \textbf{Angular velocity reference:} Angular position $\theta(t)$ was derived from the event cluster around the rim (or from tracker CSV) and differentiated to obtain $\omega(t)$, then smoothed (EMA) to reduce jitter. These trajectories form the time-aligned $(\hat c(t),\hat\omega(t))$ used in forward prediction.
+  \item \textbf{Intrinsics/distortion:} No intrinsic calibration was performed. Processing was done in pixel coordinates; distortion was not explicitly compensated.
+  \item \textbf{Disc center in image:} Estimated via circle fitting on short event windows; see Chapter~\ref{chap:motion} for the method.
+  \item \textbf{Angular velocity reference:} Estimated by angle differencing around the fitted center with causal smoothing; see Chapter~\ref{chap:motion}.
 \end{itemize}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.85\linewidth]{../images/setup_2.jpeg}
-  \caption{Experimental apparatus. The event camera (not visible, positioned off-camera right) views a patterned wooden disc mounted on a precision rotating spindle. The disc features six high-contrast paper patterns affixed with blue tape, creating varied edge structures for rich event generation. The grey mounting board provides a stable backdrop with a hand-drawn coordinate system (red $x$/$y$ axes, lower-left). Test equipment on the top shelf (oscilloscope, signal generator) supports timing and synchronization measurements. The aluminum extrusion frame ensures rigidity and controlled motion.}
+  \includegraphics[width=0.85\linewidth]{images/setup_2.jpeg}
+  \caption{Experimental apparatus. The event camera (tripod-mounted, off-camera right) views a patterned wooden disc mounted on a rotating spindle. The disc features six high-contrast paper patterns affixed with blue tape, creating varied edge structures for rich event generation. The grey mounting board provides a stable backdrop with a hand-drawn coordinate system (red $x$/$y$ axes, lower-left). Ambient room lighting was used.}
   \label{fig:rig}
 \end{figure}
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.7\linewidth]{../images/setup_1.jpeg}
+  \includegraphics[width=0.7\linewidth]{images/setup_2.jpeg}
   \caption{Close-up view of the patterned disc face. Six square paper patterns are arranged in a grid, secured with blue tape at the corners. Four patterns (center and lower rows) feature flowing concentric black and white lines creating curved edge structures. Two patterns (top corners) contain dense random assortments of shapes (squiggles, stars, circles, hearts) for high-frequency spatial content. This variety of textures ensures comprehensive testing of the cancellation algorithm under different edge orientations and densities.}
   \label{fig:disc}
 \end{figure}
@@ -73,29 +73,34 @@ with timestamps in microseconds (converted to seconds in software). For most ana
 We recorded sequences of 5--10\,s duration per capture, at rotation rates spanning 1.5--3.5\,rev/s ($\omega \approx 1.5--3.5$\,rad/s), to study the dependence of cancellation on angular velocity $\omega$ and radial phase speed $r|\omega|$. For the disc radius $r \approx 264$\,px imaged at this setup, the maximum circumferential velocity at the rim reached $\sim 800$\,px/s, creating high apparent motion to stress-test the temporal gating mechanism. Lighting and camera pose remained fixed across repeats within a set to ensure consistency.
 
 \subsection{Protocols and Repeats}
-To assess repeatability, each setting was recorded at least [\textit{$n$}] times. For sensitivity experiments we held all parameters fixed and varied one control at a time (e.g., $\Delta t$, $\epsilon_{xy}$, $\epsilon_t$, polarity mode, $\omega$-bias). Each sweep used identical temporal extents (three non-overlapping windows per sequence) to enable cross-window comparison.
+All analyses were performed on one primary recording (and, where noted, one supplementary sequence). Parameter sweeps changed \emph{software} settings only (e.g., $\Delta t$, $\epsilon_{xy}$, $\epsilon_t$, polarity mode, $\omega$-bias) on the \emph{same} recordings; no repeated acquisitions were performed. Each sweep used identical temporal extents (three non-overlapping windows per sequence) to enable cross-window comparison.
 
 \subsection{Data Splits}
-No learning was employed; thus no train/validation/test split was required. Instead, we designate \emph{analysis windows} (e.g., W1, W2, W3) within each sequence and report per-window curves (cancellation vs.\ parameter) as well as their mean and standard deviation. When we used tracker CSV for $(\hat c,\hat\omega)$, we withheld a short pre-roll window to tune smoothing constants and any constant bias correction.
+No learning was employed; thus no train/validation/test split was required. Instead, we designate \emph{analysis windows} (e.g., W1, W2, W3) within each sequence and report per-window curves (cancellation vs.\ parameter) as well as their mean and standard deviation. When a tracker CSV for $(\hat c,\hat\omega)$ was available, we used it directly and interpolated to event times (Chapter~\ref{chap:motion}); otherwise $(\hat c,\hat\omega)$ were estimated from the events as described in Chapter~\ref{chap:motion}.
 
 \subsection{Summary Table}
-Table~\ref{tab:sequences} summarizes the datasets used in the study. Replace placeholders with your actual counts.
+Table~\ref{tab:sequences} summarizes the datasets used in the study.
 
+\vspace{0.5\baselineskip}
 \begin{table}[H]
   \centering
+  \small
   \caption{Sequences used in experiments. ``Rate'' is the nominal spin frequency. $N$ is total events in the sequence. Analysis windows W1--W3 are non-overlapping 10\,ms slices used for robustness checks.}
   \label{tab:sequences}
-  \begin{tabular}{lccccl}
+  \begin{tabularx}{\linewidth}{@{} l c c c c X @{} }
     \toprule
     \textbf{Seq.} & \textbf{Duration (s)} & \textbf{Rate (rad/s)} & \textbf{Windows} & \textbf{$N$ (events)} & \textbf{Purpose} \\
     \midrule
-    Perlin-1280Hz & 10.0 & $\sim 2.0$ & W1--W6 & $\sim 36.3 \times 10^6$ & Primary analysis \\
+    Disc-PWM1280 & 10.0 & $\sim 3.6$ & W1--W6 & $\sim 36.3 \times 10^6$ & Primary analysis \\
     \bottomrule
-  \end{tabular}
+  \end{tabularx}
 \end{table}
 
+\paragraph{Throughput note.}
+For rapid iteration, we use short analysis windows (W1--W6, 10\,ms each) to obtain quick, stable estimates with low compute cost. In addition, we also ran full-sequence evaluations across a range of prediction horizons $\Delta t$ to measure the cancellation curve $CR(\Delta t)$ over the entire 10\,s recording; the corresponding plots are provided later in Chapter~\ref{chap:results}.
+
 \paragraph{Data characteristics.}
-The dataset comprises a single continuous 10-second recording at 1280\,Hz effective temporal sampling from the event sensor. The sequence contains three distinct high-contrast patterns (visible in Fig.~\ref{fig:disc}), creating varied edge densities across the disc face. Analysis was performed on six non-overlapping 10\,ms windows (W1--W6) extracted at $t = 5.0$, 5.01, 8.2$, 8.21$, 9.0$, and 9.01$\,s, enabling statistics across temporal variations in motion estimation and event density.
+The dataset comprises a single continuous 10-second recording. The motor driver PWM was set to 1280\,Hz to control the spinning speed; the event camera is asynchronous and has no fixed sampling rate. The sequence contains three distinct high-contrast patterns (visible in Fig.~\ref{fig:disc}), creating varied edge densities across the disc face. Analysis was performed on six non-overlapping 10\,ms windows (W1--W6) extracted at $t = 5.0$, 5.01, 8.2$, 8.21$, 9.0$, and 9.01$\,s, enabling statistics across temporal variations in motion estimation and event density.
 
 % ============================================================
 \section{Software Pipeline}
@@ -135,7 +140,7 @@ We implemented the pipeline in Python:
 \end{itemize}
 
 \subsection{Runtime and Throughput}
-On a modern workstation (e.g., Intel Core i7 or AMD Ryzen 7, 16--32\,GB RAM), processing proceeds in chunks of $10^6$ events to balance memory usage and efficiency. The predictor is embarrassingly parallel over events via vectorized NumPy operations; the dominant computational cost is spatial KD-tree querying within the temporal gate. Typical throughputs observed:
+On the workstation used (AMD Ryzen 9 5900HX, 8 cores/16 threads; 32\,GB RAM), processing proceeds in small buffered chunks of events to balance memory usage and efficiency while preserving per-event causality. Inner loops use NumPy for speed, but all matching decisions remain per-event at their decision times; the dominant cost is spatial neighborhood querying within the temporal gate. Typical throughputs observed:
 
 \begin{itemize}
   \item \textbf{Prediction:} $\geq 50$ million events/s (pure vectorized rotation with NumPy), limited only by memory bandwidth.

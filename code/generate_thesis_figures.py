@@ -212,9 +212,10 @@ def plot_cancellation_vs_dt(df=None):
     ax2.invert_yaxis()
     
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_cancellation_vs_dt.pdf", dpi=300, bbox_inches='tight')
     plt.savefig(OUTPUT_DIR / "figure_cancellation_vs_dt.png", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_cancellation_vs_dt.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_cancellation_vs_dt.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_cancellation_vs_dt.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_cancellation_vs_dt.svg'}")
     plt.close()
 
 # ============================================
@@ -273,8 +274,10 @@ def plot_tolerance_sensitivity(df=None):
     plt.suptitle('Cancellation Rate vs Tolerance Parameters', 
                 fontsize=14, fontweight='bold', y=1.02)
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_tolerance_sensitivity.pdf", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_tolerance_sensitivity.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_tolerance_sensitivity.png", dpi=300, bbox_inches='tight')
+    plt.savefig(OUTPUT_DIR / "figure_tolerance_sensitivity.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_tolerance_sensitivity.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_tolerance_sensitivity.svg'}")
     plt.close()
 
 # ============================================
@@ -363,8 +366,10 @@ def plot_3d_surface(df=None):
     plt.colorbar(scatter, ax=ax3, label='$\\Delta t$ (ms)')
     
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_3d_analysis.pdf", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_3d_analysis.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_3d_analysis.png", dpi=300, bbox_inches='tight')
+    plt.savefig(OUTPUT_DIR / "figure_3d_analysis.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_3d_analysis.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_3d_analysis.svg'}")
     plt.close()
 
 # ============================================
@@ -442,8 +447,10 @@ def plot_roi_analysis(df=None):
     axes[1].set_ylim(0, 100)
     
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_roi_analysis.pdf", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_roi_analysis.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_roi_analysis.png", dpi=300, bbox_inches='tight')
+    plt.savefig(OUTPUT_DIR / "figure_roi_analysis.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_roi_analysis.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_roi_analysis.svg'}")
     plt.close()
 
 # ============================================
@@ -492,8 +499,10 @@ def plot_radial_profile():
     ax.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_radial_profile.pdf", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_radial_profile.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_radial_profile.png", dpi=300, bbox_inches='tight')
+    plt.savefig(OUTPUT_DIR / "figure_radial_profile.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_radial_profile.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_radial_profile.svg'}")
     plt.close()
 
 # ============================================
@@ -584,8 +593,10 @@ def plot_parameter_selection(df=None):
     axes[3].grid(True, alpha=0.3, axis='x')
     
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_parameter_selection.pdf", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_parameter_selection.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_parameter_selection.png", dpi=300, bbox_inches='tight')
+    plt.savefig(OUTPUT_DIR / "figure_parameter_selection.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_parameter_selection.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_parameter_selection.svg'}")
     plt.close()
 
 # ============================================
@@ -731,8 +742,10 @@ def plot_displacement_distribution(df=None):
     axes[1].grid(True, alpha=0.3, axis='y')
     
     plt.tight_layout()
-    plt.savefig(OUTPUT_DIR / "figure_displacement_distribution.pdf", dpi=300, bbox_inches='tight')
-    print(f"  Saved: {OUTPUT_DIR / 'figure_displacement_distribution.pdf'}")
+    plt.savefig(OUTPUT_DIR / "figure_displacement_distribution.png", dpi=300, bbox_inches='tight')
+    plt.savefig(OUTPUT_DIR / "figure_displacement_distribution.svg", dpi=300, bbox_inches='tight')
+    print(f"  Saved: {OUTPUT_DIR / 'figure_displacement_distribution.png'}")
+    print(f"  Saved: {OUTPUT_DIR / 'figure_displacement_distribution.svg'}")
     plt.close()
 
 # ============================================
@@ -768,7 +781,9 @@ def main():
     print("="*70)
     
     print("\nGenerated Files:")
-    for file in sorted(OUTPUT_DIR.glob("*.pdf")):
+    for file in sorted(OUTPUT_DIR.glob("*.png")):
+        print(f"  - {file.name}")
+    for file in sorted(OUTPUT_DIR.glob("*.svg")):
         print(f"  - {file.name}")
     for file in sorted(OUTPUT_DIR.glob("*.csv")):
         print(f"  - {file.name}")

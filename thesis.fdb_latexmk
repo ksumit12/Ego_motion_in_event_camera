@@ -1,0 +1,16 @@
+# Fdb version 3
+["pdflatex"] 1761781480 "thesis/thesis.tex" "thesis.pdf" "thesis" 1761781480
+  "/etc/texmf/web2c/texmf.cnf" 1670927891 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr12.tfm" 1136768653 1288 655e228510b4c2a1abe905c368440826 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/bk12.clo" 1636758526 8285 589b019f4c77ae67e70783f50c29f749 ""
+  "/usr/share/texlive/texmf-dist/tex/latex/base/book.cls" 1636758526 23268 2b549a0e88d4c803f33b9b907020a582 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1644012257 39432 7155514e09a3d69036fac785183a21c2 ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1759756573 1435853 04f312c5063cc9ac724c9324fd14e831 ""
+  "anuthesis.sty" 0 -1 0 ""
+  "thesis.aux" 1761781480 32 3985256e7290058c681f74d7a3565a19 ""
+  "thesis/thesis.tex" 1761779310 4883 3833c92d8aede58eddfd6a88aa6b3403 ""
+  (generated)
+  "thesis.log"
+  "thesis.pdf"

@@ -1,0 +1,147 @@
+\contentsline {section}{List of Figures}{vi}{section*.5}%
+\contentsline {section}{List of Tables}{viii}{section*.7}%
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Overview and Motivation}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Problem Statement and Research Questions}{2}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Background: Event Cameras and Ego-Motion Compensation}{2}{section.1.3}%
+\contentsline {paragraph}{Event generation and noise.}{2}{section*.9}%
+\contentsline {paragraph}{Motion estimation with events.}{2}{section*.10}%
+\contentsline {paragraph}{Why cancellation instead of compensation?}{3}{section*.11}%
+\contentsline {section}{\numberline {1.4}Methodological Scope and Assumptions}{3}{section.1.4}%
+\contentsline {paragraph}{Scope and rationale.}{3}{section*.12}%
+\contentsline {paragraph}{Motion model.}{3}{section*.13}%
+\contentsline {paragraph}{Per-event cancellation mechanism.}{3}{section*.14}%
+\contentsline {paragraph}{Metrics and evaluation.}{3}{section*.15}%
+\contentsline {paragraph}{Sensitivity study (design).}{4}{section*.16}%
+\contentsline {paragraph}{Assumptions and limitations.}{4}{section*.17}%
+\contentsline {section}{\numberline {1.5}Contributions}{5}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Thesis Outline}{5}{section.1.6}%
+\contentsline {chapter}{\numberline {2}Background and Related Work}{7}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Principles of Event Cameras}{7}{section.2.1}%
+\contentsline {section}{\numberline {2.2}Event Data Processing: Asynchronous vs Batch Paradigms}{8}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Asynchronous, per-event methods}{8}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Batch accumulation and windowed representations}{9}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Positioning of this thesis}{9}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}Motion Estimation and Ego-Motion}{10}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Local optical flow}{10}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Global motion compensation and contrast maximization}{11}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Event-based VO, VIO, and SLAM}{11}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Implications for cancellation}{11}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Rotational and Circular-Motion Setups}{12}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Why rotation is a good testbed}{12}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Relation to motion compensation and segmentation}{12}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Operational use in this thesis}{12}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Event Prediction, Forward Models, and Predictive Suppression}{13}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Short-horizon propagation}{13}{subsection.2.5.1}%
+\contentsline {subsection}{\numberline {2.5.2}Per-event cancellation vs.\ batch compensation}{13}{subsection.2.5.2}%
+\contentsline {subsection}{\numberline {2.5.3}Connections to bio-inspired predictive suppression}{14}{subsection.2.5.3}%
+\contentsline {subsection}{\numberline {2.5.4}Learning-based predictors (context)}{14}{subsection.2.5.4}%
+\contentsline {section}{\numberline {2.6}Metrics and Evaluation Practices}{14}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Rates, residuals, and SNR-like measures}{14}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Ablations and sensitivity analyses}{15}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Bridging to the rest of the thesis}{15}{subsection.2.6.3}%
+\contentsline {chapter}{\numberline {3}Motion Estimation \& Event Prediction}{16}{chapter.3}%
+\contentsline {section}{\numberline {3.1}Purpose and Role in the Pipeline}{16}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Rotational Motion Model for Short Horizons}{16}{section.3.2}%
+\contentsline {paragraph}{Normalized vs. pixel coordinates.}{17}{section*.18}%
+\contentsline {section}{\numberline {3.3}From Events to Rotation Parameters}{17}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Problem Statement}{17}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Estimation Strategy}{17}{subsection.3.3.2}%
+\contentsline {subsubsection}{Direct angular velocity via contrast maximization}{17}{section*.19}%
+\contentsline {subsubsection}{Circle fitting and angle-differencing}{17}{section*.20}%
+\contentsline {subsection}{\numberline {3.3.3}Interpolation and Time Alignment}{18}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Event Prediction under Rotation}{18}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Error Sources and Sensitivity (pointer)}{19}{section.3.5}%
+\contentsline {section}{\numberline {3.6}Our Practical Estimation Pipeline}{19}{section.3.6}%
+\contentsline {section}{\numberline {3.7}Validation and Bridge to Experiments}{20}{section.3.7}%
+\contentsline {section}{\numberline {3.8}Discussion and Limitations}{20}{section.3.8}%
+\contentsline {chapter}{\numberline {4}Problem Formulation}{21}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Notation and Event Stream Model}{21}{section.4.1}%
+\contentsline {paragraph}{Objective.}{21}{section*.26}%
+\contentsline {section}{\numberline {4.2}Circular-Motion Ego-Motion Model}{22}{section.4.2}%
+\contentsline {paragraph}{Rationale and scope.}{22}{section*.27}%
+\contentsline {section}{\numberline {4.3}Per-Event Forward Prediction with a Temporal Gate}{22}{section.4.3}%
+\contentsline {paragraph}{Remarks on implementation.}{23}{section*.28}%
+\contentsline {paragraph}{Discussion of polarity.}{23}{section*.29}%
+\contentsline {subsection}{\numberline {4.3.1}Matching Policy and One-to-One Constraints}{23}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}Sets, Counters, and Residuals}{24}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}Causality, Buffers, and Complexity}{24}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Geometric and Temporal Sensitivity to Model Errors}{24}{section.4.4}%
+\contentsline {paragraph}{Angular-velocity bias.}{24}{section*.30}%
+\contentsline {paragraph}{Center-of-rotation bias.}{24}{section*.31}%
+\contentsline {paragraph}{Timing uncertainty, horizon, and the temporal gate.}{25}{section*.32}%
+\contentsline {paragraph}{Implications for the spatial gate.}{25}{section*.33}%
+\contentsline {section}{\numberline {4.5}Formal Cancellation Rule}{25}{section.4.5}%
+\contentsline {section}{\numberline {4.6}Cancellation Implementation and Representation}{25}{section.4.6}%
+\contentsline {section}{\numberline {4.7}Assumptions, Limitations, and Threats to Validity}{26}{section.4.7}%
+\contentsline {paragraph}{Failure modes.}{26}{section*.34}%
+\contentsline {section}{\numberline {4.8}Bridge to Metrics and Experiments}{26}{section.4.8}%
+\contentsline {chapter}{\numberline {5}Event Cancellation Algorithm}{27}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Overview and Design Goals}{27}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Inputs, Outputs, and State}{27}{section.5.2}%
+\contentsline {paragraph}{Inputs.}{27}{section*.35}%
+\contentsline {paragraph}{Outputs.}{27}{section*.36}%
+\contentsline {paragraph}{State.}{27}{section*.37}%
+\contentsline {section}{\numberline {5.3}Per-Event Prediction}{28}{section.5.3}%
+\contentsline {section}{\numberline {5.4}Temporal Gate and Candidate Retrieval}{28}{section.5.4}%
+\contentsline {section}{\numberline {5.5}Spatial \& Polarity Gating, and Pairing Policy}{28}{section.5.5}%
+\contentsline {paragraph}{Mutual nearest neighbors (MNN).}{29}{section*.38}%
+\contentsline {paragraph}{Adaptive spatial tolerance (optional).}{29}{section*.39}%
+\contentsline {section}{\numberline {5.6}Cancellation and Residuals}{29}{section.5.6}%
+\contentsline {section}{\numberline {5.7}Complexity and Throughput}{30}{section.5.7}%
+\contentsline {section}{\numberline {5.8}Numerical Details and Edge Cases}{30}{section.5.8}%
+\contentsline {paragraph}{Sub-pixel rasterization.}{30}{section*.40}%
+\contentsline {paragraph}{Time alignment and latency.}{30}{section*.41}%
+\contentsline {paragraph}{Polarity asymmetry.}{30}{section*.42}%
+\contentsline {paragraph}{Boundary conditions.}{30}{section*.43}%
+\contentsline {section}{\numberline {5.9}Algorithm}{31}{section.5.9}%
+\contentsline {section}{\numberline {5.10}Connection to Literature and Rationale}{31}{section.5.10}%
+\contentsline {section}{\numberline {5.11}Parameter Selection Heuristics}{32}{section.5.11}%
+\contentsline {section}{\numberline {5.12}Limitations and Failure Modes}{32}{section.5.12}%
+\contentsline {chapter}{\numberline {6}Experimental Setup}{33}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Hardware and Apparatus}{33}{section.6.1}%
+\contentsline {subsection}{\numberline {6.1.1}Event Camera and Optics}{33}{subsection.6.1.1}%
+\contentsline {subsection}{\numberline {6.1.2}Spinning Disc Rig}{33}{subsection.6.1.2}%
+\contentsline {subsection}{\numberline {6.1.3}Lighting Conditions}{34}{subsection.6.1.3}%
+\contentsline {subsection}{\numberline {6.1.4}Calibration and Referencing}{34}{subsection.6.1.4}%
+\contentsline {section}{\numberline {6.2}Datasets and Protocol}{35}{section.6.2}%
+\contentsline {subsection}{\numberline {6.2.1}Sequences}{35}{subsection.6.2.1}%
+\contentsline {paragraph}{Typical settings.}{36}{section*.44}%
+\contentsline {subsection}{\numberline {6.2.2}Protocols and Repeats}{36}{subsection.6.2.2}%
+\contentsline {subsection}{\numberline {6.2.3}Data Splits}{36}{subsection.6.2.3}%
+\contentsline {subsection}{\numberline {6.2.4}Summary Table}{37}{subsection.6.2.4}%
+\contentsline {paragraph}{Throughput note.}{37}{section*.45}%
+\contentsline {paragraph}{Data characteristics.}{37}{section*.46}%
+\contentsline {section}{\numberline {6.3}Software Pipeline}{37}{section.6.3}%
+\contentsline {subsection}{\numberline {6.3.1}Overview}{37}{subsection.6.3.1}%
+\contentsline {subsection}{\numberline {6.3.2}Implementation Details}{38}{subsection.6.3.2}%
+\contentsline {subsection}{\numberline {6.3.3}Runtime and Throughput}{38}{subsection.6.3.3}%
+\contentsline {subsection}{\numberline {6.3.4}Reproducibility and Configuration}{39}{subsection.6.3.4}%
+\contentsline {subsection}{\numberline {6.3.5}Safety Checks and Diagnostics}{39}{subsection.6.3.5}%
+\contentsline {chapter}{\numberline {7}Results}{41}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Overall Cancellation Performance}{41}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Parameter Sensitivity Analysis}{41}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Spatial Distribution of Residuals}{43}{section.7.3}%
+\contentsline {section}{\numberline {7.4}Region-of-Interest Analysis}{44}{section.7.4}%
+\contentsline {section}{\numberline {7.5}Displacement Statistics}{45}{section.7.5}%
+\contentsline {section}{\numberline {7.6}Qualitative Visualisation}{46}{section.7.6}%
+\contentsline {section}{\numberline {7.7}Comparison with Motion Estimation Accuracy}{47}{section.7.7}%
+\contentsline {section}{\numberline {7.8}Limitations and Failure Cases}{47}{section.7.8}%
+\contentsline {section}{\numberline {7.9}Summary of Results}{48}{section.7.9}%
+\contentsline {chapter}{\numberline {8}Sensitivity Analysis of Parameters}{50}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Effect of Prediction Horizon \(\Delta t\)}{50}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Spatial Tolerance (\( \epsilon _{xy} \), pixels)}{51}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Temporal Tolerance (\( \epsilon _{t} \), ms)}{52}{section.8.3}%
+\contentsline {section}{\numberline {8.4}Polarity Handling}{52}{section.8.4}%
+\contentsline {section}{\numberline {8.5}Angular Velocity Bias}{53}{section.8.5}%
+\contentsline {section}{\numberline {8.6}Residuals vs. Background Baseline}{53}{section.8.6}%
+\contentsline {section}{\numberline {8.7}Summary of Trends}{54}{section.8.7}%
+\contentsline {chapter}{\numberline {9}Discussion}{55}{chapter.9}%
+\contentsline {section}{\numberline {9.1}Interpreting Sensitivity Results}{55}{section.9.1}%
+\contentsline {section}{\numberline {9.2}Implications and Limitations}{55}{section.9.2}%
+\contentsline {section}{\numberline {9.3}Threats to Validity}{55}{section.9.3}%
+\contentsline {chapter}{\numberline {10}Conclusions \& Future Work}{56}{chapter.10}%
+\contentsline {section}{\numberline {10.1}Summary}{56}{section.10.1}%
+\contentsline {section}{\numberline {10.2}Contributions}{56}{section.10.2}%
+\contentsline {section}{\numberline {10.3}Future Directions}{56}{section.10.3}%
+\contentsline {chapter}{Bibliography}{57}{section*.47}%

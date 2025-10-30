@@ -1,0 +1,89 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\citation{Finateu2020ISSCC}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Experimental Setup}{33}{chapter.6}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{chap:setup}{{6}{33}{Experimental Setup}{chapter.6}{}}
+\newlabel{chap:setup@cref}{{[chapter][6][]6}{[1][33][]33}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.1}Hardware and Apparatus}{33}{section.6.1}\protected@file@percent }
+\newlabel{sec:hardware}{{6.1}{33}{Hardware and Apparatus}{section.6.1}{}}
+\newlabel{sec:hardware@cref}{{[section][1][6]6.1}{[1][33][]33}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.1}Event Camera and Optics}{33}{subsection.6.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.2}Spinning Disc Rig}{33}{subsection.6.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.3}Lighting Conditions}{34}{subsection.6.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1.4}Calibration and Referencing}{34}{subsection.6.1.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.1}{\ignorespaces Experimental apparatus. The event camera (tripod-mounted, off-camera right) views a patterned wooden disc mounted on a rotating spindle. The disc features six high-contrast paper patterns affixed with blue tape, creating varied edge structures for rich event generation. The grey mounting board provides a stable backdrop with a hand-drawn coordinate system (red $x$/$y$ axes, lower-left). Ambient room lighting was used.}}{35}{figure.6.1}\protected@file@percent }
+\newlabel{fig:rig}{{6.1}{35}{Experimental apparatus. The event camera (tripod-mounted, off-camera right) views a patterned wooden disc mounted on a rotating spindle. The disc features six high-contrast paper patterns affixed with blue tape, creating varied edge structures for rich event generation. The grey mounting board provides a stable backdrop with a hand-drawn coordinate system (red $x$/$y$ axes, lower-left). Ambient room lighting was used}{figure.6.1}{}}
+\newlabel{fig:rig@cref}{{[figure][1][6]6.1}{[1][35][]35}}
+\@writefile{toc}{\contentsline {section}{\numberline {6.2}Datasets and Protocol}{35}{section.6.2}\protected@file@percent }
+\newlabel{sec:datasets}{{6.2}{35}{Datasets and Protocol}{section.6.2}{}}
+\newlabel{sec:datasets@cref}{{[section][2][6]6.2}{[1][35][]35}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.1}Sequences}{35}{subsection.6.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.2}{\ignorespaces Close-up view of the patterned disc face. Six square paper patterns are arranged in a grid, secured with blue tape at the corners. Four patterns (center and lower rows) feature flowing concentric black and white lines creating curved edge structures. Two patterns (top corners) contain dense random assortments of shapes (squiggles, stars, circles, hearts) for high-frequency spatial content. This variety of textures ensures comprehensive testing of the cancellation algorithm under different edge orientations and densities.}}{36}{figure.6.2}\protected@file@percent }
+\newlabel{fig:disc}{{6.2}{36}{Close-up view of the patterned disc face. Six square paper patterns are arranged in a grid, secured with blue tape at the corners. Four patterns (center and lower rows) feature flowing concentric black and white lines creating curved edge structures. Two patterns (top corners) contain dense random assortments of shapes (squiggles, stars, circles, hearts) for high-frequency spatial content. This variety of textures ensures comprehensive testing of the cancellation algorithm under different edge orientations and densities}{figure.6.2}{}}
+\newlabel{fig:disc@cref}{{[figure][2][6]6.2}{[1][35][]36}}
+\@writefile{toc}{\contentsline {paragraph}{Typical settings.}{36}{section*.44}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.2}Protocols and Repeats}{36}{subsection.6.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.3}Data Splits}{36}{subsection.6.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2.4}Summary Table}{37}{subsection.6.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6.1}{\ignorespaces Sequences used in experiments. ``Rate'' is the nominal spin frequency. $N$ is total events in the sequence. Analysis windows W1--W3 are non-overlapping 10\,ms slices used for robustness checks.}}{37}{table.6.1}\protected@file@percent }
+\newlabel{tab:sequences}{{6.1}{37}{Sequences used in experiments. ``Rate'' is the nominal spin frequency. $N$ is total events in the sequence. Analysis windows W1--W3 are non-overlapping 10\,ms slices used for robustness checks}{table.6.1}{}}
+\newlabel{tab:sequences@cref}{{[table][1][6]6.1}{[1][37][]37}}
+\@writefile{toc}{\contentsline {paragraph}{Throughput note.}{37}{section*.45}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Data characteristics.}{37}{section*.46}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6.3}Software Pipeline}{37}{section.6.3}\protected@file@percent }
+\newlabel{sec:software}{{6.3}{37}{Software Pipeline}{section.6.3}{}}
+\newlabel{sec:software@cref}{{[section][3][6]6.3}{[1][37][]37}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.1}Overview}{37}{subsection.6.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6.3}{\ignorespaces Software pipeline: estimation $\rightarrow $ prediction $\rightarrow $ temporal gate $\rightarrow $ spatial/polarity gate $\rightarrow $ one-to-one pairing $\rightarrow $ cancellation $\rightarrow $ metrics. All decisions are causal with bounded buffers.}}{38}{figure.6.3}\protected@file@percent }
+\newlabel{fig:pipeline}{{6.3}{38}{Software pipeline: estimation $\rightarrow $ prediction $\rightarrow $ temporal gate $\rightarrow $ spatial/polarity gate $\rightarrow $ one-to-one pairing $\rightarrow $ cancellation $\rightarrow $ metrics. All decisions are causal with bounded buffers}{figure.6.3}{}}
+\newlabel{fig:pipeline@cref}{{[figure][3][6]6.3}{[1][38][]38}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.2}Implementation Details}{38}{subsection.6.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.3}Runtime and Throughput}{38}{subsection.6.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.4}Reproducibility and Configuration}{39}{subsection.6.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3.5}Safety Checks and Diagnostics}{39}{subsection.6.3.5}\protected@file@percent }
+\@setckpt{experimental_setup/experimental_setup}{
+\setcounter{page}{41}
+\setcounter{equation}{0}
+\setcounter{enumi}{8}
+\setcounter{enumii}{0}
+\setcounter{enumiii}{0}
+\setcounter{enumiv}{0}
+\setcounter{footnote}{0}
+\setcounter{mpfootnote}{0}
+\setcounter{part}{0}
+\setcounter{chapter}{6}
+\setcounter{section}{3}
+\setcounter{subsection}{5}
+\setcounter{subsubsection}{0}
+\setcounter{paragraph}{0}
+\setcounter{subparagraph}{0}
+\setcounter{figure}{3}
+\setcounter{table}{1}
+\setcounter{float@type}{16}
+\setcounter{algorithm}{1}
+\setcounter{ALG@line}{24}
+\setcounter{ALG@rem}{0}
+\setcounter{ALG@nested}{0}
+\setcounter{ALG@Lnr}{2}
+\setcounter{ALG@blocknr}{10}
+\setcounter{ALG@storecount}{0}
+\setcounter{ALG@tmpcounter}{0}
+\setcounter{parentequation}{0}
+\setcounter{r@tfl@t}{0}
+\setcounter{LT@tables}{0}
+\setcounter{LT@chunks}{0}
+\setcounter{@pps}{0}
+\setcounter{@ppsavesec}{0}
+\setcounter{@ppsaveapp}{0}
+\setcounter{cp@cntr}{0}
+\setcounter{Item}{27}
+\setcounter{Hfootnote}{3}
+\setcounter{bookmark@seq@number}{51}
+\setcounter{NAT@ctr}{0}
+\setcounter{SC@C}{0}
+\setcounter{lstnumber}{1}
+\setcounter{section@level}{2}
+\setcounter{lstlisting}{0}
+}

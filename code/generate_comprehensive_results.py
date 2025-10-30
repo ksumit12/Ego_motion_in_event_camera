@@ -42,6 +42,17 @@ IMG_W, IMG_H = 1280, 720
 OUTPUT_DIR = Path("thesis_figures")
 OUTPUT_DIR.mkdir(exist_ok=True)
 
+# Unified export helper for high-quality image assets
+SAVE_DPI = 450  # publication-quality
+SAVE_FORMATS = ("png", "svg")  # raster + vector
+
+def save_figure(fig, basename: str):
+    """Save figure to all desired formats at high quality."""
+    for ext in SAVE_FORMATS:
+        out = OUTPUT_DIR / f"{basename}.{ext}"
+        fig.savefig(out, dpi=SAVE_DPI, bbox_inches='tight')
+        print(f"Saved: {out}")
+
 def circle_mask(x, y, cx, cy, r, scale=1.05):
     """Check if points are inside circle"""
     return (x - cx)**2 + (y - cy)**2 <= (r * scale)**2
@@ -126,9 +137,7 @@ def plot_1_primary_result(combined_events):
             fontsize=11, bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "figure1_cancellation_vs_dt.pdf", dpi=300, bbox_inches='tight')
-    fig.savefig(OUTPUT_DIR / "figure1_cancellation_vs_dt.png", dpi=300, bbox_inches='tight')
-    print(f"Saved: {OUTPUT_DIR / 'figure1_cancellation_vs_dt.pdf'}")
+    save_figure(fig, "figure1_cancellation_vs_dt")
     plt.close()
 
 def plot_2_tolerance_heatmap():
@@ -165,8 +174,7 @@ def plot_2_tolerance_heatmap():
                 fontsize=13, fontweight='bold')
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "figure2_tolerance_heatmap.pdf", dpi=300, bbox_inches='tight')
-    print(f"Saved: {OUTPUT_DIR / 'figure2_tolerance_heatmap.pdf'}")
+    save_figure(fig, "figure2_tolerance_heatmap")
     plt.close()
 
 def plot_3_roi_analysis(combined_events):
@@ -229,8 +237,7 @@ def plot_3_roi_analysis(combined_events):
     ax2_twin.legend(loc='upper right')
     
     plt.tight_layout()
-    fig.savefig(OUTPUT_DIR / "figure3_roi_analysis.pdf", dpi=300, bbox_inches='tight')
-    print(f"Saved: {OUTPUT_DIR / 'figure3_roi_analysis.pdf'}")
+    save_figure(fig, "figure3_roi_analysis")
     plt.close()
 
 def generate_table_summary():

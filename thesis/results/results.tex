@@ -23,7 +23,7 @@ The cancellation rate depends on the choice of spatial and temporal tolerances, 
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.95\linewidth]{../code/thesis_figures/figure_tolerance_sensitivity.png}
+  \includegraphics[width=0.95\linewidth]{../code/thesis_figures/figure_tolerance_sensitivity.pdf}
   \caption{Cancellation rate heatmaps for different prediction horizons: $\Delta t = 2$\,ms (left), $4$\,ms (center), and $6$\,ms (right). Color indicates cancellation rate from low (dark purple) to high (bright yellow). Annotation values show CR percentage. Optimal combinations lie at moderate tolerance values ($\epsilon_{xy} \approx 2--3$\,px, $\epsilon_t \approx 1--2$\,ms), balancing spatial mismatch with temporal uncertainty.}
   \label{fig:tolerance_heatmap}
 \end{figure}
@@ -52,7 +52,7 @@ To understand \emph{where} cancellation fails spatially, we analyze the radial p
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.75\linewidth]{../code/thesis_figures/figure_radial_profile.png}
+  \includegraphics[width=0.75\linewidth]{../code/thesis_figures/figure_radial_profile.pdf}
   \caption{Radial event density profile. Blue curve (circles): original events; red curve (squares): residual events after cancellation. The disc boundary at $r=264$\,px is marked with a dashed gray line. Cancellation is most effective at mid-radii ($r \approx 100--200$\,px), where edge density is high and phase errors remain small. Near the center ($r < 50$\,px), events are sparse; near the rim ($r > 250$\,px), phase errors accumulate fastest due to largest circumferential velocity $r\omega$. The shaded regions indicate cancelled events (green) vs.\ residual events (red).}
   \label{fig:radial_profile}
 \end{figure}
@@ -88,7 +88,7 @@ We quantify cancellation efficiency separately inside and outside the circular R
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.85\linewidth]{../code/thesis_figures/figure_roi_analysis.png}
+  \includegraphics[width=0.85\linewidth]{../code/thesis_figures/figure_roi_analysis.pdf}
   \caption{ROI cancellation analysis. (a) Cancellation rates inside vs outside the circular ROI for different prediction horizons. The substantial gap ($> 70\%$ at short horizons) confirms that the method successfully targets ego-motion events within the rotating disc. (b) Cancellation efficiency gap (difference between inside and outside) as a function of $\Delta t$. The gap decreases at longer horizons as phase error dominates regardless of spatial location.}
   \label{fig:roi_comparison}
 \end{figure}
@@ -101,7 +101,7 @@ For successful matches, we analyze the distribution of spatial displacements $\|
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.85\linewidth]{../code/thesis_figures/figure_displacement_distribution.png}
+  \includegraphics[width=0.85\linewidth]{../code/thesis_figures/figure_displacement_distribution.pdf}
   \caption{Displacement distribution analysis. (a) Histogram of mean displacement values across all parameter combinations, showing most configurations achieve $\langle \|x_j - x_i'\| \rangle < 2$\,px. The red dashed line marks the overall mean. (b) Fraction of matches exceeding displacement thresholds (3\,px, 5\,px), indicating that over 95\% of matches occur within 3\,px of predicted locations. This validates the spatial tolerance design.}
   \label{fig:displacement}
 \end{figure}

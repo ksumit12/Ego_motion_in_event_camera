@@ -138,7 +138,7 @@ The spatial/temporal gating echoes the alignment logic of IWE-based methods \cit
 \section{Parameter Selection Heuristics}
 The following guidelines are used to initialize and sweep parameters (formal sweeps appear in Chapter~\ref{chap:metrics}).
 \begin{itemize}
-    \item \textbf{Prediction horizon $\Delta t$:} Start at $0.5$\,ms; sweep $0.25$–$2$\,ms. Larger $\Delta t$ increases temporal separation but also phase error per \eqref{eq:err-omega}.
+    \item \textbf{Prediction horizon $\Delta t$:} Start at $0.5$\,ms; sweep $0.25$–$2$\,ms. Larger $\Delta t$ increases temporal separation but also phase error per \eqref{eq:angvel-error}.
     \item \textbf{Temporal tolerance $\epsilon_t$:} Choose $2$–$3$\,ms to absorb timestamp variability; relate to sensor timing $\tau_t$ and spin rate $|\hat\omega|$ (Chapter~\ref{chap:problem}).
     \item \textbf{Spatial tolerance $\epsilon_{xy}$:} Start at $1.5$–$2$\,px; consider adaptive $\epsilon_{xy}(r)$ via \eqref{eq:adaptive-eps} for high radii.
     \item \textbf{Polarity mode $\pi$:} Use strict opposite for conservative cancellation; report \emph{ignore} as an ablation to probe polarity asymmetry.

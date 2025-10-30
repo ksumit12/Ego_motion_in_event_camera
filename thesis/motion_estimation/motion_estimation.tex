@@ -66,56 +66,27 @@ x_i' \;=\; \mathcal{R}\!\left(x_i;\;\hat c(t_i),\;\hat\omega(t_i)\,\Delta t\righ
 \qquad t_i' \;=\; t_i + \Delta t,
 \label{eq:per-event-predict}
 \end{equation}
-yielding the predicted future location and decision time. These predicted tuples $\hat e_i=(x_i',t_i',\bar p_i)$ feed the spatio-temporal gate in Chapter~\ref{chap:problem}. Because $\Delta t$ is short (typically $\leq$ a few milliseconds), assuming piecewise-constant $\omega$ over $[t_i,t_i+\Delta t]$ is reasonable for rigs with slowly varying spin rate \cite{Gallego2017Angular,Scheerlinck2021Thesis}. The choice of $\Delta t$ trades phase separation (too small $\Delta t$ $\Rightarrow$ insufficient temporal separation) versus sensitivity to parameter bias (too large $\Delta t$ $\Rightarrow$ larger spatial mismatch), as quantified next.
+and we adopt the predicted tuple
+\[
+e'_i = (x'_i,\,t'_i,\,p'_i),\quad p'_i = -p_i,
+\]
+matching the notation in Chapter~\ref{chap:problem}. These predicted events feed the spatio-temporal gate. Because $\Delta t$ is short (typically $\leq$ a few milliseconds), assuming piecewise-constant $\omega$ over $[t_i,t_i+\Delta t]$ is reasonable for rigs with slowly varying spin rate \cite{Gallego2017Angular,Scheerlinck2021Thesis}.
 
-\section{Error Sources and Sensitivity}
-Let the true parameters be $(c^\star,\omega^\star)$ and the estimates $(\hat c,\hat\omega)$. For a point at radius $r=\|x_i-c^\star\|_2$, the spatial prediction error after $\Delta t$ decomposes into (i) angular-velocity error, (ii) center bias, and (iii) timing uncertainty.
-
-\paragraph{Angular-velocity bias.}
-With $\Delta\omega = \hat\omega-\omega^\star$, the predicted angle differs by $\delta\theta = \Delta\omega\,\Delta t$. The spatial error on the circle of radius $r$ is
-\begin{equation}
-\varepsilon_{\omega}(r,\Delta t) 
-\;=\; 2r\,\big|\sin(\delta\theta/2)\big| 
-\;\approx\; r\,|\Delta\omega|\,\Delta t,
-\label{eq:err-omega}
-\end{equation}
-for small $\delta\theta$ (first-order approximation). This linear dependence explains the degradation in cancellation as either $r$ or $\Delta t$ grows for a fixed $\Delta\omega$.
-
-\paragraph{Center-of-rotation bias.}
-If $\Delta c = \hat c - c^\star$, then even with perfect $\omega$ the rotation is applied about the wrong center, causing a position error with a dominant, roughly radius-independent component
-\begin{equation}
-\varepsilon_c(r) \;\lesssim\; \|\Delta c\|_2,
-\label{eq:err-center}
-\end{equation}
-which couples with \eqref{eq:err-omega} when both errors are present. In practice, center bias manifests as a radius-dependent residual structure in cancellation outputs.
-
-\paragraph{Timing uncertainty and temporal gating.}
-Let $\tau_t$ capture effective temporal uncertainty (timestamp quantization, readout delays). Over horizon $\Delta t$, the phase (angular) uncertainty is $\sigma_\theta \approx |\omega^\star|\,\tau_t$, producing spatial uncertainty $\sigma_x \approx r\,\sigma_\theta$. Hence, increasing $\Delta t$ separates prediction and observation in time (useful for gating) but increases phase error for a fixed $\Delta\omega$; decreasing $\Delta t$ reduces phase error but also shrinks the temporal gate and may cause overlap with predictor latency. These effects motivate the temporal gate $|t_j-(t_i+\Delta t)|\le \epsilon_t$ in Chapter~\ref{chap:problem} and the parameter sweeps in Chapter~\ref{chap:metrics}.
-
-\paragraph{Implications for cancellation.}
-A sufficient condition for a successful match is
-\begin{equation}
-\varepsilon_{\omega}(r,\Delta t) + \varepsilon_c(r) + \sigma_x \;\le\; \epsilon_{xy},
-\label{eq:gate-sufficient}
-\end{equation}
-which captures how (\emph{i}) accurate $\hat\omega$ matters more at large radii and large $\Delta t$, and (\emph{ii}) small center biases translate into a uniform error floor limiting achievable cancellation even at small $\Delta t$. These dependencies are consistent with the alignment principles in event warping \cite{Gallego2018CMax} and motion segmentation via compensation \cite{Stoffregen2019Segmentation}.
+\section{Error Sources and Sensitivity (pointer)}
+Error terms and gate-sizing are detailed once in Chapter~\ref{chap:problem} (Eqs.~\eqref{eq:angvel-error}--\eqref{eq:gate-condition}). Here we refer to that analysis to avoid repetition.
 
 \section{Our Practical Estimation Pipeline}
 \label{sec:our-pipeline}
 We adopt a pragmatic pipeline tailored to the disc rig and asynchronous cancellation:
 
 \subsection*{(1) Event collection and short-window accumulation}
-Events are processed in short, overlapping windows (e.g., a few milliseconds) to form sparse spatial clouds suitable for circle fitting or to drive rotational contrast maximization when a stable rim/marker is present. Window length balances spatial support (too small $\Rightarrow$ sparse) and motion stationarity (too large $\Rightarrow$ parameter drift).
+Events are processed in short, overlapping windows (e.g., a few milliseconds) to form sparse spatial clouds suitable for circle fitting. Window length balances spatial support (too small $\Rightarrow$ sparse) and motion stationarity (too large $\Rightarrow$ parameter drift).
 
 \subsection*{(2) Center estimation via circle fitting}
 We solve \eqref{eq:circlefit} on the accumulated cloud using a robust algebraic fit (Pratt/Taubin) with optional RANSAC to mitigate outliers from background activity and edge fragments. The resulting $\hat c$ is smoothed over time with a causal low-pass filter.
 
 \subsection*{(3) Angular velocity estimation}
-Two interchangeable routes are used:
-\begin{itemize}
-\item \emph{IWE-based specialization:} Optimize $\omega$ by maximizing IWE contrast over the short window for the current $\hat c$ \cite{Gallego2017Angular,Gallego2018CMax}. This is robust when event density is high and edges are well-distributed.
-\item \emph{Angle differencing:} Compute angles $\theta_k$ around $\hat c$ and evaluate \eqref{eq:angvel-diff} with causal smoothing. This is lightweight and well-matched to strong circular structure.
-\end{itemize}
+We use \emph{angle differencing}: compute angles $\theta_k$ around $\hat c$ and evaluate \eqref{eq:angvel-diff} with causal smoothing. This is lightweight and well-matched to strong circular structure.
 When available, an external tracker or gyroscope prior provides $\tilde\omega$, which we fuse by exponential averaging:
 \begin{equation}
 \hat\omega(t_k) \leftarrow (1-\alpha)\,\hat\omega(t_{k^-}) + \alpha\,\tilde\omega(t_k),\qquad \alpha\in(0,1],
@@ -127,13 +98,13 @@ trading responsiveness for noise attenuation \cite{Rebecq2017EVO}.
 We store $\{\hat c(t_m),\hat\omega(t_m)\}$ and evaluate \eqref{eq:interp} at \emph{every} event time $t_i$ before applying \eqref{eq:per-event-predict}. This preserves causality and avoids batching, aligning with our per-event cancellation design.
 
 \subsection*{(5) Sanity checks and fast diagnostics}
-As an online diagnostic, we monitor an IWE sharpness proxy and a \emph{radial residual profile} (after cancellation) to detect center bias (flat offset) and angular-velocity drift (radius-dependent widening). Such diagnostics mirror the role of contrast objectives in \cite{Gallego2018CMax} and the alignment criteria in segmentation-by-compensation \cite{Stoffregen2019Segmentation}.
+As an online diagnostic, we monitor a \emph{radial residual profile} (after cancellation) to detect center bias (flat offset) and angular-velocity drift (radius-dependent widening), mirroring alignment criteria in segmentation-by-compensation \cite{Stoffregen2019Segmentation}.
 
 \section{Validation and Bridge to Experiments}
 We validate $(\hat c,\hat\omega)$ in two ways. First, when an external tracker is used, we compare $\hat\omega$ to the tracker's angular velocity (or to a derived encoder ground truth) and report absolute and relative errors over time. Second, we assess \emph{functional} quality via downstream metrics: cancellation ratio, residual density on background vs.\ disc masks, and radial residual profiles (Chapter~\ref{chap:metrics}). Improvements in these metrics under consistent gating settings indicate better short-horizon alignment, consistent with event-warping principles \cite{Gallego2018CMax}.
 
 \section{Discussion and Limitations}
-Rotation-only modeling simplifies short-horizon prediction and supports causal operation, but suffers when translation is non-negligible or the rotation center drifts. In such cases, adding a weak translation term or fusing gyroscope priors can stabilize $\hat\omega$ and reduce phase error \cite{Rebecq2017EVO}. Learning-based estimators could supply priors for $\hat c$ or refine $\hat\omega$, but would likely introduce latency and dependence on training distributions \cite{Zhu2018FlowNet,Zhu2019Unsupervised}. Our emphasis remains on lightweight, analyzable estimation that integrates cleanly with per-event cancellation.
+Rotation-only modeling simplifies short-horizon prediction and supports causal operation, but suffers when translation is non-negligible or the rotation center drifts. In principle, handling translation requires either scene depth (or inverse depth) or restrictive assumptions (e.g., far-scene, planar scene) \cite{Gallego2020Survey,Gallego2018CMax,Rebecq2017EVO,Benosman2014Epipolar}. We therefore did not include translation in our implementation; on our rig and time horizons, rotation dominates the image motion. A possible extension is to include a small, regularized translation component under a far-scene/constant inverse-depth assumption as a prior (``weak translation''), but we leave this as future work \cite{Gallego2020Survey}. Gyroscope fusion can also stabilize $\hat\omega$ and reduce phase error \cite{Rebecq2017EVO}. Learning-based estimators could supply priors for $\hat c$ or refine $\hat\omega$, but would likely introduce latency and dependence on training distributions \cite{Zhu2018FlowNet,Zhu2019Unsupervised}. Our emphasis remains on lightweight, analyzable estimation that integrates cleanly with per-event cancellation.
 
 \medskip
 \noindent\textbf{Summary.} This chapter presented a rotation-only motion model for short-horizon prediction, reviewed estimation strategies with events, and described a practical, causal pipeline to produce time-aligned $(\hat c,\hat\omega)$ for per-event forward prediction. The next chapter details the cancellation rule and implementation, and Chapter~\ref{chap:metrics} quantifies sensitivity to $\Delta t$, spatial/temporal tolerances, and parameter biases.

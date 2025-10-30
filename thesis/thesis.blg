@@ -1,0 +1,63 @@
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: thesis.aux
+A level-1 auxiliary file: dedication.aux
+A level-1 auxiliary file: disclaimer.aux
+A level-1 auxiliary file: acknowledgements.aux
+A level-1 auxiliary file: abstract.aux
+A level-1 auxiliary file: introduction/introduction.aux
+A level-1 auxiliary file: background/background.aux
+A level-1 auxiliary file: motion_estimation/motion_estimation.aux
+A level-1 auxiliary file: problem_formulation/problem_formulation.aux
+A level-1 auxiliary file: cancellation/cancellation.aux
+A level-1 auxiliary file: experimental_setup/experimental_setup.aux
+A level-1 auxiliary file: results/results.aux
+A level-1 auxiliary file: metrics_analysis/metrics_analysis.aux
+A level-1 auxiliary file: discussion/discussion.aux
+A level-1 auxiliary file: conclusions/conclusions.aux
+The style file: astroads.bst
+Database file #1: bibfile.bib
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Warning--empty pages in Delbruck2020Handbook
+You've used 23 entries,
+            3098 wiz_defined-function locations,
+            815 strings with 11078 characters,
+and the built_in function-call counts, 12532 in all, are:
+= -- 1067
+> -- 798
+< -- 5
++ -- 280
+- -- 249
+* -- 1057
+:= -- 2120
+add.period$ -- 23
+call.type$ -- 23
+change.case$ -- 175
+chr.to.int$ -- 23
+cite$ -- 24
+duplicate$ -- 571
+empty$ -- 865
+format.name$ -- 319
+if$ -- 2545
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 10
+newline$ -- 125
+num.names$ -- 92
+pop$ -- 211
+preamble$ -- 1
+purify$ -- 173
+quote$ -- 0
+skip$ -- 455
+stack$ -- 0
+substring$ -- 651
+swap$ -- 74
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 207
+warning$ -- 1
+while$ -- 102
+width$ -- 0
+write$ -- 284
+(There was 1 warning)
