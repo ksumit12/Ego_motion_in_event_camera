@@ -1,10 +1,26 @@
 \chapter{Discussion}\label{chap:discussion}
 
 \section{Interpreting Sensitivity Results}
-Why performance saturates; which parameters dominate.
+The sensitivity analyses in Chapters~\ref{chap:results} and \ref{chap:metrics} reveal a coherent picture of when predictive cancellation succeeds and why it fails.
+
+\paragraph{Prediction horizon governs phase error.} Cancellation decays approximately exponentially with the prediction horizon $\Delta t$, as geometric phase misalignment accumulates (Eq.~\eqref{eq:angvel-error}). The empirical half-life $\tau_{1/2} \approx 3.5$\,ms is consistent with the measured angular velocity and typical radii, validating the forward model. Importantly, performance is excellent at short horizons: CR exceeds 90\% for $\Delta t<2$\,ms and reaches up to 95\% at sub-millisecond horizons.
+
+\paragraph{Spatial and temporal gates trade precision for recall.} Increasing the spatial tolerance $\epsilon_{xy}$ rapidly improves cancellation until $\sim$2--3\,px, beyond which gains saturate and the risk of over-cancellation grows. Temporal gating shows a similar pattern with an optimal region around 0.5--1.0\,ms: too strict misses true matches due to timestamp jitter; too loose increases unrelated overlaps. The observed sweet spots align with the analytic coupling $\epsilon_t^{*} \approx \epsilon_{xy}/(r\,|\omega|)$.
+
+\paragraph{Polarity handling affects artifacts.} Enforcing opposite polarity slightly reduces numeric CR compared to ignoring polarity, but it yields cleaner residuals with fewer symmetric artifacts, which is desirable for predictive inhibition.
+
+\paragraph{Bias in motion estimation is the dominant failure mode.} Small biases in angular velocity (up to $\pm0.05$\,rad/s) degrade CR approximately linearly; beyond that, performance collapses quickly. Residual maps localize errors: widening rim annuli indicate phase drift (velocity bias), while uniform radial offsets suggest center misestimation.
 
 \section{Implications and Limitations}
-Model mismatch, sensor non-idealities, timing offsets.
+\paragraph{Implications.} The results show that predictive, per-event cancellation is viable in real time for rotational ego-motion, with strong selectivity inside the ROI and preservation of background structure. Tight early-horizon performance suggests utility for bandwidth reduction and pre-filtering in perception stacks, especially when downstream tasks are sensitive to redundant motion signals.
+
+\paragraph{Model limitations.} The rotation-only model neglects translation and acceleration. In scenarios with significant non-circular motion or depth variation, residual structure persists even with optimal gating. The approach also assumes locally consistent edge geometry; highly textured, non-Lambertian regions can induce spurious matches at large tolerances.
+
+\paragraph{Sensor and timing non-idealities.} Timestamp quantization and latency jitter motivate nonzero $\epsilon_t$. Per-pixel contrast thresholds and refractory effects introduce asymmetries in ON/OFF event generation, which interact with polarity handling. Clock drift or time-base misalignment between tracker-derived motion and the event stream would directly affect phase consistency.
 
 \section{Threats to Validity}
-Data representativeness, hyperparameter tuning bias, reproducibility.
+\paragraph{Internal validity.} Parameter sweeps risk overfitting to a specific window or ROI. To mitigate this, we reported cross-window consistency, highlighted saturation regimes rather than single optima, and used diagnostic residual maps to separate geometric from gating effects.
+
+\paragraph{External validity.} The spinning-disc dataset isolates rotational motion in a controlled setting; general scenes with depth variation and non-rigid motion may exhibit different cancellation characteristics. Nevertheless, the geometric phase-error analysis is generic and provides guidance for broader ego-motion cases.
+
+\paragraph{Reproducibility.} Figures are generated from provided scripts with fixed seeds and documented parameters. Remaining variability arises from tracker noise and circle-fitting stability; the bias-sweep diagnostic provides a practical calibration procedure to recover similar performance across runs.

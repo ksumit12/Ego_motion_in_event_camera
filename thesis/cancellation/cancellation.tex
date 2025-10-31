@@ -103,22 +103,22 @@ Predictions that fall outside the image plane (after \eqref{eq:canc-forward}) ar
 \caption{Causal per-event cancellation with temporal gate}
 \label{alg:cancellation}
 \begin{algorithmic}[1]
-\Require time-sorted events $E=\{(x_i,y_i,p_i,t_i)\}_{i=1}^N$, parameters $(\hat{\mathbf c}(t),\hat{\omega}(t))$, horizon $\Delta t$, tolerances $(\varepsilon_t,\varepsilon_{xy})$, polarity mode $\Pi$
+\Require time-sorted events $E=\{(x_i,y_i,p_i,t_i)\}_{i=1}^N$, parameters $(\hat c(t),\hat\omega(t))$, horizon $\Delta t$, tolerances $(\epsilon_t,\epsilon_{xy})$, polarity mode $\pi$
 \State $\textsc{PredQ}\gets$ empty min-heap keyed by predicted time $t'$
 \State $\textsc{RealBuf}\gets$ empty deque; \quad $L\gets 1,\; R\gets 1$
 \For{each event $e_i=(x_i,y_i,p_i,t_i)\in E$}
-  \State $\hat{\mathbf c}_i \gets \textsc{Interp}(\hat{\mathbf c},t_i)$;\quad $\hat{\omega}_i \gets \textsc{Interp}(\hat{\omega},t_i)$
-  \State $(x'_i,y'_i)\gets \textsc{Rotate}((x_i,y_i);\hat{\mathbf c}_i,\hat{\omega}_i\cdot \Delta t)$;\quad $t'_i\gets t_i+\Delta t$;\quad $\bar p_i\gets \textsc{FlipPol}(p_i)$
+  \State $\hat c_i \gets \textsc{Interp}(\hat c,t_i)$;\quad $\hat{\omega}_i \gets \textsc{Interp}(\hat\omega,t_i)$
+  \State $(x'_i,y'_i)\gets \textsc{Rotate}((x_i,y_i);\hat c_i,\hat{\omega}_i\cdot \Delta t)$;\quad $t'_i\gets t_i+\Delta t$;\quad $\bar p_i\gets \textsc{FlipPol}(p_i)$
   \State \textsc{Push}$\big(\textsc{PredQ},\hat e_i=(x'_i,y'_i,\bar p_i,t'_i,i)\big)$
   \State \textsc{Append}($\textsc{RealBuf}, e_i$)
   \While{$\textsc{PredQ}\neq\varnothing$ \textbf{ and } $\textsc{Top}(\textsc{PredQ}).t' \le t_i$}
-     \State $\mathcal{P}\gets$ \textsc{PopAllWithin}$(\textsc{PredQ},\,t_i,\,\varepsilon_t)$ \Comment{all predictions with $|t'_k-t_i|\le \varepsilon_t$}
-     \State advance $(L,R)$ so that $\textsc{RealBuf}[L{:}R]$ satisfies $|t_j - t'_k|\le \varepsilon_t$ for some $k$ \label{ln:window}
+     \State $\mathcal{P}\gets$ \textsc{PopAllWithin}$(\textsc{PredQ},\,t_i,\,\epsilon_t)$ \Comment{all predictions with $|t'_k-t_i|\le \epsilon_t$}
+     \State advance $(L,R)$ so that $\textsc{RealBuf}[L{:}R]$ satisfies $|t_j - t'_k|\le \epsilon_t$ for some $k$ \label{ln:window}
      \State build spatial index (e.g., KD-tree) on $\{(x'_k,y'_k)\in\mathcal{P}\}$
      \State $\mathcal{A}\gets\varnothing$ \Comment{candidate assignments: $(j,k,d)$}
      \For{each $e_j=(x_j,y_j,p_j,t_j)\in \textsc{RealBuf}[L{:}R]$}
         \State find nearest $\hat e_k\in\mathcal{P}$ within $\varepsilon_{xy}$ to $(x_j,y_j)$
-        \If{$\hat e_k$ exists \textbf{and} $\Pi(\bar p_k,p_j)$ holds}
+        \If{$\hat e_k$ exists \textbf{and} $\pi(\bar p_k,p_j)$ holds}
             \State add $(j,k,\| (x_j,y_j)-(x'_k,y'_k)\|)$ to $\mathcal{A}$
         \EndIf
      \EndFor

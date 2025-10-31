@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.10.7)  30 OCT 2025 13:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2025.10.7)  31 OCT 2025 12:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -666,9 +666,55 @@ Package: nextpage 2009/09/03 v1.1a additional page commands
 \afterepigraphskip=\skip82
 \epigraphwidth=\skip83
 \epigraphrule=\skip84
-) (./thesis.aux
-(./dedication.aux) (./disclaimer.aux) (./acknowledgements.aux) (./abstract.aux)
-(./introduction/introduction.aux) (./background/background.aux)
+)
+(/usr/share/texlive/texmf-dist/tex/latex/caption/subcaption.sty
+Package: subcaption 2020/10/07 v1.3j Sub-captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2020/10/26 v3.5g Customizing captions (AR)
+
+(/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
+\captionmargin=\dimen263
+\captionmargin@=\dimen264
+\captionwidth=\dimen265
+\caption@tempdima=\dimen266
+\caption@indent=\dimen267
+\caption@parindent=\dimen268
+\caption@hangindent=\dimen269
+Package caption Info: Unknown document class (or package),
+(caption)             standard defaults will be used.
+Package caption Info: \@makecaption = macro:#1#2->\vskip \abovecaptionskip \sbo
+x \@tempboxa {{\small {\bfseries #1}: #2}}\ifdim \wd \@tempboxa >\hsize {\small
+ {\bfseries #1:} #2}\par \else \global \@minipagefalse \hb@xt@ \hsize {\hfil \b
+ox \@tempboxa \hfil }\fi \vskip \belowcaptionskip  on input line 1139.
+)
+
+Package caption Warning: Unknown document class (or package),
+(caption)                standard defaults will be used.
+See the caption package documentation for explanation.
+
+\c@caption@flags=\count334
+\c@continuedfloat=\count335
+Package caption Info: changepage package is loaded.
+\caption@adjustwidth@hsize=\dimen270
+\caption@adjustwidth@linewidth=\dimen271
+Package caption Info: float package is loaded.
+Package caption Info: hyperref package is loaded.
+Package caption Info: listings package is loaded.
+Package caption Info: longtable package is loaded.
+(/usr/share/texlive/texmf-dist/tex/latex/caption/ltcaption.sty
+Package: ltcaption 2020/05/30 v1.4b longtable captions (AR)
+)
+Package caption Info: rotating package is loaded.
+Package caption Info: sidecap package is loaded.
+Package caption Info: threeparttable package is loaded.
+)
+\c@subfigure=\count336
+\c@subtable=\count337
+) (./thesis.aux (./dedication.aux) (./disclaimer.aux) (./acknowledgements.aux) 
+(./abstract.aux) (./introduction/introduction.aux) (./background/background.aux
+)
 (./motion_estimation/motion_estimation.aux)
 (./problem_formulation/problem_formulation.aux)
 (./cancellation/cancellation.aux) (./experimental_setup/experimental_setup.aux)
@@ -676,24 +722,24 @@ Package: nextpage 2009/09/03 v1.1a additional page commands
 (./discussion/discussion.aux) (./conclusions/conclusions.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 87.
-LaTeX Font Info:    ... okay on input line 87.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 88.
+LaTeX Font Info:    ... okay on input line 88.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -731,16 +777,16 @@ LaTeX Font Info:    ... okay on input line 87.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count334
-\scratchdimen=\dimen263
+\scratchcounter=\count338
+\scratchdimen=\dimen272
 \scratchbox=\box115
-\nofMPsegments=\count335
-\nofMParguments=\count336
+\nofMPsegments=\count339
+\nofMParguments=\count340
 \everyMPshowfont=\toks33
-\MPscratchCnt=\count337
-\MPscratchDim=\dimen264
-\MPnumerator=\count338
-\makeMPintoPDFobject=\count339
+\MPscratchCnt=\count341
+\MPscratchDim=\dimen273
+\MPnumerator=\count342
+\makeMPintoPDFobject=\count343
 \everyMPtoPDFconversion=\toks34
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -751,7 +797,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-Package hyperref Info: Link coloring ON on input line 87.
+Package hyperref Info: Link coloring ON on input line 88.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -762,11 +808,11 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count340
+\c@section@level=\count344
 )
-LaTeX Info: Redefining \ref on input line 87.
-LaTeX Info: Redefining \pageref on input line 87.
-LaTeX Info: Redefining \nameref on input line 87.
+LaTeX Info: Redefining \ref on input line 88.
+LaTeX Info: Redefining \pageref on input line 88.
+LaTeX Info: Redefining \nameref on input line 88.
 
 (./thesis.out) (./thesis.out)
 \@outlinefile=\write3
@@ -790,16 +836,18 @@ Package: ragged2e 2021/12/15 v3.1 ragged2e Package
 \RaggedRightParindent=\skip97
 \JustifyingParindent=\skip98
 )
-\c@lstlisting=\count341
+\c@lstlisting=\count345
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: End \AtBeginDocument code.
 
 
 LaTeX Font Warning: Font shape `OT1/cmr/m/n' in size <20> not available
-(Font)              size <20.74> substituted on input line 95.
+(Font)              size <20.74> substituted on input line 96.
 
 <..//anu-logo-colour.pdf, id=317, 161.60374pt x 56.21pt>
 File: ..//anu-logo-colour.pdf Graphic file (type pdf)
 <use ..//anu-logo-colour.pdf>
-Package pdftex.def Info: ..//anu-logo-colour.pdf  used on input line 107.
+Package pdftex.def Info: ..//anu-logo-colour.pdf  used on input line 108.
 (pdftex.def)             Requested size: 182.09486pt x 63.34071pt.
 [1
 
@@ -821,16 +869,16 @@ LaTeX Font Warning: Font shape `OT1/qzc/m/n' in size <14.4> not available
 \openout2 = `disclaimer.aux'.
 
  (./disclaimer.tex
-<signature.pdf, id=335, 884.30376pt x 435.6275pt>
+<signature.pdf, id=336, 933.4875pt x 1320.43312pt>
 File: signature.pdf Graphic file (type pdf)
 <use signature.pdf>
-Package pdftex.def Info: signature.pdf  used on input line 9.
-(pdftex.def)             Requested size: 91.04742pt x 44.84819pt.
+Package pdftex.def Info: signature.pdf  used on input line 13.
+(pdftex.def)             Requested size: 91.04742pt x 128.78703pt.
 )pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has
  been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.125 \include{disclaimer}
+l.126 \include{disclaimer}
                            [1
 
 
@@ -844,7 +892,7 @@ l.125 \include{disclaimer}
 ifier (name{page.ii}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.126 \include{acknowledgements}
+l.127 \include{acknowledgements}
                                  [2
 
 
@@ -852,33 +900,34 @@ l.126 \include{acknowledgements}
 ]
 \openout2 = `abstract.aux'.
 
- (./abstract.tex) [3
-
-
-
-
-] (./thesis.toc
-LaTeX Font Info:    Trying to load font information for U+lasy on input line 1.
+ (./abstract.tex
+LaTeX Font Info:    Trying to load font information for U+lasy on input line 5.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ulasy.fd
 File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 1.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 5.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 1.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 5.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 1.
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 5.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 1.
- [4
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 5.
+) [3
+
+
+
+
+] (./thesis.toc
+[4
 
 
 
@@ -895,17 +944,12 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [7
 
-]
-Overfull \hbox (12.4011pt too wide) in paragraph at lines 15--15
- \OT1/cmr/m/n/12 val-ues across all pa-ram-e-ter com-bi-na-tions, show-ing most
- con-fig-u-ra-tions achieve 
- []
-
-)
+])
 \tf@lof=\write5
 \openout5 = `thesis.lof'.
 
- [8] (./thesis.lot)
+
+[8] (./thesis.lot)
 \tf@lot=\write6
 \openout6 = `thesis.lot'.
 
@@ -933,13 +977,18 @@ x/n/12 circular-motion \OT1/cmr/m/n/12 set-ting us-ing a spinning-
  []
 
 [3] [4] [5]
-Overfull \hbox (8.44258pt too wide) in paragraph at lines 90--91
+Overfull \hbox (8.44258pt too wide) in paragraph at lines 89--90
 []\OT1/cmr/m/n/12 Estimation of $(\OML/cmm/m/it/12 c[]; c[]; !\OT1/cmr/m/n/12 )
 $ from events
  []
 
 
-Overfull \hbox (0.7931pt too wide) in paragraph at lines 92--93
+Overfull \hbox (11.0851pt too wide) in paragraph at lines 92--93
+[]\OT1/cmr/m/n/12 Hardware (event sen-sor, disc rig, light-ing), dataset-
+ []
+
+
+Overfull \hbox (0.7931pt too wide) in paragraph at lines 94--95
 []\OT1/cmr/m/n/12 Experimental de-sign and re-sults
  []
 
@@ -958,29 +1007,17 @@ Chapter 2.
 
 
 
-] [8]
-LaTeX Font Info:    Font shape `U/lasy/b/n' in size <7> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 25.
-LaTeX Font Info:    Font shape `U/lasy/b/n' in size <5> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 25.
- [9]
+] [8] [9]
 Overfull \hbox (13.87697pt too wide) in paragraph at lines 40--40
 []\OT1/cmr/bx/n/14.4 Global mo-tion com-pen-sa-tion and con-trast max-i-miza-ti
 on 
  []
 
-
+[10] [11]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [10]
-Underfull \vbox (badness 3029) has occurred while \output is active []
-
- [11]
-[12]
-Underfull \vbox (badness 2591) has occurred while \output is active []
-
- [13]
-[14]) [15]
+ [12]
+[13] [14]) [15]
 \openout2 = `motion_estimation/motion_estimation.aux'.
 
  (./motion_estimation/motion_estimation.tex
@@ -1007,25 +1044,40 @@ Chapter 4.
 
 
 ] [22]
+<images/results_figures/plane_fit_xyt.png, id=1140, 592.614pt x 448.074pt>
+File: images/results_figures/plane_fit_xyt.png Graphic file (type png)
+<use images/results_figures/plane_fit_xyt.png>
+Package pdftex.def Info: images/results_figures/plane_fit_xyt.png  used on inpu
+t line 48.
+(pdftex.def)             Requested size: 400.61703pt x 302.90865pt.
+
+Underfull \vbox (badness 1226) has occurred while \output is active []
+
+ [23 <./images/results_figures/plane_fit_xyt.png>]
 Underfull \vbox (badness 5519) has occurred while \output is active []
 
- [23]
-[24]
-Overfull \hbox (31.17361pt too wide) in paragraph at lines 132--132
+ [24]
+[25]
+Overfull \hbox (31.17361pt too wide) in paragraph at lines 146--146
 []\OT1/cmr/bx/n/17.28 Cancellation Im-ple-men-ta-tion and Rep-re-sen-ta-tion 
  []
 
-[25]) [26]
+[26]) [27]
 \openout2 = `cancellation/cancellation.aux'.
 
  (./cancellation/cancellation.tex
 Chapter 5.
-[27
+[28
 
 
 
 
-] [28]
+]
+LaTeX Font Info:    Font shape `U/lasy/b/n' in size <7> not available
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 38.
+LaTeX Font Info:    Font shape `U/lasy/b/n' in size <5> not available
+(Font)              Font shape `U/lasy/m/n' tried instead on input line 38.
+ [29]
 Overfull \hbox (1.63664pt too wide) in paragraph at lines 66--67
  []\OT1/cmr/bx/n/12 Mutual near-est neigh-bors (MNN).[] \OT1/cmr/m/n/12 To pre-
 vent many-to-one matches in dense bursts,
@@ -1034,43 +1086,39 @@ vent many-to-one matches in dense bursts,
 
 Underfull \vbox (badness 1902) has occurred while \output is active []
 
- [29]
+ [30]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 103.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [30]
-[31]) [32]
+ [31]
+[32]) [33]
 \openout2 = `experimental_setup/experimental_setup.aux'.
 
  (./experimental_setup/experimental_setup.tex
 Chapter 6.
-[33
+[34
 
 
 
 
-] [34]
-<images/setup_2.jpeg, id=1406, 1606.0pt x 1204.5pt>
+] [35]
+<images/setup_2.jpeg, id=1388, 1606.0pt x 1204.5pt>
 File: images/setup_2.jpeg Graphic file (type jpg)
 <use images/setup_2.jpeg>
 Package pdftex.def Info: images/setup_2.jpeg  used on input line 49.
 (pdftex.def)             Requested size: 386.96027pt x 290.20703pt.
-File: images/setup_2.jpeg Graphic file (type jpg)
-<use images/setup_2.jpeg>
-Package pdftex.def Info: images/setup_2.jpeg  used on input line 56.
-(pdftex.def)             Requested size: 318.66948pt x 239.00267pt.
 
-Underfull \vbox (badness 4792) has occurred while \output is active []
+Underfull \vbox (badness 1728) has occurred while \output is active []
 
- [35 <./images/setup_2.jpeg>] [36]
-Underfull \hbox (badness 1509) in paragraph at lines 96--96
+ [36 <./images/setup_2.jpeg>]
+Underfull \hbox (badness 1509) in paragraph at lines 97--97
 []|\OT1/cmr/m/n/10.95 Primary anal-
  []
 
-
-Overfull \hbox (3.67503pt too wide) in paragraph at lines 115--116
+[37]
+Overfull \hbox (3.67503pt too wide) in paragraph at lines 116--117
 []\OT1/cmr/bx/n/12 Event pre-dic-tion: \OT1/cmr/m/n/12 For each event $\OML/cmm
 /m/it/12 e[] \OT1/cmr/m/n/12 = (\OML/cmm/m/it/12 x[]; t[]; p[]\OT1/cmr/m/n/12 )
 $, com-pute $\OML/cmm/m/it/12 x[] \OT1/cmr/m/n/12 = \OMS/cmsy/m/n/12 R []\OML/c
@@ -1079,105 +1127,106 @@ m/m/it/12 ; []\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 t[]\OT1/cmr/m/n/12 )^^A\OML/cmm
 /m/it/12 t[]$
  []
 
-[37] [38]) [39] [40]
+<figures/pipeline_flowchart.pdf, id=1413, 570.93298pt x 715.47299pt>
+File: figures/pipeline_flowchart.pdf Graphic file (type pdf)
+<use figures/pipeline_flowchart.pdf>
+Package pdftex.def Info: figures/pipeline_flowchart.pdf  used on input line 126
+.
+(pdftex.def)             Requested size: 250.38564pt x 313.77196pt.
+[38]
+Underfull \vbox (badness 1616) has occurred while \output is active []
+
+ [39 <./figures/pipeline_flowchart.pdf>] [40]) [41]
 \openout2 = `results/results.aux'.
 
  (./results/results.tex
 Chapter 7.
-<../code/thesis_figures/figure_cancellation_vs_dt.png, id=1467, 1144.7568pt x 4
-20.6114pt>
-File: ../code/thesis_figures/figure_cancellation_vs_dt.png Graphic file (type p
-ng)
-<use ../code/thesis_figures/figure_cancellation_vs_dt.png>
-Package pdftex.def Info: ../code/thesis_figures/figure_cancellation_vs_dt.png  
-used on input line 11.
-(pdftex.def)             Requested size: 432.48051pt x 158.90338pt.
-<../code/thesis_figures/figure_tolerance_sensitivity.pdf, id=1472, 1063.58633pt
- x 369.01048pt>
-File: ../code/thesis_figures/figure_tolerance_sensitivity.pdf Graphic file (typ
-e pdf)
-<use ../code/thesis_figures/figure_tolerance_sensitivity.pdf>
-Package pdftex.def Info: ../code/thesis_figures/figure_tolerance_sensitivity.pd
-f  used on input line 26.
-(pdftex.def)             Requested size: 432.48051pt x 150.05089pt.
-[41
+<images/results_figures/windows_dt_sweep.png, id=1494, 857.2025pt x 662.475pt>
+File: images/results_figures/windows_dt_sweep.png Graphic file (type png)
+<use images/results_figures/windows_dt_sweep.png>
+Package pdftex.def Info: images/results_figures/windows_dt_sweep.png  used on i
+nput line 11.
+(pdftex.def)             Requested size: 409.71692pt x 316.63995pt.
+<images/results_figures/fine_resolution_dropoff.png, id=1498, 1136.245pt x 759.
+83875pt>
+File: images/results_figures/fine_resolution_dropoff.png Graphic file (type png
+)
+<use images/results_figures/fine_resolution_dropoff.png>
+Package pdftex.def Info: images/results_figures/fine_resolution_dropoff.png  us
+ed on input line 28.
+(pdftex.def)             Requested size: 432.48051pt x 289.21709pt.
+[42
 
 
 
 
-] [42 <../code/thesis_figures/figure_cancellation_vs_dt.png> <../code/thesis_fi
-gures/figure_tolerance_sensitivity.pdf>]
-(../code/thesis_figures/table_optimal_parameters.tex)
-<../code/thesis_figures/figure_radial_profile.pdf, id=1559, 712.76787pt x 422.9
-9216pt>
-File: ../code/thesis_figures/figure_radial_profile.pdf Graphic file (type pdf)
-<use ../code/thesis_figures/figure_radial_profile.pdf>
-Package pdftex.def Info: ../code/thesis_figures/figure_radial_profile.pdf  used
- on input line 55.
-(pdftex.def)             Requested size: 341.43307pt x 202.62729pt.
- [43]
-<../code/thesis_figures/figure_roi_analysis.pdf, id=1571, 1001.65997pt x 421.55
-052pt>
-File: ../code/thesis_figures/figure_roi_analysis.pdf Graphic file (type pdf)
-<use ../code/thesis_figures/figure_roi_analysis.pdf>
-Package pdftex.def Info: ../code/thesis_figures/figure_roi_analysis.pdf  used o
-n input line 91.
-(pdftex.def)             Requested size: 386.96027pt x 162.84741pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [44 <../code/thesis_figures/figure_radial_profile.pdf>]
-<../code/thesis_figures/figure_displacement_distribution.pdf, id=1650, 1001.706
-12pt x 350.72215pt>
+] [43 <./images/results_figures/windows_dt_sweep.png>]
+<images/results_figures/flow_magnitude_maps.png, id=1512, 1416.29124pt x 472.76
+625pt>
+File: images/results_figures/flow_magnitude_maps.png Graphic file (type png)
+<use images/results_figures/flow_magnitude_maps.png>
+Package pdftex.def Info: images/results_figures/flow_magnitude_maps.png  used o
+n input line 66.
+(pdftex.def)             Requested size: 432.48051pt x 144.363pt.
+ [44 <./images/results_figures/fine_resolution_dropoff.png>]
+(./images/main_results/roi_table_window2_clean.tex) [45 <./images/results_figur
+es/flow_magnitude_maps.png>]
+<../code/thesis_figures/figure_displacement_distribution.pdf, id=1530, 216.81pt
+ x 144.54pt>
 File: ../code/thesis_figures/figure_displacement_distribution.pdf Graphic file 
 (type pdf)
 <use ../code/thesis_figures/figure_displacement_distribution.pdf>
 Package pdftex.def Info: ../code/thesis_figures/figure_displacement_distributio
-n.pdf  used on input line 104.
-(pdftex.def)             Requested size: 386.96027pt x 135.48601pt.
+n.pdf  used on input line 101.
+(pdftex.def)             Requested size: 386.96027pt x 258.00597pt.
+<images/results_figures/roi_individual/roi_5.000s_to_5.037s_inside_three_panel.
+png, id=1532, 1307.8461pt x 393.6306pt>
+File: images/results_figures/roi_individual/roi_5.000s_to_5.037s_inside_three_p
+anel.png Graphic file (type png)
+<use images/results_figures/roi_individual/roi_5.000s_to_5.037s_inside_three_pa
+nel.png>
+Package pdftex.def Info: images/results_figures/roi_individual/roi_5.000s_to_5.
+037s_inside_three_panel.png  used on input line 116.
+(pdftex.def)             Requested size: 446.13727pt x 134.2771pt.
+<images/results_figures/roi_individual/roi_5.000s_to_5.037s_outside_three_panel
+.png, id=1533, 1307.8461pt x 393.6306pt>
+File: images/results_figures/roi_individual/roi_5.000s_to_5.037s_outside_three_
+panel.png Graphic file (type png)
+<use images/results_figures/roi_individual/roi_5.000s_to_5.037s_outside_three_p
+anel.png>
+Package pdftex.def Info: images/results_figures/roi_individual/roi_5.000s_to_5.
+037s_outside_three_panel.png  used on input line 125.
+(pdftex.def)             Requested size: 446.13727pt x 134.2771pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [45 <../code/thesis_figures/figure_roi_analysis.pdf> <../code/thesis_figures/f
-igure_displacement_distribution.pdf>]
-<../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circles.pn
-g, id=1777, 959.12614pt x 625.1355pt>
-File: ../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circl
-es.png Graphic file (type png)
-<use ../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circle
-s.png>
-Package pdftex.def Info: ../code/pipeline/results_plots/perlin_1280hz_hand_outf
-rame_combined_circles.png  used on input line 117.
-(pdftex.def)             Requested size: 432.48051pt x 281.88069pt.
- [46 <../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circl
-es.png>]
-Overfull \hbox (9.0617pt too wide) in paragraph at lines 126--126
+Overfull \hbox (9.0617pt too wide) in paragraph at lines 134--134
 []\OT1/cmr/bx/n/17.28 Comparison with Mo-tion Es-ti-ma-tion Ac-cu-racy 
  []
 
-[47]
-File: ../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circl
-es.png Graphic file (type png)
-<use ../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circle
-s.png>
-Package pdftex.def Info: ../code/pipeline/results_plots/perlin_1280hz_hand_outf
-rame_combined_circles.png  used on input line 155.
-(pdftex.def)             Requested size: 341.43307pt x 222.5399pt.
- [48]) [49]
+[46]
+<images/main_results/bias_sensitivity.png, id=1539, 542.025pt x 325.215pt>
+File: images/main_results/bias_sensitivity.png Graphic file (type png)
+<use images/main_results/bias_sensitivity.png>
+Package pdftex.def Info: images/main_results/bias_sensitivity.png  used on inpu
+t line 140.
+(pdftex.def)             Requested size: 386.96027pt x 232.18456pt.
+ [47 <../code/thesis_figures/figure_displacement_distribution.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [48 <./images/results_figures/roi_individual/roi_5.000s_to_5.037s_inside_three
+_panel.png> <./images/results_figures/roi_individual/roi_5.000s_to_5.037s_outsi
+de_three_panel.png>]) [49 <./images/main_results/bias_sensitivity.png>]
 \openout2 = `metrics_analysis/metrics_analysis.aux'.
 
- (./metrics_analysis/metrics_analysis.tex
+
+(./metrics_analysis/metrics_analysis.tex
 Chapter 8.
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 20.
+(hyperref)                removing `math shift' on input line 17.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\Delta' on input line 20.
-
-
-LaTeX Warning: Reference `fig:dt_sweep' on page 50 undefined on input line 23.
+(hyperref)                removing `\Delta' on input line 17.
 
 [50
 
@@ -1186,82 +1235,90 @@ LaTeX Warning: Reference `fig:dt_sweep' on page 50 undefined on input line 23.
 
 ]
 
-LaTeX Warning: Reference `fig:dt_sweep_combined' on page 51 undefined on input 
-line 34.
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 38.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 47.
+(hyperref)                removing `\epsilon' on input line 38.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\epsilon' on input line 47.
+(hyperref)                removing `subscript' on input line 38.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 47.
-
-
-LaTeX Warning: Reference `fig:spatial_tolerance' on page 51 undefined on input 
-line 53.
+(hyperref)                removing `math shift' on input line 56.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 68.
+(hyperref)                removing `\epsilon' on input line 56.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\epsilon' on input line 68.
+(hyperref)                removing `subscript' on input line 56.
 
 
-Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `subscript' on input line 68.
+Underfull \vbox (badness 1215) has occurred while \output is active []
 
-[51]
-
-LaTeX Warning: Reference `fig:dt_sweep' on page 52 undefined on input line 85.
-
-
-LaTeX Warning: Reference `fig:polarity' on page 52 undefined on input line 97.
-
+ [51]
 [52] [53]
-Overfull \hbox (1.08087pt too wide) in paragraph at lines 156--157
+Overfull \hbox (1.08087pt too wide) in paragraph at lines 147--148
 []\OT1/cmr/bx/n/12 Polarity: \OT1/cmr/m/n/12 En-forc-ing op-po-site po-lar-ity 
 yields cleaner in-hi-bi-tion maps, though slightly
  []
 
-) [54]
+<images/main_results/window1/hist_real.png, id=1605, 501.072pt x 394.1124pt>
+File: images/main_results/window1/hist_real.png Graphic file (type png)
+<use images/main_results/window1/hist_real.png>
+Package pdftex.def Info: images/main_results/window1/hist_real.png  used on inp
+ut line 160.
+(pdftex.def)             Requested size: 145.68144pt x 114.58432pt.
+<images/main_results/window1/hist_pred.png, id=1606, 501.072pt x 394.1124pt>
+File: images/main_results/window1/hist_pred.png Graphic file (type png)
+<use images/main_results/window1/hist_pred.png>
+Package pdftex.def Info: images/main_results/window1/hist_pred.png  used on inp
+ut line 165.
+(pdftex.def)             Requested size: 145.68144pt x 114.58432pt.
+<images/main_results/window1/hist_combined.png, id=1607, 501.072pt x 394.1124pt
+>
+File: images/main_results/window1/hist_combined.png Graphic file (type png)
+<use images/main_results/window1/hist_combined.png>
+Package pdftex.def Info: images/main_results/window1/hist_combined.png  used on
+ input line 170.
+(pdftex.def)             Requested size: 145.68144pt x 114.58432pt.
+) [54 <./images/main_results/window1/hist_real.png> <./images/main_results/wind
+ow1/hist_pred.png> <./images/main_results/window1/hist_combined.png>]
 \openout2 = `discussion/discussion.aux'.
 
- (./discussion/discussion.tex
+
+(./discussion/discussion.tex
 Chapter 9.
-) [55
+
+Underfull \vbox (badness 3769) has occurred while \output is active []
+
+ [55
 
 
 
 
-]
+])
+[56]
 \openout2 = `conclusions/conclusions.aux'.
 
  (./conclusions/conclusions.tex
 Chapter 10.
-)
-Overfull \hbox (0.66644pt too wide) in paragraph at lines 10--157
-\OT1/cmr/m/n/12 General ego-motion (trans-la-tions, pla-nar mo-tion), uncertain
-ty-aware sup-pres-sion via prob-
- []
-
-[56
+[57
 
 
 
 
-] (./thesis.bbl [57
+]) [58] (./thesis.bbl [59
 
 
 
 
-]) [58] (./thesis.aux (./dedication.aux)
+]) [60] (./thesis.aux (./dedication.aux)
 (./disclaimer.aux) (./acknowledgements.aux) (./abstract.aux)
 (./introduction/introduction.aux) (./background/background.aux)
 (./motion_estimation/motion_estimation.aux)
@@ -1273,20 +1330,17 @@ ty-aware sup-pres-sion via prob-
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.74pt have occurred.
 
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 4B06470C0151C18C3C10262F3E6C85B3;15906.
+(rerunfilecheck)             Checksum: 3005AF9F66ED13B097D2AD360A76D264;15906.
  ) 
 Here is how much of TeX's memory you used:
- 18686 strings out of 480171
- 311378 string characters out of 5894489
- 612908 words of memory out of 5000000
- 35833 multiletter control sequences out of 15000+600000
+ 20076 strings out of 480171
+ 340264 string characters out of 5894489
+ 635772 words of memory out of 5000000
+ 37181 multiletter control sequences out of 15000+600000
  493663 words of font info for 117 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
- 68i,13n,77p,1606b,459s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 68i,14n,77p,1526b,507s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/sumit/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600
 pk>{/usr/share/texmf/fonts/enc/dvips/tex-gyre/q-rmzc.enc} </home/sumit/.texlive
 2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1440.600pk></usr/share/texlive/t
@@ -1309,10 +1363,10 @@ ic/amsfonts/cm/cmtt12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
 fonts/symbols/msam10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
 onts/symbols/msbm10.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qzcmi.pfb
 >
-Output written on thesis.pdf (70 pages, 2322043 bytes).
+Output written on thesis.pdf (72 pages, 2767050 bytes).
 PDF statistics:
- 2052 PDF objects out of 2073 (max. 8388607)
- 1684 compressed objects within 17 object streams
- 349 named destinations out of 1000 (max. 500000)
- 670 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1858 PDF objects out of 2073 (max. 8388607)
+ 1653 compressed objects within 17 object streams
+ 369 named destinations out of 1000 (max. 500000)
+ 700 words of extra memory for PDF output out of 10000 (max. 10000000)
 

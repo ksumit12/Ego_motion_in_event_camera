@@ -140,12 +140,15 @@ def create_windowwise_dt_sweep():
     # Combined figure (only the curves)
     if all_results:
         fig_c, axc = plt.subplots(figsize=(9, 7))
+        # Define distinct colors for each window
+        colors = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple', 'tab:brown', 'tab:pink', 'tab:gray', 'tab:olive', 'tab:cyan']
         for idx, (label, results) in enumerate(all_results):
             if not results:
                 continue
             xs = [r['dt_ms'] for r in results]
             ys = [r['cancellation_rate'] for r in results]
-            axc.plot(xs, ys, 'o-', linewidth=2, label=f"{label.split('_',1)[-1]}")
+            color = colors[idx % len(colors)]  # Cycle through colors if more windows than colors
+            axc.plot(xs, ys, 'o-', linewidth=2, color=color, label=f"{label.split('_',1)[-1]}")
         axc.set_xlabel('dt (ms)')
         axc.set_ylabel('Cancellation Rate (%)')
         axc.set_ylim(30, 101)

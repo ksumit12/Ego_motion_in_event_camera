@@ -36,6 +36,20 @@ For an event $e_i=(x_i,y_i,t_i,p_i)$ at time $t_i$, write the pixel coordinate a
 \paragraph{Rationale and scope.}
 The rotational model is useful beyond the specific rig. (i) It is \emph{depth-free and identifiable}: $(c,\omega)$ is observable from events alone, whereas cancellation with translation generally requires scene depth (or inverse depth) and a richer motion field. (ii) Rotation is a dominant component of hand-held and robotic ego-motion at moderate distances; over short horizons the parallax due to translation is second order relative to the angular term. (iii) The model is analytically compact (two parameters) and widely used for stress-testing event pipelines \cite{Gallego2017Angular,Stoffregen2019Segmentation,Gallego2018CMax}. Our goal is to establish per-event cancellation under a well-posed, low-latency model. Extensions can incorporate constant translational velocity together with an inverse-depth parameterization; we discuss this path and trade-offs in \S\ref{sec:assumptions} and Chapter~\ref{chap:metrics}.
 
+\medskip\noindent\textit{General justification and link to local plane fitting.}
+Local motion of a rigid edge under brightness constancy produces approximately \emph{planar} structure in the spatio-temporal volume $(x,y,t)$ over small neighborhoods: events lie near
+\( t \approx v_x x + v_y y + d \), where the plane slopes $(v_x,v_y)$ encode image velocity components. This view is agnostic to the global rig and holds for general camera motions. Figure~\ref{fig:plane_fit_xyt} illustrates a least-squares plane fit to a local event cloud, together with $x$--$t$ and $y$--$t$ projections: the fitted plane (and its normal) visualizes how local velocity manifests as slope in $(x,y,t)$. Our rotation-only model specializes this general picture to a depth-free, identifiable field whose parameters $(c,\omega)$ can be estimated reliably at short horizons, making it attractive for causal cancellation.
+
+\medskip\noindent\textit{Why not cancel translation?}
+Adding translation is also analytically compact if scene depth (or inverse depth) is available or can be approximated (e.g., far-scene, planar scene). However, translation cancellation requires either per-pixel depth or strong priors, which increases latency/complexity and introduces failure modes under depth discontinuities. Over the short horizons used here, rotation is the dominant contributor to image motion for our apparatus; the translation term is small to first order and is therefore neglected in the cancellation stage. We revisit this assumption and outline extensions under far-scene or weak-translation priors in \S\ref{sec:assumptions}.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.88\linewidth]{images/results_figures/plane_fit_xyt.png}
+  \caption{Local motion via spatio-temporal plane fitting in $(x,y,t)$. Events from a local patch (scatter) lie near a plane \(t \approx v_x x + v_y y + d\), whose slopes encode image velocity. Insets show $x$--$t$ and $y$--$t$ projections with streaks of slope proportional to velocity. This local model justifies the use of rotational flow as a compact, depth-free specialization for short-horizon cancellation.}
+  \label{fig:plane_fit_xyt}
+\end{figure}
+
 \section{Per-Event Forward Prediction with a Temporal Gate}\label{sec:temporal_gate}
     We adopt a causal \emph{predict–wait–match} strategy with an explicit temporal tolerance:
 

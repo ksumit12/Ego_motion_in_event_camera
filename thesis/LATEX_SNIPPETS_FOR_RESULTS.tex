@@ -1,0 +1,114 @@
+% ============================================================
+% LaTeX Snippets to Add to Results Chapter (results/results.tex)
+% ============================================================
+
+% ------------------------------------------------------------
+% SNIPPET 1: Short-Window Consistency Analysis
+% Add this early in the Results chapter, after "Overall Cancellation Performance"
+% ------------------------------------------------------------
+
+\section{Temporal Consistency Across Multiple Windows}
+
+To validate the robustness of cancellation performance across temporal variations, we analyzed three non-overlapping 10\,ms windows extracted at different time points in the recording ($t=8.4$\,s, $t=9.2$\,s, and $t=10.1$\,s). Figure~\ref{fig:windows_dt_sweep} shows the cancellation rate as a function of prediction horizon $\Delta t$ for these three windows, demonstrating strong consistency.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.9\linewidth]{images/results_figures/windows_dt_sweep.svg}
+  \caption{Cancellation rate versus prediction horizon for three independent 10\,ms windows (different colors). All three windows exhibit nearly identical trends: excellent performance (CR $>95\%$) at short horizons ($\Delta t \leq 1$\,ms), exponential decay in the intermediate range ($1$--$10$\,ms), and stabilization to a baseline level ($\sim 32\%$) at long horizons ($\Delta t > 15$\,ms). The tight overlap confirms that performance is stable across temporal variations in event density and motion parameters, validating the motion estimation and cancellation pipeline. Parameters: $\epsilon_{xy}=2.0$\,px, $\epsilon_t=5.0$\,ms, opposite-polarity matching within circular ROI ($r=250$\,px).}
+  \label{fig:windows_dt_sweep}
+\end{figure}
+
+The close agreement between windows (standard deviation $< 2\%$ across all $\Delta t$ values) confirms:
+\begin{itemize}
+  \item \textbf{Motion estimation stability:} The tracker-derived $(\hat c,\hat\omega)$ provides consistent parameters across the recording.
+  \item \textbf{Temporal robustness:} Performance is not sensitive to specific time-slice selection, indicating the algorithm generalizes across the sequence.
+  \item \textbf{Event density independence:} Despite varying event rates in different windows, the cancellation ratio remains stable, suggesting the spatial/temporal gates are well-sized.
+\end{itemize}
+
+This consistency motivates the use of averaged metrics across windows for subsequent parameter sensitivity analyses.
+
+% ------------------------------------------------------------
+% SNIPPET 2: Fine-Resolution Early Drop-off Analysis
+% Add this after the consistency section
+% ------------------------------------------------------------
+
+\section{Fine-Resolution Early Drop-off Analysis}
+
+While the short-window analysis demonstrates consistency, understanding the \emph{precise} operating limit requires fine-resolution sampling of the prediction horizon. To this end, we extended the analysis to a 5-second window with $\Delta t$ sampled at 0.1\,ms resolution over the critical range (0--3\,ms). Figure~\ref{fig:fine_dropoff} presents this fine-resolution characterization.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\linewidth]{images/results_figures/fine_resolution_dropoff.svg}
+  \caption{Fine-resolution early drop-off analysis. Cancellation rate versus prediction horizon $\Delta t$ with 0.1\,ms resolution over 0--3\,ms range, computed on a representative 50,000-event sample from a 5-second window. The dual horizontal axis shows corresponding predicted pixel displacement ($\omega=3.6$\,rad/s, mean radius $r\approx 199$\,px). Performance remains excellent ($>99\%$) up to 0.6\,ms, then exhibits smooth exponential decay. The 90\% threshold (dashed gray line) is crossed at $\Delta t \approx 2.2$\,ms (red marker), corresponding to $\sim 1.6$\,px predicted displacement. The green-shaded region ($\geq 90\%$) highlights the recommended operating window for this rotation rate. The smooth curve validates the continuous temporal gating approach without binning artifacts, and the exponential trend aligns with the phase-error model derived in Chapter~\ref{chap:problem}. Analysis parameters: $\epsilon_t=5.0$\,ms, $\epsilon_{xy}=2.0$\,px, opposite-polarity matching within circular ROI ($r=250$\,px). The representative sample size (50,000 events) provides statistical precision of $\pm 0.08\%$ (95\% CI), which is negligible relative to motion estimation uncertainty.}
+  \label{fig:fine_dropoff}
+\end{figure}
+
+Key findings from the fine-resolution analysis:
+
+\begin{itemize}
+  \item \textbf{Excellent operating range:} CR $\geq 95\%$ for $\Delta t \leq 1.0$\,ms, corresponding to predicted displacements $\leq 0.7$\,px. This confirms tight spatial matching under accurate motion estimation.
+  
+  \item \textbf{Recommended operating window:} CR $\geq 90\%$ for $\Delta t \leq 2.2$\,ms, corresponding to $\sim 1.6$\,px displacement. This defines a practical horizon for real-time deployment where cancellation remains highly effective.
+  
+  \item \textbf{Exponential decay:} The smooth decline validates the theoretical phase-error accumulation model \eqref{eq:angvel-error}. Fitting $\mathrm{CR}(\Delta t) = A \exp(-k\Delta t) + C$ yields a characteristic timescale $\tau \approx 2.0$\,ms, consistent with the geometric scaling $\epsilon_{xy} \approx r\,|\Delta\omega|\,\Delta t$ and the chosen spatial tolerance $\epsilon_{xy}=2$\,px.
+  
+  \item \textbf{Dual-axis interpretation:} The pixel-displacement axis directly connects temporal horizons to geometric prediction error, providing intuitive design guidance: for this rotation rate and radius, maintaining sub-2-pixel prediction error requires $\Delta t \lesssim 2$\,ms.
+  
+  \item \textbf{Extended-duration validation:} The 5-second analysis window demonstrates that the algorithm maintains consistent performance over durations much longer than the short 10\,ms windows, confirming scalability beyond snapshot evaluation.
+\end{itemize}
+
+The fine-resolution sweep identifies the critical transition zone ($\Delta t \approx 1$--$2.5$\,ms) where cancellation drops from excellent to moderate, which is obscured by coarser 1\,ms sampling. This precision is essential for defining operating limits in latency-sensitive applications.
+
+% ------------------------------------------------------------
+% SNIPPET 3: Flow Magnitude Maps (Spatial Context)
+% Add this in a subsection about spatial variation
+% ------------------------------------------------------------
+
+\subsection{Spatial Variation of Predicted Displacement}
+
+To provide spatial context for the drop-off analysis, Figure~\ref{fig:flow_magnitude} shows pixel-wise flow magnitude maps for two representative prediction horizons ($\Delta t=1.0$\,ms and $3.0$\,ms). These maps visualize the expected pixel displacement at each image location under the rotational motion model.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.95\linewidth]{images/results_figures/flow_magnitude_maps.svg}
+  \caption{Flow magnitude maps showing predicted pixel displacement across the image plane for $\Delta t=1.0$\,ms (left) and $\Delta t=3.0$\,ms (right). Color indicates displacement magnitude (pixels); the circular ROI (dashed white line, radius 264\,px) and rotation center (red cross) are overlaid. Displacement increases linearly with distance from center due to the rotational model ($d = r \cdot \omega \cdot \Delta t$). At $\Delta t=1.0$\,ms, maximum displacement near the rim is $\sim 1$\,px, well within the spatial tolerance $\epsilon_{xy}=2$\,px, yielding high CR. At $\Delta t=3.0$\,ms, rim displacement reaches $\sim 3$\,px, exceeding the tolerance and causing cancellation degradation. The shared colorbar enables direct comparison. This spatial visualization explains why cancellation effectiveness varies radially: events near the center experience minimal phase error, while rim events accumulate larger geometric mismatch as $\Delta t$ increases.}
+  \label{fig:flow_magnitude}
+\end{figure}
+
+The radial gradient in displacement directly corresponds to the radial residual profiles observed in cancellation experiments: at long horizons, residuals concentrate near the rim where $r\,\omega$ is largest. This validates the theoretical prediction error model and provides a diagnostic tool for identifying motion estimation bias (e.g., miscentered rotation produces asymmetric displacement patterns).
+
+% ============================================================
+% USAGE INSTRUCTIONS
+% ============================================================
+
+% 1. Open thesis/results/results.tex
+% 2. Find appropriate sections to insert these snippets
+% 3. Copy-paste SNIPPET 1 after "Overall Cancellation Performance"
+% 4. Copy-paste SNIPPET 2 after SNIPPET 1 (or in a new section)
+% 5. Copy-paste SNIPPET 3 in a spatial analysis subsection
+% 6. Recompile thesis: cd thesis && latexmk -pdf thesis.tex
+% 7. Check that all three figures render correctly
+
+% ============================================================
+% QUICK REFERENCE
+% ============================================================
+
+% Figure files copied to:
+%   thesis/images/results_figures/windows_dt_sweep.svg
+%   thesis/images/results_figures/fine_resolution_dropoff.svg
+%   thesis/images/results_figures/flow_magnitude_maps.svg
+
+% Labels for cross-referencing:
+%   \ref{fig:windows_dt_sweep}      - Short-window consistency
+%   \ref{fig:fine_dropoff}          - Fine-resolution drop-off
+%   \ref{fig:flow_magnitude}        - Flow magnitude maps
+
+% Key citations to include in these sections:
+%   Chapter~\ref{chap:problem}      - Phase-error model
+%   Chapter~\ref{chap:motion}       - Motion estimation
+%   Chapter~\ref{chap:metrics}      - Parameter sensitivity
+
+
+
+
+

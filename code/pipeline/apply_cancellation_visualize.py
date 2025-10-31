@@ -7,7 +7,7 @@ Implements true temporal gate matching with optimized performance.
 import time
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')  # Use TkAgg backend for better Linux compatibility
+matplotlib.use('Agg')  # Use Agg backend for non-interactive execution
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from scipy.spatial import cKDTree
@@ -418,8 +418,12 @@ def make_panel_figure(combined, resid_real, resid_pred, window, img_w=IMG_W, img
     return fig
 
 def create_roi_analysis_figure(combined_events, residual_real_events, residual_predicted_events, 
-                              window, cx, cy, radius, img_w, img_h):
-    """Create ROI analysis figure with inside/outside cancellation rates"""
+                              window, cx, cy, radius, img_w, img_h, show_overlay: bool = False):
+    """Create ROI analysis figure with inside/outside cancellation rates.
+
+    If show_overlay is False (default), the top combined seismic overlay panel is omitted
+    and the figure contains only the 2x3 inside/outside triptychs.
+    """
     from matplotlib.colors import TwoSlopeNorm
     import matplotlib.gridspec as gridspec
     
@@ -449,13 +453,32 @@ def create_roi_analysis_figure(combined_events, residual_real_events, residual_p
     inside_r = inside_r_full[sel_r_t]
     outside_r = ~inside_r
     
-    # Residual masks
+    # Residual masks - use same matching logic as extract_roi_data
+    from scipy.spatial import cKDTree
+    
     residual_full = np.zeros(len(real_events), dtype=bool)
-    for i, event in enumerate(real_events):
-        if len(resid_real_window) > 0:
-            matches = np.all(np.abs(resid_real_window - event) < 1e-6, axis=1)
-            if np.any(matches):
-                residual_full[i] = True
+    if len(resid_real_window) > 0 and len(real_events) > 0:
+        resid_tree = cKDTree(resid_real_window[:, :2])
+        spatial_tol = 1.0  # 1 pixel tolerance
+        spatial_matches_list = resid_tree.query_ball_point(real_events[:, :2], spatial_tol)
+        temporal_tol_s = 10e-3  # 10ms
+        
+        for i, (event, spatial_candidates) in enumerate(zip(real_events, spatial_matches_list)):
+            if len(spatial_candidates) == 0:
+                continue
+            spatial_candidates = np.array(spatial_candidates)
+            candidate_events = resid_real_window[spatial_candidates]
+            time_diffs = np.abs(candidate_events[:, 3] - event[3])
+            temporal_mask = time_diffs <= temporal_tol_s
+            if np.any(temporal_mask):
+                matching_candidates = candidate_events[temporal_mask]
+                coord_match = np.any(
+                    (np.abs(matching_candidates[:, 0] - event[0]) < 1.0) &
+                    (np.abs(matching_candidates[:, 1] - event[1]) < 1.0) &
+                    (np.abs(matching_candidates[:, 2] - event[2]) < 0.5)
+                )
+                if coord_match:
+                    residual_full[i] = True
     
     residual_t = residual_full[sel_r_t]
     resid_in = residual_t & inside_r
@@ -506,44 +529,43 @@ def create_roi_analysis_figure(combined_events, residual_real_events, residual_p
     F_pair_out = make_frame(img_h, img_w, xr[match_out], yr[match_out], None)
     
     # Create the comprehensive figure
-    fig = plt.figure(figsize=(16, 12), constrained_layout=True)
-    gs = gridspec.GridSpec(3, 3, figure=fig)
-    
-    # Row 0: Seismic overlay
-    ax_main = fig.add_subplot(gs[0, :])
-    
-    img_r, img_p, img_c, nr, npred = build_window_images(combined_events, window, img_w, img_h)
-    img_r_n, img_p_n, img_c_n, max_abs = normalize_images_for_display(img_r, img_p, img_c)
-    
-    im2 = ax_main.imshow(img_c_n, cmap="seismic", origin="upper", vmin=0, vmax=1)
-    ax_main.set_title("Combined Seismic Overlay")
-    ax_main.set_xlabel("x")
-    ax_main.set_ylabel("y")
-    ax_main.grid(alpha=0.2)
-    
-    # Add disc overlay
-    disc_circle = plt.Circle((cx, cy), radius, fill=True, color='yellow', alpha=0.15, linewidth=0)
-    ax_main.add_patch(disc_circle)
-    disc_outline = plt.Circle((cx, cy), radius, fill=False, color='yellow', linewidth=2, linestyle='--', alpha=0.8)
-    ax_main.add_patch(disc_outline)
-    ax_main.plot(cx, cy, 'yo', markersize=6, markeredgecolor='black', markeredgewidth=1, label=f'Disc Center')
-    ax_main.legend(loc='upper right', fontsize=7)
-    
-    # Add colorbar
-    cb = fig.colorbar(im2, ax=ax_main, fraction=0.046, pad=0.04)
-    cb.set_label("signed count (Σ polarity)")
-    cb.set_ticks([0.0, 0.5, 1.0])
-    cb.set_ticklabels([f"-{max_abs}", "0", f"+{max_abs}"])
+    if show_overlay:
+        fig = plt.figure(figsize=(16, 12), constrained_layout=True)
+        gs = gridspec.GridSpec(3, 3, figure=fig)
+        row_offset = 1
+        # Row 0: Seismic overlay
+        ax_main = fig.add_subplot(gs[0, :])
+        img_r, img_p, img_c, nr, npred = build_window_images(combined_events, window, img_w, img_h)
+        img_r_n, img_p_n, img_c_n, max_abs = normalize_images_for_display(img_r, img_p, img_c)
+        im2 = ax_main.imshow(img_c_n, cmap="seismic", origin="upper", vmin=0, vmax=1)
+        ax_main.set_title("Combined Seismic Overlay")
+        ax_main.set_xlabel("x")
+        ax_main.set_ylabel("y")
+        ax_main.grid(alpha=0.2)
+        disc_circle = plt.Circle((cx, cy), radius, fill=True, color='yellow', alpha=0.15, linewidth=0)
+        ax_main.add_patch(disc_circle)
+        disc_outline = plt.Circle((cx, cy), radius, fill=False, color='yellow', linewidth=2, linestyle='--', alpha=0.8)
+        ax_main.add_patch(disc_outline)
+        ax_main.plot(cx, cy, 'yo', markersize=6, markeredgecolor='black', markeredgewidth=1, label=f'Disc Center')
+        ax_main.legend(loc='upper right', fontsize=7)
+        cb = fig.colorbar(im2, ax=ax_main, fraction=0.046, pad=0.04)
+        cb.set_label("signed count (Σ polarity)")
+        cb.set_ticks([0.0, 0.5, 1.0])
+        cb.set_ticklabels([f"-{max_abs}", "0", f"+{max_abs}"])
+    else:
+        fig = plt.figure(figsize=(14, 10), constrained_layout=True)
+        gs = gridspec.GridSpec(2, 3, figure=fig)
+        row_offset = 0
     
     # Row 1: INSIDE triptych
-    ax_i1 = fig.add_subplot(gs[1, 0])
-    ax_i2 = fig.add_subplot(gs[1, 1])
-    ax_i3 = fig.add_subplot(gs[1, 2])
+    ax_i1 = fig.add_subplot(gs[0 + row_offset, 0])
+    ax_i2 = fig.add_subplot(gs[0 + row_offset, 1])
+    ax_i3 = fig.add_subplot(gs[0 + row_offset, 2])
     
     # Row 2: OUTSIDE triptych
-    ax_o1 = fig.add_subplot(gs[2, 0])
-    ax_o2 = fig.add_subplot(gs[2, 1])
-    ax_o3 = fig.add_subplot(gs[2, 2])
+    ax_o1 = fig.add_subplot(gs[1 + row_offset, 0])
+    ax_o2 = fig.add_subplot(gs[1 + row_offset, 1])
+    ax_o3 = fig.add_subplot(gs[1 + row_offset, 2])
     
     # Plot INSIDE frames
     vmax_in = max(1, int(np.percentile(np.abs(F_real_in), 99))) if np.any(F_real_in != 0) else 1
@@ -606,11 +628,365 @@ def create_roi_analysis_figure(combined_events, residual_real_events, residual_p
                  fontsize=14, y=0.98)
     
     # Disable cursor display to prevent overflow errors
-    for ax in [ax_main, ax_i1, ax_i2, ax_i3, ax_o1, ax_o2, ax_o3]:
+    axes_to_freeze = [ax_i1, ax_i2, ax_i3, ax_o1, ax_o2, ax_o3]
+    if show_overlay:
+        axes_to_freeze.insert(0, ax_main)
+    for ax in axes_to_freeze:
         ax.format_coord = lambda x, y: ""
         ax.set_navigate(False)
         for im in ax.get_images():
             im.set_interpolation('nearest')
+    
+    return fig
+
+def extract_roi_data(combined_events, residual_real_events, residual_predicted_events, 
+                     window, cx, cy, radius, img_w, img_h):
+    """Extract and compute ROI data for a time window. Returns all frames and statistics."""
+    t0, t1 = window
+    
+    # Extract events for the time window
+    time_mask = (combined_events[:, 3] >= t0) & (combined_events[:, 3] < t1)
+    window_events = combined_events[time_mask]
+    real_events = window_events[window_events[:, 4] == 0.0]
+    pred_events = window_events[window_events[:, 4] == 1.0]
+    
+    # Get residual events for this window
+    resid_real_mask = (residual_real_events[:, 3] >= t0) & (residual_real_events[:, 3] < t1)
+    resid_pred_mask = (residual_predicted_events[:, 3] >= t0) & (residual_predicted_events[:, 3] < t1)
+    resid_real_window = residual_real_events[resid_real_mask]
+    resid_pred_window = residual_predicted_events[resid_pred_mask]
+    
+    # Build masks
+    sel_r_t = events_in_window(real_events, t0, t1)
+    
+    # Full dataset masks for inside/outside
+    inside_r_full = circle_mask(real_events[:, 0], real_events[:, 1], cx, cy, radius, scale=1.05)
+    
+    # Windowed masks
+    inside_r = inside_r_full[sel_r_t]
+    outside_r = ~inside_r
+    
+    # Residual masks - match events using relaxed tolerance for visualization
+    # Since residual_real_events contains the exact unmatched events, we just need to find them
+    # Use lenient matching: within 1 pixel spatially and reasonable time tolerance
+    from scipy.spatial import cKDTree
+    
+    residual_full = np.zeros(len(real_events), dtype=bool)
+    if len(resid_real_window) > 0 and len(real_events) > 0:
+        # Build spatial KDTree for residual events
+        resid_tree = cKDTree(resid_real_window[:, :2])
+        
+        # Use lenient spatial tolerance (1 pixel) - events should be very close
+        spatial_tol = 1.0  # 1 pixel tolerance
+        spatial_matches_list = resid_tree.query_ball_point(real_events[:, :2], spatial_tol)
+        
+        # Use lenient temporal tolerance (10ms should be enough for matching)
+        temporal_tol_s = 10e-3  # 10ms
+        
+        for i, (event, spatial_candidates) in enumerate(zip(real_events, spatial_matches_list)):
+            if len(spatial_candidates) == 0:
+                continue
+            
+            # Check temporal and coordinate match with lenient tolerance
+            spatial_candidates = np.array(spatial_candidates)
+            candidate_events = resid_real_window[spatial_candidates]
+            
+            # Check temporal tolerance
+            time_diffs = np.abs(candidate_events[:, 3] - event[3])
+            temporal_mask = time_diffs <= temporal_tol_s
+            
+            if np.any(temporal_mask):
+                # Check for matches with lenient coordinate tolerance
+                matching_candidates = candidate_events[temporal_mask]
+                # Match if coordinates are within 1 pixel and polarity matches
+                coord_match = np.any(
+                    (np.abs(matching_candidates[:, 0] - event[0]) < 1.0) &
+                    (np.abs(matching_candidates[:, 1] - event[1]) < 1.0) &
+                    (np.abs(matching_candidates[:, 2] - event[2]) < 0.5)  # Polarity should match exactly (0 or 1)
+                )
+                if coord_match:
+                    residual_full[i] = True
+    
+    residual_t = residual_full[sel_r_t]
+    resid_in = residual_t & inside_r
+    resid_out = residual_t & outside_r
+    
+    # Matched pairs
+    matched_real_full = ~residual_full
+    matched_r_t = matched_real_full[sel_r_t]
+    match_in = matched_r_t & inside_r
+    match_out = matched_r_t & outside_r
+    
+    # Compute cancellation rates
+    count_real_inside = np.sum(inside_r)
+    count_residual_inside = np.sum(resid_in)
+    count_real_outside = np.sum(outside_r)
+    count_residual_outside = np.sum(resid_out)
+    
+    cr_inside = (count_real_inside - count_residual_inside) / count_real_inside * 100 if count_real_inside > 0 else 0
+    cr_outside = (count_real_outside - count_residual_outside) / count_real_outside * 100 if count_real_outside > 0 else 0
+    
+    # Extract windowed coordinates and polarities
+    xr = real_events[sel_r_t, 0].astype(int)
+    yr = real_events[sel_r_t, 1].astype(int)
+    pr = real_events[sel_r_t, 2].astype(int)
+    pr_signed = convert_polarity_to_signed(pr)
+    
+    # Build frames
+    F_real_in = make_frame(img_h, img_w, xr[inside_r], yr[inside_r], pr_signed[inside_r])
+    F_resid_in = make_frame(img_h, img_w, xr[resid_in], yr[resid_in], pr_signed[resid_in])
+    F_pair_in = make_frame(img_h, img_w, xr[match_in], yr[match_in], None)
+    
+    F_real_out = make_frame(img_h, img_w, xr[outside_r], yr[outside_r], pr_signed[outside_r])
+    F_resid_out = make_frame(img_h, img_w, xr[resid_out], yr[resid_out], pr_signed[resid_out])
+    F_pair_out = make_frame(img_h, img_w, xr[match_out], yr[match_out], None)
+    
+    return {
+        'F_real_in': F_real_in, 'F_resid_in': F_resid_in, 'F_pair_in': F_pair_in,
+        'F_real_out': F_real_out, 'F_resid_out': F_resid_out, 'F_pair_out': F_pair_out,
+        'count_real_inside': count_real_inside, 'count_residual_inside': count_residual_inside,
+        'count_real_outside': count_real_outside, 'count_residual_outside': count_residual_outside,
+        'cr_inside': cr_inside, 'cr_outside': cr_outside,
+        'match_in': match_in, 'match_out': match_out,
+        'cx': cx, 'cy': cy, 'radius': radius, 't0': t0, 't1': t1
+    }
+
+def create_individual_roi_plot(frame, title, cx, cy, radius, img_w, img_h, region_type, plot_type, 
+                                 count=None, cr=None, cmap='seismic', vmax=None):
+    """Create a single individual ROI plot (no subplots)"""
+    from matplotlib.colors import TwoSlopeNorm
+    
+    fig, ax = plt.subplots(figsize=(8, 6))
+    
+    # Safe frame
+    frame_safe = np.clip(np.nan_to_num(frame, nan=0, posinf=0, neginf=0), -1e6, 1e6)
+    
+    # Determine normalization
+    if plot_type == 'matched':
+        # Matched plots use Reds colormap
+        norm = None
+        vmin = 0
+        if vmax is None:
+            vmax = max(1, int(np.percentile(frame_safe, 99))) if np.any(frame_safe != 0) else 1
+    else:
+        # Real and Residual use seismic with TwoSlopeNorm
+        if vmax is None:
+            vmax = max(1, int(np.percentile(np.abs(frame_safe), 99))) if np.any(frame_safe != 0) else 1
+        norm = TwoSlopeNorm(vmin=-vmax, vcenter=0, vmax=vmax)
+        vmin = -vmax
+    
+    # Plot
+    if norm is not None:
+        # When using a norm, don't pass vmin/vmax
+        im = ax.imshow(frame_safe, cmap=cmap, interpolation='nearest', origin='upper',
+                       extent=(-0.5, img_w-0.5, img_h-0.5, -0.5), norm=norm)
+    else:
+        # When not using a norm, pass vmin/vmax directly
+        im = ax.imshow(frame_safe, cmap=cmap, interpolation='nearest', origin='upper',
+                       extent=(-0.5, img_w-0.5, img_h-0.5, -0.5), vmin=vmin, vmax=vmax)
+    
+    # Add ROI circle outline
+    circle = plt.Circle((cx, cy), radius * 1.05, fill=False, color='yellow', linewidth=2, linestyle='--', alpha=0.8)
+    ax.add_patch(circle)
+    
+    # Title with stats
+    if count is not None:
+        title_str = f"{title} ({count:,} events)"
+        if cr is not None:
+            title_str += f" | {cr:.1f}% cancelled"
+    else:
+        title_str = title
+    
+    ax.set_title(title_str, fontsize=12, fontweight='bold')
+    ax.set_xlabel("x [px]", fontsize=11)
+    ax.set_ylabel("y [px]", fontsize=11)
+    ax.grid(alpha=0.3)
+    
+    # Colorbar
+    if plot_type == 'matched':
+        cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        cb.set_label("Matched event count", fontsize=10)
+    else:
+        cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+        cb.set_label("Signed count (Σ polarity)", fontsize=10)
+        cb.set_ticks([vmin, 0, vmax])
+        cb.set_ticklabels([f"-{vmax}", "0", f"+{vmax}"])
+    
+    ax.format_coord = lambda x, y: ""
+    ax.set_navigate(False)
+    
+    fig.tight_layout()
+    return fig
+
+def generate_individual_roi_plots(combined_events, residual_real_events, residual_predicted_events,
+                                  window, cx, cy, radius, img_w, img_h, output_dir):
+    """Generate 6 individual ROI plots (one per figure) and save them"""
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Extract ROI data
+    roi_data = extract_roi_data(combined_events, residual_real_events, residual_predicted_events,
+                                window, cx, cy, radius, img_w, img_h)
+    
+    t0, t1 = roi_data['t0'], roi_data['t1']
+    base_prefix = f"roi_{t0:.3f}s_to_{t1:.3f}s"
+    
+    # Determine vmax for consistent scaling
+    vmax_in = max(1, int(np.percentile(np.abs(roi_data['F_real_in']), 99))) if np.any(roi_data['F_real_in'] != 0) else 1
+    vmax_out = max(1, int(np.percentile(np.abs(roi_data['F_real_out']), 99))) if np.any(roi_data['F_real_out'] != 0) else 1
+    
+    # 1. INSIDE: Real
+    fig = create_individual_roi_plot(
+        roi_data['F_real_in'], "INSIDE ROI: Real Events",
+        roi_data['cx'], roi_data['cy'], roi_data['radius'], img_w, img_h,
+        'inside', 'real', roi_data['count_real_inside'], None, 'seismic', vmax_in
+    )
+    fig.savefig(os.path.join(output_dir, f"{base_prefix}_inside_real.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {base_prefix}_inside_real.png")
+    
+    # 2. INSIDE: Residual
+    fig = create_individual_roi_plot(
+        roi_data['F_resid_in'], "INSIDE ROI: Residual Events",
+        roi_data['cx'], roi_data['cy'], roi_data['radius'], img_w, img_h,
+        'inside', 'residual', roi_data['count_residual_inside'], roi_data['cr_inside'], 'seismic', vmax_in
+    )
+    fig.savefig(os.path.join(output_dir, f"{base_prefix}_inside_residual.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {base_prefix}_inside_residual.png")
+    
+    # 3. INSIDE: Matched
+    fig = create_individual_roi_plot(
+        roi_data['F_pair_in'], "INSIDE ROI: Matched Events",
+        roi_data['cx'], roi_data['cy'], roi_data['radius'], img_w, img_h,
+        'inside', 'matched', np.sum(roi_data['match_in']), None, 'Reds', None
+    )
+    fig.savefig(os.path.join(output_dir, f"{base_prefix}_inside_matched.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {base_prefix}_inside_matched.png")
+    
+    # 4. OUTSIDE: Real
+    fig = create_individual_roi_plot(
+        roi_data['F_real_out'], "OUTSIDE ROI: Real Events",
+        roi_data['cx'], roi_data['cy'], roi_data['radius'], img_w, img_h,
+        'outside', 'real', roi_data['count_real_outside'], None, 'seismic', vmax_out
+    )
+    fig.savefig(os.path.join(output_dir, f"{base_prefix}_outside_real.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {base_prefix}_outside_real.png")
+    
+    # 5. OUTSIDE: Residual
+    fig = create_individual_roi_plot(
+        roi_data['F_resid_out'], "OUTSIDE ROI: Residual Events",
+        roi_data['cx'], roi_data['cy'], roi_data['radius'], img_w, img_h,
+        'outside', 'residual', roi_data['count_residual_outside'], roi_data['cr_outside'], 'seismic', vmax_out
+    )
+    fig.savefig(os.path.join(output_dir, f"{base_prefix}_outside_residual.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {base_prefix}_outside_residual.png")
+    
+    # 6. OUTSIDE: Matched
+    fig = create_individual_roi_plot(
+        roi_data['F_pair_out'], "OUTSIDE ROI: Matched Events",
+        roi_data['cx'], roi_data['cy'], roi_data['radius'], img_w, img_h,
+        'outside', 'matched', np.sum(roi_data['match_out']), None, 'Reds', None
+    )
+    fig.savefig(os.path.join(output_dir, f"{base_prefix}_outside_matched.png"), dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {base_prefix}_outside_matched.png")
+    
+    return roi_data
+
+def create_roi_three_panel_figure(roi_data, img_w, img_h, region='inside'):
+    """Create a 3-panel figure showing Real, Residual, and Matched for one region"""
+    from matplotlib.colors import TwoSlopeNorm
+    import matplotlib.gridspec as gridspec
+    
+    fig = plt.figure(figsize=(18, 6), constrained_layout=True)
+    gs = gridspec.GridSpec(1, 3, figure=fig, width_ratios=[1, 1, 1])
+    
+    if region == 'inside':
+        F_real = roi_data['F_real_in']
+        F_resid = roi_data['F_resid_in']
+        F_matched = roi_data['F_pair_in']
+        count_real = roi_data['count_real_inside']
+        count_resid = roi_data['count_residual_inside']
+        count_matched = np.sum(roi_data['match_in'])
+        cr = roi_data['cr_inside']
+        title_prefix = "INSIDE ROI"
+    else:
+        F_real = roi_data['F_real_out']
+        F_resid = roi_data['F_resid_out']
+        F_matched = roi_data['F_pair_out']
+        count_real = roi_data['count_real_outside']
+        count_resid = roi_data['count_residual_outside']
+        count_matched = np.sum(roi_data['match_out'])
+        cr = roi_data['cr_outside']
+        title_prefix = "OUTSIDE ROI"
+    
+    # Determine vmax for consistent scaling
+    vmax = max(1, int(np.percentile(np.abs(F_real), 99))) if np.any(F_real != 0) else 1
+    norm = TwoSlopeNorm(vmin=-vmax, vcenter=0, vmax=vmax)
+    
+    # Safe frames
+    F_real_safe = np.clip(np.nan_to_num(F_real, nan=0, posinf=0, neginf=0), -1e6, 1e6)
+    F_resid_safe = np.clip(np.nan_to_num(F_resid, nan=0, posinf=0, neginf=0), -1e6, 1e6)
+    F_matched_safe = np.clip(np.nan_to_num(F_matched, nan=0, posinf=0, neginf=0), 0, 1e6)
+    
+    # Panel 1: Real
+    ax1 = fig.add_subplot(gs[0, 0])
+    im1 = ax1.imshow(F_real_safe, cmap='seismic', interpolation='nearest', origin='upper',
+                     extent=(-0.5, img_w-0.5, img_h-0.5, -0.5), norm=norm)
+    ax1.set_title(f"(a) {title_prefix}: Real\n({count_real:,} events)", fontsize=12, fontweight='bold')
+    ax1.set_xlabel("x [px]", fontsize=11)
+    ax1.set_ylabel("y [px]", fontsize=11)
+    ax1.grid(alpha=0.3)
+    circle1 = plt.Circle((roi_data['cx'], roi_data['cy']), roi_data['radius'] * 1.05, 
+                         fill=False, color='yellow', linewidth=2, linestyle='--', alpha=0.8)
+    ax1.add_patch(circle1)
+    cb1 = fig.colorbar(im1, ax=ax1, fraction=0.046, pad=0.04)
+    cb1.set_label("Signed count", fontsize=9)
+    cb1.set_ticks([-vmax, 0, vmax])
+    cb1.set_ticklabels([f"-{vmax}", "0", f"+{vmax}"])
+    
+    # Panel 2: Residual
+    ax2 = fig.add_subplot(gs[0, 1])
+    im2 = ax2.imshow(F_resid_safe, cmap='seismic', interpolation='nearest', origin='upper',
+                     extent=(-0.5, img_w-0.5, img_h-0.5, -0.5), norm=norm)
+    ax2.set_title(f"(b) {title_prefix}: Residual\n({count_resid:,} events, {cr:.1f}% cancelled)", 
+                  fontsize=12, fontweight='bold')
+    ax2.set_xlabel("x [px]", fontsize=11)
+    ax2.set_ylabel("y [px]", fontsize=11)
+    ax2.grid(alpha=0.3)
+    circle2 = plt.Circle((roi_data['cx'], roi_data['cy']), roi_data['radius'] * 1.05, 
+                         fill=False, color='yellow', linewidth=2, linestyle='--', alpha=0.8)
+    ax2.add_patch(circle2)
+    cb2 = fig.colorbar(im2, ax=ax2, fraction=0.046, pad=0.04)
+    cb2.set_label("Signed count", fontsize=9)
+    cb2.set_ticks([-vmax, 0, vmax])
+    cb2.set_ticklabels([f"-{vmax}", "0", f"+{vmax}"])
+    
+    # Panel 3: Matched
+    ax3 = fig.add_subplot(gs[0, 2])
+    vmax_matched = max(1, int(np.percentile(F_matched_safe, 99))) if np.any(F_matched_safe != 0) else 1
+    im3 = ax3.imshow(F_matched_safe, cmap='Reds', interpolation='nearest', origin='upper',
+                     extent=(-0.5, img_w-0.5, img_h-0.5, -0.5), vmin=0, vmax=vmax_matched)
+    ax3.set_title(f"(c) {title_prefix}: Matched\n({count_matched:,} events)", fontsize=12, fontweight='bold')
+    ax3.set_xlabel("x [px]", fontsize=11)
+    ax3.set_ylabel("y [px]", fontsize=11)
+    ax3.grid(alpha=0.3)
+    circle3 = plt.Circle((roi_data['cx'], roi_data['cy']), roi_data['radius'] * 1.05, 
+                         fill=False, color='yellow', linewidth=2, linestyle='--', alpha=0.8)
+    ax3.add_patch(circle3)
+    cb3 = fig.colorbar(im3, ax=ax3, fraction=0.046, pad=0.04)
+    cb3.set_label("Matched count", fontsize=9)
+    
+    # Disable cursor display
+    for ax in [ax1, ax2, ax3]:
+        ax.format_coord = lambda x, y: ""
+        ax.set_navigate(False)
+    
+    fig.suptitle(f"{title_prefix} Analysis: Window {roi_data['t0']:.3f}–{roi_data['t1']:.3f}s", 
+                 fontsize=14, fontweight='bold', y=1.02)
     
     return fig
 
@@ -771,14 +1147,53 @@ def main():
 
     print("Creating ROI analysis visualization...")
     w0 = WINDOWS[0]
+    
+    # Create thesis output directory structure
+    thesis_roi_dir = os.path.join("../../thesis/images/results_figures/roi_individual")
+    os.makedirs(thesis_roi_dir, exist_ok=True)
+    
+    # Generate individual ROI plots (6 separate figures)
+    print("\nGenerating individual ROI plots...")
+    roi_data = generate_individual_roi_plots(
+        combined, residual_real_events, residual_predicted_events,
+        w0, DISC_CENTER_X, DISC_CENTER_Y, DISC_RADIUS, IMG_W, IMG_H,
+        thesis_roi_dir
+    )
+    
+    # Create 3-panel combined figures for inside and outside
+    print("\nGenerating 3-panel combined figures...")
+    
+    # Inside ROI 3-panel
+    fig_inside = create_roi_three_panel_figure(roi_data, IMG_W, IMG_H, region='inside')
+    inside_filename = f"roi_{w0[0]:.3f}s_to_{w0[1]:.3f}s_inside_three_panel.png"
+    fig_inside.savefig(os.path.join(thesis_roi_dir, inside_filename), dpi=300, bbox_inches="tight")
+    plt.close(fig_inside)
+    print(f"  Saved: {inside_filename}")
+    
+    # Outside ROI 3-panel
+    fig_outside = create_roi_three_panel_figure(roi_data, IMG_W, IMG_H, region='outside')
+    outside_filename = f"roi_{w0[0]:.3f}s_to_{w0[1]:.3f}s_outside_three_panel.png"
+    fig_outside.savefig(os.path.join(thesis_roi_dir, outside_filename), dpi=300, bbox_inches="tight")
+    plt.close(fig_outside)
+    print(f"  Saved: {outside_filename}")
+    
+    # Also create the original comprehensive figure
     fig_roi = create_roi_analysis_figure(combined, residual_real_events, residual_predicted_events, 
-                                       w0, DISC_CENTER_X, DISC_CENTER_Y, DISC_RADIUS, IMG_W, IMG_H)
+                                       w0, DISC_CENTER_X, DISC_CENTER_Y, DISC_RADIUS, IMG_W, IMG_H,
+                                       show_overlay=False)
 
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     
     roi_filename = f"roi_analysis_{w0[0]:.3f}s_to_{w0[1]:.3f}s.png"
     fig_roi.savefig(os.path.join(OUTPUT_DIR, roi_filename), dpi=150, bbox_inches="tight")
-    print(f"Saved ROI analysis: {roi_filename}")
+    
+    # Also save to thesis folder
+    thesis_main_dir = os.path.join("../../thesis/images/results_figures")
+    os.makedirs(thesis_main_dir, exist_ok=True)
+    thesis_filename = os.path.join(thesis_main_dir, "roi_analysis_spatial.png")
+    fig_roi.savefig(thesis_filename, dpi=300, bbox_inches="tight")
+    print(f"\nSaved ROI analysis: {roi_filename}")
+    print(f"Saved to thesis: {thesis_filename}")
 
     print(f"\nAnalysis complete!")
     print(f"Time windows analyzed: {len(WINDOWS)}")
@@ -786,14 +1201,13 @@ def main():
     print(f"Polarity mode: {POLARITY_MODE}")
     print(f"ROI analysis: Circle center ({DISC_CENTER_X:.1f}, {DISC_CENTER_Y:.1f}), radius {DISC_RADIUS:.0f}px")
 
-    # Keep plots open for viewing
-    print("\nPlots are ready for viewing. Close the plot windows to exit.")
-    try:
-        plt.show(block=True)  # This will keep plots open until manually closed
-    except Exception as e:
-        print(f"Could not display plots: {e}")
-        print("This might be due to display/X11 issues. Plots have been saved to files in the output directory.")
-        print("You can view the saved PNG files in the output directory.")
+    # Close all remaining figures to avoid blocking
+    plt.close('all')
+    
+    print("\nAll plots have been saved to files.")
+    print(f"Individual plots saved to: {thesis_roi_dir}")
+    print(f"Main analysis saved to: {thesis_main_dir}")
+    print("\nScript completed successfully!")
 
 if __name__ == "__main__":
     main()

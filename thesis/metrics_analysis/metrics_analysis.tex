@@ -1,28 +1,23 @@
 \chapter{Sensitivity Analysis of Parameters}
 \label{chap:metrics}
 
-This chapter evaluates how key parameters in the prediction–cancellation pipeline influence performance and robustness. 
-The objective is to quantify how sensitive the cancellation rate and residual density are to the choice of temporal horizon, spatial and temporal tolerances, polarity handling, and motion-model accuracy.
-Unless stated otherwise, all experiments are conducted using events from the spinning-disc dataset described in Chapter~\ref{chap:setup}, with the estimated center \((c_x, c_y)\) and angular velocity~\(\omega\) obtained from tracker data.
+This chapter evaluates how key parameters of the prediction–cancellation pipeline affect performance and robustness. We quantify sensitivity of cancellation rate and residual density to the prediction horizon, spatial/temporal tolerances, polarity handling, and motion-model accuracy. Unless stated otherwise, experiments use the spinning-disc dataset (Chapter~\ref{chap:setup}) with center \((c_x, c_y)\) and angular velocity~\(\omega\) from tracker data.
 
-Each analysis follows the same general procedure: predicted events are generated using the per-event forward model
+Each analysis follows the same procedure: predicted events are generated using the per-event forward model
 \[
 \hat{e}_i = \big(x'_i,\, y'_i,\, t_i + \Delta t,\, -p_i \big),
 \]
-and compared against real events within a spatial tolerance~\(\epsilon_{xy}\) and temporal gate~\(\epsilon_t\). 
-Cancellation is computed as
+and compared against real events within spatial tolerance~\(\epsilon_{xy}\) and temporal gate~\(\epsilon_t\). Cancellation is computed as
 \[
 \text{CR}(\Delta t) = \frac{N_{\text{cancelled}}}{N_{\text{real}}} \times 100\%.
 \]
-The following subsections examine the effect of varying each parameter individually.
+The following subsections vary each parameter in isolation.
 
 % ------------------------------------------------------------
 \section{Effect of Prediction Horizon \(\Delta t\)}
 \label{sec:dt_sensitivity}
 
-Figure~\ref{fig:dt_sweep} shows the measured cancellation rate as a function of prediction horizon \(\Delta t\) for three representative windows of the spinning-disc sequence. 
-For small horizons (below 2–3~ms), cancellation exceeds 90\%, indicating nearly perfect temporal alignment between predicted and real events.
-As \(\Delta t\) increases, phase drift accumulates between predicted trajectories and true motion, reducing overlap.
+Figure~\ref{fig:cancellation_vs_dt} (Results) shows cancellation vs. prediction horizon \(\Delta t\) for three representative windows. For small horizons (below 2–3~ms), cancellation exceeds 90\%. As \(\Delta t\) grows, phase drift reduces overlap.
 
 This decay follows an approximately exponential trend:
 \[
@@ -31,76 +26,62 @@ This decay follows an approximately exponential trend:
 where \(k_{\omega}\) depends on the angular velocity~\(\omega\) and uncertainty in the estimated center.
 At large \(\Delta t\), residuals approach a baseline level (\(\approx\)30–35\%), corresponding to non-overlapping edge regions and noise events.
 
-The smoothness of this curve (as seen in Fig.~\ref{fig:dt_sweep_combined}) demonstrates temporal consistency across windows, confirming that the current motion model captures the dominant rotational component.
-Earlier versions using coarse time binning showed step-like discontinuities in this curve due to quantization artifacts; replacing bins with a continuous temporal gate (\S\ref{sec:temporal_gate}) yielded the present monotonic decay.
+The smooth curve (Fig.~\ref{fig:fine_dropoff}, Results) indicates temporal consistency across windows, confirming that the motion model captures the dominant rotation. Replacing coarse time binning with a continuous temporal gate (\S\ref{sec:temporal_gate}) removed prior step-like artifacts.
 
-From a physical perspective, \(\Delta t\) governs the \textit{phase misalignment} between predicted and observed events.
-For a rotating edge with angular velocity~\(\omega\), the phase error grows linearly with~\(\Delta t\):
+Physically, \(\Delta t\) governs \textit{phase misalignment} between predicted and observed events. For a rotating edge with angular velocity~\(\omega\):
 \[
 \Delta \theta = \omega \, \Delta t,
 \]
-which directly converts into a spatial displacement \(r\,\Delta\theta\) on the image plane.
-When this displacement exceeds the spatial tolerance~\(\epsilon_{xy}\), predicted and real events fail to cancel.
-Hence, the intersection between temporal and spatial tolerances defines the operational limit of effective cancellation.
+which maps to spatial displacement \(r\,\Delta\theta\) on the image plane. When this exceeds \(\epsilon_{xy}\), events fail to cancel. Thus temporal and spatial tolerances jointly bound effective cancellation.
 
 % ------------------------------------------------------------
 \section{Spatial Tolerance (\( \epsilon_{xy} \), pixels)}
 \label{sec:spatial_tolerance}
 
-Spatial tolerance specifies the search radius in pixels used to match a predicted event with a real event.
-A small~\(\epsilon_{xy}\) increases precision but risks missing true matches; a large~\(\epsilon_{xy}\) recovers more pairs but admits false positives, especially in textured regions or where polarity is ignored.
+Spatial tolerance is the pixel search radius to match predicted and real events. Small~\(\epsilon_{xy}\) increases precision but misses true matches; large~\(\epsilon_{xy}\) recovers more pairs but admits false positives, especially in textured regions or when polarity is ignored.
 
-Figure~\ref{fig:spatial_tolerance} illustrates this trade-off.
-The cancellation rate initially rises rapidly with \(\epsilon_{xy}\) up to about 2–3 pixels, after which gains saturate while the residual density begins to increase.
-This saturation indicates the true geometric uncertainty of the motion model, dominated by small calibration errors in center estimation (\(\sigma_c\)) and discretization in the image grid.
+This trade-off is visible in the residual maps and CR trends reported in Chapter~\ref{chap:results}.
+Cancellation rises with \(\epsilon_{xy}\) up to ~2–3 px, then saturates while residual density increases. This reflects geometric uncertainty dominated by center-estimation error (\(\sigma_c\)) and image discretization.
 
 Empirically, the optimal value lies in the range
 \[
 \epsilon_{xy}^{*} \approx r\,|\Delta\omega|\,\Delta t + \sigma_c,
 \]
 where \(\Delta\omega\) denotes angular-velocity error.
-This relation, derived from the geometric expansion of motion error, highlights that the required tolerance grows linearly with prediction horizon and model uncertainty.
+This relation highlights that required tolerance grows linearly with horizon and model uncertainty.
 
-In practical implementations,~\(\epsilon_{xy}\in[2,3]\) pixels yielded the best compromise between cancellation completeness and background leakage.
-Larger radii (≥5 px) inflated the apparent performance but led to spurious cancellation across edges or static regions, reducing interpretability.
+In practice, ~\(\epsilon_{xy}\in[2,3]\) px was the best compromise. Larger radii ($\geq 5$ px) inflate apparent performance but spuriously cancel across edges or static regions, reducing interpretability.
 
 % ------------------------------------------------------------
 \section{Temporal Tolerance (\( \epsilon_{t} \), ms)}
 \label{sec:temporal_tolerance}
 
-Temporal tolerance controls the allowed timestamp deviation between a predicted event’s nominal time~\(t+\Delta t\) and the real event timestamp~\(t_j\).
-This parameter is crucial in asynchronous data association, especially given event timing jitter and sensor timestamp quantization (\( \approx 1\text{--}10~\mu\text{s} \)).
+Temporal tolerance controls allowed timestamp deviation between a predicted event’s nominal time~\(t+\Delta t\) and the real event time~\(t_j\). It is crucial in asynchronous association given timing jitter and sensor quantization (\( \approx 1\text{--}10~\mu\text{s} \)).
 
 Sweeping~\(\epsilon_t\) from 0.1 to 1.0~ms shows a near-linear improvement in cancellation until around 0.5~ms, beyond which additional relaxation brings diminishing returns.
-When~\(\epsilon_t\) is too small, genuine matches are missed due to timestamp jitter or the latency of the predictive model.
-When too large, temporal overlap with unrelated events causes false cancellations, especially in regions of dense texture or high rotation speed.
+Too small~\(\epsilon_t\) misses genuine matches; too large causes false cancellations, especially in dense texture or high rotation.
 
 The optimal tolerance can be approximated analytically as:
 \[
 \epsilon_t^{*} \approx \frac{\epsilon_{xy}}{r\,|\omega|},
 \]
 ensuring that the predicted phase deviation translates to less than one spatial pixel of drift.
-This formulation links the temporal and spatial gates, and aligns with motion-compensation theory in Gallego et~al.~\cite{Gallego2018CMax, Xu2020TCI}.
+This links the temporal and spatial gates and aligns with motion-compensation theory~\cite{Gallego2018CMax, Xu2020TCI}.
 
-The shift from fixed time binning to explicit gating was key to achieving the smooth trends seen in Figure~\ref{fig:dt_sweep}.
-Binning previously introduced discontinuous transitions when events crossed bin edges, whereas the continuous gate now provides symmetric tolerance around each predicted timestamp.
+The shift from fixed time binning to explicit gating was key to achieving the smooth trends seen in Figure~\ref{fig:cancellation_vs_dt}.
+Binning introduced discontinuities when events crossed bin edges; the continuous gate provides symmetric tolerance around each predicted timestamp.
 
 % ------------------------------------------------------------
 \section{Polarity Handling}
 \label{sec:polarity}
 
 Polarity reflects whether a pixel’s intensity increased or decreased (\(+1\) or \(-1\)).
-In the predictive cancellation model, polarity can be leveraged in two ways:
-(1) to enforce strict cancellation between opposite polarities, or 
-(2) to ignore polarity and rely solely on spatial–temporal overlap.
+In the predictive cancellation model, polarity can be handled by either (1) enforcing opposite polarities or (2) ignoring polarity and relying on spatial–temporal overlap.
 
-Figure~\ref{fig:polarity} compares these modes.
-When polarity is enforced, cancellation ratios drop slightly (\(\approx\)5–10\%) but residual maps become visually cleaner, showing sharper edge boundaries.
-When polarity is ignored, cancellation increases numerically but residuals contain symmetric artifacts (i.e., both ON and OFF edges remain faintly visible).
+These modes can be contrasted qualitatively in the residual maps in Chapter~\ref{chap:results}.
+Enforcing polarity slightly lowers cancellation (\(\approx\)5–10%) but yields cleaner residuals with sharper edges. Ignoring polarity raises numeric CR but leaves symmetric artifacts (both ON and OFF edges faintly visible).
 
-This asymmetry arises from edge directionality:
-rotational motion produces alternating polarities along opposite edges of the disk.
-By enforcing opposite-polarity cancellation (\(p_{\text{pred}} = -p_{\text{real}}\)), the model suppresses self-cancellation of homogeneous regions and better represents predictive inhibition as discussed by Hosoya et~al.~\cite{Hosoya2005Dynamic} and Rao \& Ballard~\cite{Rao1999Predictive}.
+This asymmetry arises from edge directionality: rotational motion produces alternating polarities along opposite edges of the disk. Enforcing \(p_{\text{pred}} = -p_{\text{real}}\) suppresses self-cancellation in homogeneous regions and better represents predictive inhibition~\cite{Hosoya2005RetinaPC,Rao1999V1PC}.
 
 Hence, for biologically inspired cancellation, polarity should be treated as an inhibitory sign rather than ignored.
 
@@ -108,22 +89,30 @@ Hence, for biologically inspired cancellation, polarity should be treated as an 
 \section{Angular Velocity Bias}
 \label{sec:omega_bias}
 
-To assess robustness to motion-model error, a constant bias term~\(\delta\omega\) was added to the estimated angular velocity:
+To assess robustness to motion-model error, we add a constant bias~\(\delta\omega\) to the estimated angular velocity:
 \[
 \omega' = \omega + \delta\omega.
 \]
 For each bias level, predicted events were regenerated and cancellation recalculated.
 
-Results show a quasi-linear sensitivity within a small range (|\(\delta\omega\)| < 0.05~rad/ms), beyond which performance collapses rapidly.
-This behaviour aligns with the phase-drift relation:
+We observe quasi-linear sensitivity within a small range (|\(\delta\omega\)| < 0.05~rad/s), beyond which performance collapses rapidly, consistent with the phase-drift relation:
 \[
 \Delta\theta_{\text{err}} = \delta\omega\,\Delta t.
 \]
-Even a small bias accumulates over time, producing circular misalignment that the spatial gate cannot recover.
-The slope of the initial decline in CR(\(\delta\omega\)) defines the effective linear range of model validity.
+Even a small bias accumulates over time, producing circular misalignment that the spatial gate cannot recover. The initial slope of CR(\(\delta\omega\)) defines the linear validity range.
 
 These experiments also reveal that underestimation of~\(\omega\) causes residual events to cluster ahead of the predicted contour, while overestimation shifts them backward.
 Visual inspection of high-pass residuals confirms this symmetry, providing an intuitive diagnostic for tuning~\(\omega\).
+
+\paragraph{Practical diagnostic and compensation.}
+In practice, the circle-fitting step that estimates the rotation center \(\hat c\) and angular velocity \(\hat\omega\) can be slightly biased due to tracker noise and short observation windows. To robustly operate the cancellation pipeline, we therefore use a small angular-velocity bias \(\delta\omega\) as a 
+diagnostic and compensation knob:
+\begin{enumerate}
+    \item Sweep \(\delta\omega\) in a narrow range around zero (e.g., \([-0.08, 0.08]\,\text{rad/s}]\)) while keeping \(\hat c\) fixed.
+    \item For each trial, compute cancellation rate and inspect residual maps. A widening rim annulus with radius indicates a \emph{sign} and magnitude consistent with \(|\Delta\omega|\); a uniform radial shift suggests a center error \(\Delta c\).
+    \item Select \(\delta\omega^{*}\) that maximizes cancellation rate (and minimizes rim residuals) within the linear regime (|\(\delta\omega\)| \(\le 0.05\,\text{rad/s}\)).
+\end{enumerate}
+This procedure is used as a lightweight calibration to correct small systematic errors from circle fitting when needed, and to separate the effects of center vs. velocity errors. The resulting tuned parameter \(\omega' = \hat\omega + \delta\omega^{*}\) is then used for the figures in the Results chapter (see Fig.~\ref{fig:bias_sensitivity} for the sensitivity profile), with the chosen \(\delta\omega^{*}\) always inside the validated linear range.
 
 % ------------------------------------------------------------
 \section{Residuals vs. Background Baseline}
@@ -143,6 +132,8 @@ This confirms that remaining activity is due to model imperfection rather than f
 Visualizations of these residuals provide qualitative validation: well-aligned predictions lead to “quiet” cancellation maps where only unpredictable transitions remain.
 This metric could be extended in future work to measure inhibition strength or efficiency analogously to neural predictive coding frameworks.
 
+\medskip\noindent\textit{Why this histogram here?} To complement the density/SNR indicator, the per-pixel $|$signed count$|$ histograms below provide a \emph{distributional} view of residual magnitude, showing that cancellation suppresses not just mean density but the entire tail of high-magnitude pixels.
+
 % ------------------------------------------------------------
 \section{Summary of Trends}
 \label{sec:summary_trends}
@@ -154,10 +145,32 @@ The following trends summarize the observed sensitivities:
     \item \textbf{Spatial tolerance \(\epsilon_{xy}\):} Optimal around 2–3~px; larger values inflate false matches.
     \item \textbf{Temporal tolerance \(\epsilon_t\):} Optimal \(\approx\)0.5~ms; balances timestamp jitter and event density.
     \item \textbf{Polarity:} Enforcing opposite polarity yields cleaner inhibition maps, though slightly lower numeric CR.
-    \item \textbf{Angular velocity bias:} Linear degradation up to ±0.05~rad/ms, beyond which phase errors dominate.
+    \item \textbf{Angular velocity bias:} Linear degradation up to ±0.05~rad/s, beyond which phase errors dominate.
     \item \textbf{Residual density:} Post-cancellation event density approaches background level, confirming effective suppression of predictable motion.
 \end{itemize}
 
 Overall, these analyses establish quantitative operating bounds for the proposed predictive cancellation model. 
 They also highlight which parameters are most critical for tuning and which are robust to small deviations, informing both algorithmic refinement and potential real-time hardware implementation.
+
+% --- Added: Histogram panel of per-pixel signed counts (log-scaled, window 1, consistent with gray images in Results)
+\begin{figure}[t]
+  \centering
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/main_results/window1/hist_real.png}\\[-2pt]
+    \footnotesize Histogram (real)
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/main_results/window1/hist_pred.png}\\[-2pt]
+    \footnotesize Histogram (pred)
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.32\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{images/main_results/window1/hist_combined.png}\\[-2pt]
+    \footnotesize Histogram (combined)
+  \end{minipage}
+\caption{Per-pixel $|$signed count$|$ histograms (log y-scale) for a representative window. After cancellation, the distribution shifts to lower magnitudes; medians and 95th percentiles are marked. Fractional values arise from bilinear interpolation during event splatting, reflecting subpixel structure.}
+  \label{fig:hist_panel}
+\end{figure}
 

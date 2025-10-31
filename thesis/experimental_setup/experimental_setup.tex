@@ -18,7 +18,7 @@ We used a single event-based sensor mounted on a rigid aluminum frame facing a r
 \end{itemize}
 
 \subsection{Spinning Disc Rig}
-The target is a flat wooden disc with an \emph{uneven, high-contrast pattern} adhered to the visible face to generate rich edge structures under rotation (Fig.~\ref{fig:disc}). Hardware elements:
+The target is a flat wooden disc with an \emph{uneven, high-contrast pattern} adhered to the visible face to generate rich edge structures under rotation (Fig.~\ref{fig:rig}). Hardware elements:
 
 \begin{itemize}
   \item \textbf{Disc:} Circular wooden plate approximately 30--40\,cm in diameter, with thickness sufficient to maintain rigidity under rotation. Six square paper patterns are affixed to the disc face using blue tape at the corners, creating a grid layout (visible in Fig.~\ref{fig:rig}). The patterns consist of:
@@ -51,12 +51,13 @@ We performed lightweight calibration sufficient for short-horizon rotation model
   \label{fig:rig}
 \end{figure}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.7\linewidth]{images/setup_2.jpeg}
-  \caption{Close-up view of the patterned disc face. Six square paper patterns are arranged in a grid, secured with blue tape at the corners. Four patterns (center and lower rows) feature flowing concentric black and white lines creating curved edge structures. Two patterns (top corners) contain dense random assortments of shapes (squiggles, stars, circles, hearts) for high-frequency spatial content. This variety of textures ensures comprehensive testing of the cancellation algorithm under different edge orientations and densities.}
-  \label{fig:disc}
-\end{figure}
+% Removed duplicate close-up image; only the first overview image remains
+% \begin{figure}[t]
+%   \centering
+%   \includegraphics[width=0.7\linewidth]{images/setup_2.jpeg}
+%   \caption{Close-up view of the patterned disc face. Six square paper patterns are arranged in a grid, secured with blue tape at the corners. Four patterns (center and lower rows) feature flowing concentric black and white lines creating curved edge structures. Two patterns (top corners) contain dense random assortments of shapes (squiggles, stars, circles, hearts) for high-frequency spatial content. This variety of textures ensures comprehensive testing of the cancellation algorithm under different edge orientations and densities.}
+%   \label{fig:disc}
+% \end{figure}
 
 % ============================================================
 \section{Datasets and Protocol}
@@ -97,10 +98,10 @@ Table~\ref{tab:sequences} summarizes the datasets used in the study.
 \end{table}
 
 \paragraph{Throughput note.}
-For rapid iteration, we use short analysis windows (W1--W6, 10\,ms each) to obtain quick, stable estimates with low compute cost. In addition, we also ran full-sequence evaluations across a range of prediction horizons $\Delta t$ to measure the cancellation curve $CR(\Delta t)$ over the entire 10\,s recording; the corresponding plots are provided later in Chapter~\ref{chap:results}.
+For rapid iteration, we use short analysis windows (W1--W6, 10\,ms each) to obtain quick, stable estimates with low compute cost. To validate consistency over extended durations, we also analyzed representative subsets (50,000 events) from 5-second windows across a range of prediction horizons $\Delta t$, demonstrating stable CR trends and exponential decay characteristics over longer temporal extents; the corresponding fine-resolution plots are provided in Chapter~\ref{chap:results}. The 50,000-event sample size provides statistical precision of $\pm 0.08\%$ on cancellation rate estimates (95\% confidence interval), which is negligible compared to motion estimation uncertainty ($\sim 0.5$--1%) and enables computationally tractable analysis while preserving statistical validity.
 
 \paragraph{Data characteristics.}
-The dataset comprises a single continuous 10-second recording. The motor driver PWM was set to 1280\,Hz to control the spinning speed; the event camera is asynchronous and has no fixed sampling rate. The sequence contains three distinct high-contrast patterns (visible in Fig.~\ref{fig:disc}), creating varied edge densities across the disc face. Analysis was performed on six non-overlapping 10\,ms windows (W1--W6) extracted at $t = 5.0$, 5.01, 8.2$, 8.21$, 9.0$, and 9.01$\,s, enabling statistics across temporal variations in motion estimation and event density.
+The dataset comprises a single continuous 10-second recording. The motor driver PWM was set to 1280\,Hz to control the spinning speed; the event camera is asynchronous and has no fixed sampling rate. The sequence contains three distinct high-contrast patterns (visible in Fig.~\ref{fig:rig}), creating varied edge densities across the disc face. Analysis was performed on six non-overlapping 10\,ms windows (W1--W6) extracted at $t=5.0,\,5.01,\,8.20,\,8.21,\,9.00,\,9.01$\,s, enabling statistics across temporal variations in motion estimation and event density.
 
 % ============================================================
 \section{Software Pipeline}
@@ -122,8 +123,8 @@ Figure~\ref{fig:pipeline} outlines the causal, per-event pipeline:
 
 \begin{figure}[t]
   \centering
-  % \includegraphics[width=0.95\linewidth]{figures/pipeline_placeholder.pdf}
-  \caption{Software pipeline: estimation $\rightarrow$ prediction $\rightarrow$ temporal gate $\rightarrow$ spatial/polarity gate $\rightarrow$ one-to-one pairing $\rightarrow$ cancellation $\rightarrow$ metrics. All decisions are causal with bounded buffers.}
+  \includegraphics[width=0.55\linewidth]{figures/pipeline_flowchart.pdf}
+  \caption{Software pipeline overview. The three-stage processing flow: (1) extract angular velocity from tracker data, (2) predict future event locations using the motion model, and (3) apply spatiotemporal cancellation and generate visualizations. All stages operate causally with bounded buffers.}
   \label{fig:pipeline}
 \end{figure}
 

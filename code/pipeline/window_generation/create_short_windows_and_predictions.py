@@ -32,9 +32,9 @@ import pandas as pd
 # Configuration (defaults can be overridden by CLI)
 # ------------------------------------------------------------
 REAL_EVENTS_FILE = \
-    "/home/sumit/anu_research/recording/new_data/perlin_1280hz_hand_outframe.csv"
+    "/media/sumit/New Volume/anu_research/recording/new_data/perlin_1280hz_hand_outframe.csv"
 TRACKER_CSV_FILE = \
-    "/home/sumit/anu_research/ego_motion/results_csv/perlin_1280hz_hand_outframe_combined.csv"
+    "/media/sumit/New Volume/anu_research/ego_motion/results_csv/perlin_1280hz_hand_outframe_combined.csv"
 
 OUTPUT_DIR = "/media/sumit/New Volume/short_window_predictions"
 

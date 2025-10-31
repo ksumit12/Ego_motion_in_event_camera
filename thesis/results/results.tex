@@ -21,6 +21,8 @@ The exponential fit yields a characteristic timescale $\tau_{1/2} \approx 3.5$\,
 
 To identify the precise operating limit where cancellation transitions from excellent to moderate performance, we performed fine-resolution sampling of $\Delta t$ at 0.1\,ms intervals over the critical 0--3\,ms range. Figure~\ref{fig:fine_dropoff} presents this detailed characterization using a representative 50,000-event sample from a 5-second window.
 
+\noindent\textit{Why this plot here?} It provides a high-resolution view of the early regime to (i) pinpoint the operating window where CR remains high and (ii) verify that continuous temporal gating yields a smooth decay without binning artifacts. The secondary axis ties $\Delta t$ directly to predicted pixel displacement, making the geometric limit explicit.
+
 \begin{figure}[t]
   \centering
   \includegraphics[width=0.95\linewidth]{images/results_figures/fine_resolution_dropoff.png}
@@ -33,14 +35,9 @@ The fine-resolution sweep reveals that performance remains above 95\% for $\Delt
 
 \section{Parameter Sensitivity Analysis}
 
-The cancellation rate depends on the choice of spatial and temporal tolerances, which control the trade-off between successful matches (true positives) and false matches (over-cancellation). Figure~\ref{fig:tolerance_heatmap} shows cancellation rate as a function of both tolerances for fixed $\Delta t=2.0$\,ms, revealing the operational parameter space.
+The cancellation rate depends on the choice of spatial and temporal tolerances, which control the trade-off between successful matches (true positives) and false matches (over-cancellation). Below we summarize the operational parameter space based on sweeps over $\epsilon_{xy}$ and $\epsilon_t$ at representative horizons.
 
-% \begin{figure}[t]
-%   \centering
-%   \includegraphics[width=0.95\linewidth]{../code/thesis_figures/figure_tolerance_sensitivity.pdf}
-%   \caption{Cancellation rate heatmaps for different prediction horizons: $\Delta t = 2$\,ms (left), $4$\,ms (center), and $6$\,ms (right). Color indicates cancellation rate from low (dark purple) to high (bright yellow). Annotation values show CR percentage. Optimal combinations lie at moderate tolerance values ($\epsilon_{xy} \approx 2--3$\,px, $\epsilon_t \approx 1--2$\,ms), balancing spatial mismatch with temporal uncertainty.}
-%   \label{fig:tolerance_heatmap}
-% \end{figure}
+
 
 Several key trends emerge:
 
@@ -91,14 +88,9 @@ We quantify cancellation efficiency separately inside and outside the circular R
   \input{images/main_results/roi_table_window2_clean.tex}
 \end{table}
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.85\linewidth]{../code/thesis_figures/figure_roi_analysis.pdf}
-\caption{ROI cancellation analysis. (a) CR inside vs outside the disc across horizons shows a large gap ($>70\%$ at short horizons), confirming targeting of ego-motion events. (b) The gap narrows at longer horizons as phase error dominates.}
-  \label{fig:roi_comparison}
-\end{figure}
+% (Figure moved to Qualitative Visualisation section.)
 
-This strong targeting validates the rotation-only motion model for the disc region. The efficiency gap (inside CR $-$ outside CR) exceeds 70\% at short horizons, confirming that the cancellation algorithm successfully distinguishes ego-motion events from background. As $\Delta t$ increases, the gap narrows, indicating that phase error affects both regions similarly once motion estimation degrades.
+This strong targeting validates the rotation-only motion model for the disc region. The efficiency gap (inside CR $-$ outside CR) exceeds 70\% at short horizons, confirming that the cancellation algorithm successfully distinguishes ego-motion events from background. As $\Delta t$ increases, the gap narrows, indicating that phase error affects both regions similarly once motion estimation degrades. Figure~\ref{fig:roi_spatial} provides visual confirmation of this spatial discrimination, showing dense cancellation patterns inside the ROI compared to sparse residuals outside.
 
 \section{Displacement Statistics}
 
@@ -115,41 +107,29 @@ Only a small fraction ($< 5\%$) of matches exhibit displacements exceeding 3\,px
 
 \section{Qualitative Visualisation}
 
-Figure~\ref{fig:before_after} shows qualitative results for a representative time window ($t=5.0--5.01$\,s) under optimal parameters ($\Delta t=2$\,ms, $\epsilon_{xy}=2$\,px, $\epsilon_t=1$\,ms). The original events (top-left) show dense edge structure on the rotating disc. Predicted events (top-center) form similar patterns shifted slightly in time and polarity-flipped. After cancellation (top-right), most disc events are suppressed, leaving only residual activity concentrated near the rim (phase error region) and scattered background noise.
+Figure~\ref{fig:roi_spatial} provides qualitative evidence of spatial selectivity by contrasting inside vs. outside the ROI in the same time window. Inside the disc, most predictable ego-motion events cancel; outside, background structure largely remains.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.95\linewidth]{../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circles.png}
-\caption{Qualitative before/after. \textbf{Row 1:} Real (blue), predicted (red), residual (combined). Event counts show large reduction. \textbf{Row 2:} Per-pixel signed-count images. \textbf{Row 3:} Histograms showing reduction in high-count regions. Disc ROI marked (yellow).}
-  \label{fig:before_after}
+  \begin{subfigure}[b]{\textwidth}
+    \centering
+    \includegraphics[width=0.98\linewidth]{images/results_figures/roi_individual/roi_5.000s_to_5.037s_inside_three_panel.png}
+    \subcaption{INSIDE ROI: (a) Real events ($276,227$ events) show dense circular patterns from ego-motion. (b) Residual events ($13,257$ events, $95.2\%$ cancelled) are sparse, indicating effective cancellation of predictable motion. (c) Matched events ($265,859$ events) visualize the successfully cancelled event pairs, confirming high cancellation efficiency within the ROI.}
+    \label{fig:roi_inside}
+  \end{subfigure}
+  
+  \vspace{0.5cm}
+  
+  \begin{subfigure}[b]{\textwidth}
+    \centering
+    \includegraphics[width=0.98\linewidth]{images/results_figures/roi_individual/roi_5.000s_to_5.037s_outside_three_panel.png}
+    \subcaption{OUTSIDE ROI: (a) Real events ($26,870$ events) show background scene structure. (b) Residual events ($15,686$ events, $41.6\%$ cancelled) retain most background activity, as expected since these events are not driven by ego-motion. (c) Matched events ($11,853$ events) show lower cancellation outside the ROI. The yellow dashed circle indicates the ROI boundary.}
+    \label{fig:roi_outside}
+  \end{subfigure}
+  
+  \caption{Spatial visualization of ROI cancellation performance. The dramatic contrast between inside (95.2\% cancellation) and outside (41.6\% cancellation) demonstrates that the algorithm successfully targets ego-motion events while preserving background scene events. The efficiency gap of $53.6\%$ validates the spatial discrimination capability of the cancellation method. Window: $5.000$--$5.037$\,s. Parameters: $\Delta t \approx 0$\,ms, $\epsilon_{xy} = 2.0$\,px, $\epsilon_t = 5.0$\,ms.}
+  \label{fig:roi_spatial}
 \end{figure}
-
-% Panel: per-pixel gray visualisation for the same window (for qual section)
-\begin{figure}[t]
-  \centering
-  % Row: Gray per-pixel signed-count images
-  \begin{minipage}[t]{0.32\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{images/main_results/window1/img_real_gray.png}\\[-2pt]
-    \footnotesize Real (gray)
-  \end{minipage}\hfill
-  \begin{minipage}[t]{0.32\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{images/main_results/window1/img_pred_gray.png}\\[-2pt]
-    \footnotesize Pred (gray)
-  \end{minipage}\hfill
-  \begin{minipage}[t]{0.32\linewidth}
-    \centering
-    \includegraphics[width=\linewidth]{images/main_results/window1/img_combined_gray.png}\\[-2pt]
-    \footnotesize Combined (gray)
-  \end{minipage}
-\caption{Per-pixel signed-count grayscale images for a representative window ($t=5.000$--$5.037$\,s). The disc region largely disappears after cancellation, while static artifacts persist, illustrating selectivity.}
-  \label{fig:highpass_panel}
-\end{figure}
-
-The seismic (red-blue) per-pixel images (Row 2) clearly show the cancellation effect: high contrast edges in the original (left column) become ``quiet'' in the residual (right column), with only thin annuli near the rim remaining. The combined view (center column) shows successful cancellation appears gray (red and blue cancel), while residual activity remains visible in saturated colors.
-
-The histograms (Row 3) quantify the effect: the original event distribution (left) shows many pixels with high absolute counts ($|count| > 5$), whereas residuals (right) are dominated by low-count pixels, confirming effective suppression of predictable motion events. Median pixel count drops from $\sim 12$ (original) to $\sim 2$ (residual), a 6$\times$ reduction in clutter.
 
 \section{Comparison with Motion Estimation Accuracy}
 
@@ -175,14 +155,7 @@ Cancellation performance degrades in several scenarios:
 \item \textbf{Non-circular motion:} When translation or acceleration is non-negligible, the rotation-only model fails, leaving residual structure that deviates from the pure-circular pattern.
 \end{enumerate}
 
-Figure~\ref{fig:failure_case} illustrates a representative failure case at long horizon ($\Delta t=8$\,ms): cancellation rate drops to $\sim 30\%$, and residual events cluster in a thick annulus near the rim, confirming phase-drift accumulation. This motivates the operating regime recommendation: $\Delta t \leq 4$\,ms for robust cancellation.
-
-\begin{figure}[t]
-  \centering
-  \includegraphics[width=0.75\linewidth]{../code/pipeline/results_plots/perlin_1280hz_hand_outframe_combined_circles.png}
-\caption{Failure case at long horizon ($\Delta t=8$\,ms, $\epsilon_{xy}=3$\,px, $\epsilon_t=2$\,ms). Residuals form a thick rim annulus, indicating phase-error accumulation and the operating limit of the rotation-only model.}
-  \label{fig:failure_case}
-\end{figure}
+At long horizons ($\Delta t=8$\,ms), cancellation rate drops to $\sim 30\%$, and residual events cluster in a thick annulus near the rim, confirming phase-drift accumulation. This motivates the operating regime recommendation: $\Delta t \leq 4$\,ms for robust cancellation.
 
 \section{Summary of Results}
 

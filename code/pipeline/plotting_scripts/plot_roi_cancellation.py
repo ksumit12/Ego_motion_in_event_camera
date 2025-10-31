@@ -39,36 +39,38 @@ def load_window_real_events(window_dir: str) -> np.ndarray:
 
 
 def load_tracker_series(path: str):
-    df = pd.read_csv(path, header=0)
+    """Load tracker series with or without headers.
+
+    Returns arrays: t_s, cx_s, cy_s, om_s (float64).
+    """
     try:
-        # With headers
-        if "timestamp" in df.columns:
-            df = df.sort_values("timestamp")
-            t_s = df["timestamp"].to_numpy(np.float64)
-            cx_s = df["center_x"].to_numpy(np.float64)
-            cy_s = df["center_y"].to_numpy(np.float64)
-            # prefer explicit omega column names if present
-            for col in ("omega_circlefit_rad_s", "omega_rad_s", "theta_dot_rad_s"):
-                if col in df.columns:
-                    om_s = df[col].to_numpy(np.float64)
-                    break
-            else:
-                raise KeyError("omega column not found in tracker CSV")
-            return t_s, cx_s, cy_s, om_s
-        else:
-            raise KeyError("no headers")
+        df = pd.read_csv(path)
+        if "timestamp" not in df.columns or "center_x" not in df.columns or "center_y" not in df.columns:
+            raise KeyError("missing headers")
+        df = df.sort_values("timestamp")
+        t_s = df["timestamp"].to_numpy(np.float64)
+        cx_s = df["center_x"].to_numpy(np.float64)
+        cy_s = df["center_y"].to_numpy(np.float64)
+        om_col = None
+        for col in ("omega_circlefit_rad_s", "omega_rad_s", "theta_dot_rad_s"):
+            if col in df.columns:
+                om_col = col
+                break
+        if om_col is None:
+            raise KeyError("omega column not found in tracker CSV")
+        om_s = df[om_col].to_numpy(np.float64)
+        return t_s, cx_s, cy_s, om_s
     except Exception:
-        # Fallback: no headers, parse as raw numeric columns with mixed delimiters
-        df = pd.read_csv(path, header=None, engine="python", sep=r"[ ,]+", comment=None)
-        arr = df.to_numpy(np.float64)
-        # Heuristic mapping: 0: time(s), 1: cx, 2: cy, 5: omega(rad/s)
+        # Fallback: headerless CSV; parse numeric columns
+        df = pd.read_csv(path, header=None, engine="python", sep=r"[ ,]+")
+        arr = df.to_numpy()
         if arr.shape[1] < 6:
-            raise ValueError("Tracker CSV without headers must have at least 6 columns: t, cx, cy, ..., omega")
-        t_s = arr[:, 0]
-        cx_s = arr[:, 1]
-        cy_s = arr[:, 2]
-        om_s = arr[:, 5]
-        # Ensure sorted by time
+            raise ValueError("Tracker CSV without headers must have >=6 columns: t,cx,cy,...,omega")
+        t_s = arr[:, 0].astype(np.float64)
+        cx_s = arr[:, 1].astype(np.float64)
+        cy_s = arr[:, 2].astype(np.float64)
+        omega_idx = 7 if arr.shape[1] > 7 else 5
+        om_s = arr[:, omega_idx].astype(np.float64)
         order = np.argsort(t_s)
         return t_s[order], cx_s[order], cy_s[order], om_s[order]
 

@@ -1,10 +1,32 @@
 \chapter{Conclusions \& Future Work}\label{chap:conclusion}
 
 \section{Summary}
-Restate problem, approach, and main findings (e.g., up to 84\% at short horizons).
+This thesis presented a real-time, per-event forward-prediction method to cancel ego-motion events under rotational motion. Each input event is propagated to a predicted future location and paired within spatiotemporal gates to suppress redundant observations. On a controlled spinning-disc dataset, we demonstrated:
+\begin{itemize}
+  \item \textbf{High short-horizon performance:} Up to 95\% cancellation at sub-millisecond horizons; CR exceeds 90\% for $\Delta t<2$\,ms.
+  \item \textbf{Operational regime:} With optimal tolerances ($\epsilon_{xy}=2$--3\,px, $\epsilon_t\approx 0.5$--1.0\,ms), CR is \~88\% at $\Delta t=1$--2\,ms and decays with horizon, matching a phase-error model with $\tau_{1/2}\approx 3.5$\,ms.
+  \item \textbf{Selectivity:} Strong ROI targeting (e.g., 95.2\% inside vs 41.6\% outside in a representative window) indicates that predictable ego-motion is suppressed while background structure is preserved.
+  \item \textbf{Interpretable failure modes:} Residual patterns diagnose center and velocity biases; bias sweeps confirm a linear degradation region up to $\pm 0.05$\,rad/s.
+\end{itemize}
 
 \section{Contributions}
-List concrete technical and empirical contributions.
+\begin{itemize}
+  \item \textbf{Event-level cancellation pipeline:} A causal, per-event forward prediction and inhibitory pairing method that operates without frame reconstruction.
+  \item \textbf{Spatiotemporal gating design:} A continuous temporal gate coupled to spatial tolerance with analytic guidance $\epsilon_t^{*} \approx \epsilon_{xy}/(r\,|\omega|)$, eliminating binning artifacts.
+  \item \textbf{Quantitative characterization:} Comprehensive sweeps over $\Delta t$, $\epsilon_{xy}$, and $\epsilon_t$ establishing practical operating bounds and saturation regimes.
+  \item \textbf{Diagnostic residual analysis:} Spatial residual maps and a velocity-bias sweep protocol that distinguish geometric phase errors from over-gating.
+  \item \textbf{Open scripts and figures:} Reproducible code to regenerate metrics and visualizations for downstream research and hardware exploration.
+\end{itemize}
 
 \section{Future Directions}
-General ego-motion (translations, planar motion), uncertainty-aware suppression via probabilistic matching, adaptive polarity/asymmetry modeling, and exploration of hardware-level implementations (FPGA/MCU) for potential on-sensor processing pipelines.
+\paragraph{General ego-motion.} Extend the model to include translation and depth variation (e.g., planar homographies or per-pixel flow priors) to cover broader robotics scenarios.
+
+\paragraph{Uncertainty-aware matching.} Replace hard gates with probabilistic association that explicitly models timing jitter, center/velocity uncertainty, and per-pixel contrast thresholds; learn parameters online.
+
+\paragraph{Adaptive polarity and contrast.} Incorporate per-edge polarity asymmetries and adaptive contrast thresholds to reduce residual artifacts in textured regions.
+
+\paragraph{Closed-loop calibration.} Use residual maps and bias sweeps to drive online calibration of $\hat c$ and $\hat\omega$ on device, with lightweight optimizers.
+
+\paragraph{Hardware implementations.} Map the pipeline to FPGA/MCU platforms or neuromorphic cores for near-sensor operation, exploiting event-level parallelism and bounded buffers.
+
+\paragraph{Task-level evaluation.} Quantify end-to-end gains in downstream tasks (optical flow, SLAM, tracking) from pre-cancellation, measuring bandwidth, latency, and robustness trade-offs.

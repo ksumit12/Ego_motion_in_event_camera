@@ -18,6 +18,10 @@ Inspired by plots in:
 
 Usage:
     python generate_thesis_results.py --input combined_events_with_predictions.npy
+    # or build from a short-window folder (real + pred @ dt):
+    python generate_thesis_results.py --window-dir \
+        "/media/sumit/New Volume/short_window_predictions/window_1_8.393s_to_8.403s" \
+        --dt-ms 2.0
 """
 
 import numpy as np
@@ -64,6 +68,38 @@ def load_events(path):
         events = events[np.argsort(events[:, 3])]
     print(f"Loaded {len(events):,} events")
     return events
+
+def load_combined_from_window(window_dir: str, dt_ms: float) -> np.ndarray:
+    """Build combined [x,y,p,t,is_pred] from a short-window folder.
+    - real_events.(npy|npz)
+    - pred_events_dt_XX.Xms.npy (uses dt_ms)
+    """
+    wdir = Path(window_dir)
+    real = None
+    for name in ["real_events.npy", "real_events.npz"]:
+        p = wdir / name
+        if p.exists():
+            real = np.load(p)["real"] if name.endswith(".npz") else np.load(p)
+            break
+    if real is None:
+        raise FileNotFoundError(f"real_events.(npy|npz) not found in {window_dir}")
+    pred_name = f"pred_events_dt_{dt_ms:04.1f}ms.npy"
+    pred_path = wdir / pred_name
+    if not pred_path.exists():
+        raise FileNotFoundError(f"{pred_name} not found in {window_dir}")
+    pred = np.load(pred_path)
+    real = real.astype(np.float32)
+    pred = pred.astype(np.float32)
+    real_flag = np.zeros((len(real), 1), dtype=np.float32)
+    pred_flag = np.ones((len(pred), 1), dtype=np.float32)
+    combined = np.vstack([
+        np.hstack([real, real_flag]),
+        np.hstack([pred, pred_flag])
+    ])
+    # Ensure time-sorted
+    if not np.all(combined[:-1, 3] <= combined[1:, 3]):
+        combined = combined[np.argsort(combined[:, 3])]
+    return combined
 
 def run_cancellation(real_events, pred_events, dt, eps_t, eps_xy, 
                      polarity_mode="opposite", max_events=50000):
@@ -274,7 +310,7 @@ def plot_residual_density(combined_events, residual_real, residual_pred,
     real = combined_events[combined_events[:, 4] == 0.0]
     pred = combined_events[combined_events[:, 4] == 1.0]
     
-    mask_r, mask_p, cr = run_cancellation(real, pred, dt*1e-3, eps_t*1e-3, eps_xy, max_events=30000)
+    mask_r, mask_p, cr = run_cancellation(real, pred, dt*1e-3, eps_t*1e-3, eps_xy, max_events=len(real))
     
     fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     
@@ -302,14 +338,13 @@ def plot_residual_density(combined_events, residual_real, residual_pred,
     # Compute inside/outside ROI
     roi_mask = circle_mask(real[:, 0], real[:, 1], DISC_CENTER_X, DISC_CENTER_Y, DISC_RADIUS)
     roi_real = real[roi_mask]
-    roi_residual = residual_r[roi_mask]
-    
     outside_mask = ~roi_mask
     outside_real = real[outside_mask]
-    outside_residual = residual_r[outside_mask]
-    
-    cr_in = (len(roi_real) - len(roi_residual)) / len(roi_real) * 100 if len(roi_real) > 0 else 0
-    cr_out = (len(outside_real) - len(outside_residual)) / len(outside_real) * 100 if len(outside_real) > 0 else 0
+    # Residual counts via boolean logic on original mask
+    roi_residual_count = int(np.sum(mask_r & roi_mask))
+    outside_residual_count = int(np.sum(mask_r & outside_mask))
+    cr_in = (len(roi_real) - roi_residual_count) / len(roi_real) * 100 if len(roi_real) > 0 else 0
+    cr_out = (len(outside_real) - outside_residual_count) / len(outside_real) * 100 if len(outside_real) > 0 else 0
     
     bars = ax2.barh(['Inside ROI', 'Outside ROI'], [cr_in, cr_out], 
                     color=['#2E86AB', '#A23B72'], alpha=0.7)
@@ -411,7 +446,7 @@ def plot_radial_profile(combined_events, residual_real, dt, output_path="radial_
     
     # Compute residuals
     mask_residual, _, cr = run_cancellation(
-        real, combined_events[combined_events[:, 4] == 1.0], dt*1e-3, 1.0*1e-3, 2.0, max_events=30000
+        real, combined_events[combined_events[:, 4] == 1.0], dt*1e-3, 1.0*1e-3, 2.0, max_events=len(real)
     )
     residual_r = real[mask_residual]
     distances_resid = np.sqrt(np.sum((residual_r[:, :2] - centers)**2, axis=1))
@@ -444,7 +479,9 @@ def plot_radial_profile(combined_events, residual_real, dt, output_path="radial_
 # ========================================
 def main():
     parser = argparse.ArgumentParser(description='Generate thesis-ready results')
-    parser.add_argument('--input', type=str, required=True, help='Path to combined events .npy file')
+    parser.add_argument('--input', type=str, help='Path to combined events .npy file (columns: x,y,p,t,is_pred)')
+    parser.add_argument('--window-dir', type=str, help='Short-window folder with real/pred files')
+    parser.add_argument('--dt-ms', type=float, default=2.0, help='dt used to pick pred file when --window-dir is set')
     parser.add_argument('--output-dir', type=str, default='thesis_results', help='Output directory')
     
     args = parser.parse_args()
@@ -457,7 +494,17 @@ def main():
     print("="*60)
     
     # Load data
-    combined_events = load_events(args.input)
+    if args.input:
+        combined_events = load_events(args.input)
+    elif args.window_dir:
+        print(f"Building combined events from window: {args.window_dir}, dt={args.dt_ms} ms")
+        combined_events = load_combined_from_window(args.window_dir, args.dt_ms)
+        # save a temp copy for reuse
+        tmp_path = output_dir / f"combined_from_window_dt_{args.dt_ms:.1f}ms.npy"
+        np.save(tmp_path, combined_events)
+        print(f"Saved combined events: {tmp_path}")
+    else:
+        parser.error("Please provide either --input or --window-dir")
     
     print("\n1. Generating Figure: Cancellation vs Delta_t")
     plot_cancellation_vs_delta_t(combined_events, output_dir / "cancellation_vs_dt.png")
